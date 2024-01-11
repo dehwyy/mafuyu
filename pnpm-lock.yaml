@@ -274,6 +274,9 @@ importers:
         specifier: ^2.1.0
         version: 2.1.0
     devDependencies:
+      '@makoto/grpc':
+        specifier: workspace:*
+        version: link:../../libs/grpc
       '@playwright/test':
         specifier: ^1.28.1
         version: 1.28.1
@@ -364,6 +367,12 @@ importers:
 
   libs/grpc:
     dependencies:
+      '@grpc/grpc-js':
+        specifier: ^1.9.13
+        version: 1.9.13
+      '@protobuf-ts/grpc-transport':
+        specifier: ^2.9.3
+        version: 2.9.3(@grpc/grpc-js@1.9.13)
       '@protobuf-ts/runtime':
         specifier: ^2.9.3
         version: 2.9.3
