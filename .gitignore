@@ -1,0 +1,15 @@
+target
+.vscode/
+Idea.md
+.env*
+dist
+node_modules
+.next
+/out/
+/build
+.env*.local
+.vercel
+*.tsbuildinfo
+next-env.d.ts
+frontend/main
+.idea

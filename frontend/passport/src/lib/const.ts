@@ -1,4 +1,5 @@
 export const enum Routes {
 	Login = "/login",
-	Create = "/create"
+	Create = "/create",
+	RecoverPassword = "/recover/password"
 }

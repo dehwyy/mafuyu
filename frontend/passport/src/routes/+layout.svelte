@@ -1,11 +1,15 @@
 <script lang="ts">
 	import '../app.postcss';
 
+	//
+	import { initializeStores, Toast } from '@skeletonlabs/skeleton'
+	initializeStores();
+
 	// Highlight JS
 	import hljs from 'highlight.js/lib/core';
 	import 'highlight.js/styles/github-dark.css';
 	import { AppShell, storeHighlightJs } from '@skeletonlabs/skeleton';
-	import xml from 'highlight.js/lib/languages/xml'; // for HTML
+	import xml from 'highlight.js/lib/languages/xml';
 	import css from 'highlight.js/lib/languages/css';
 	import javascript from 'highlight.js/lib/languages/javascript';
 	import typescript from 'highlight.js/lib/languages/typescript';
@@ -40,8 +44,6 @@
 	<svelte:fragment slot="header">
 		<Header />
 	</svelte:fragment>
-	<div class="min-h-screen">
+	<Toast />
 		<slot />
-	</div>
-	<svelte:fragment slot="footer">Footer</svelte:fragment>
 </AppShell>
