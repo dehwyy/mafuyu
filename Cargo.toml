@@ -1,0 +1,13 @@
+[workspace]
+members = [
+  "apps/gateway",
+  "apps/auth",
+
+  "libs/config",
+  "libs/db",
+  "libs/grpc",
+  "libs/log",
+  "libs/utils",
+]
+
+resolver = "2"

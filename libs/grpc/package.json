@@ -1,0 +1,36 @@
+{
+  "name": "@makoto/grpc",
+  "version": "1.0.0",
+  "main": "./dist/grpc-client.js",
+  "types": "./dist/grpc-client.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/grpc-client.d.ts",
+      "import": "./dist/grpc-client.js"
+    },
+    "./const": {
+      "types": "./dist/const.d.ts",
+      "import": "./dist/const.js"
+    }
+
+  },
+  "typesVersions": {
+    "*": {
+      "const": [
+        "./dist/const.d.ts"
+      ]
+    }
+  },
+  "dependencies": {
+    "@protobuf-ts/runtime-rpc": "^2.9.3",
+    "@protobuf-ts/runtime": "^2.9.3",
+    "@grpc/grpc-js": "^1.9.13",
+    "@protobuf-ts/grpc-transport": "^2.9.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  },
+  "scripts": {
+    "ts": "tsc"
+  }
+}

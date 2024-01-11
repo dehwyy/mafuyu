@@ -1,0 +1,14 @@
+{
+  "exclude": ["node_modules"],
+  "include": ["./lib/**/*.ts"],
+  "compilerOptions": {
+    "strict": false,
+    "sourceMap": false,
+    "outDir": "./dist",
+    "target": "ESNext",
+    "lib": ["ES2015.Reflect", "ES2015.Proxy"],
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "declaration": true,
+  }
+}

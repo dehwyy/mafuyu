@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package general;
+option go_package = "github.com/dehwyy/makoto/libs/grpc/generated/general";
+
+message BoolStatus {
+  bool status = 1;
+}

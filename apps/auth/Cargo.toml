@@ -1,0 +1,33 @@
+[package]
+name = "auth"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tonic = "0.10.2"
+prost = "0.12.3"
+tokio = { version = "1.35.0", features = ["macros", "rt-multi-thread"] }
+sea-orm = { version = "0.12.9", features = [ "sqlx-postgres", "runtime-tokio-rustls", "with-uuid", "with-time", "macros" ] }
+bcrypt = "0.15.0"
+jwt = "0.16.0"
+sha2 = "0.10.8"
+hmac = "0.12.1"
+regex = "1.10.2"
+uuid = { version = "1.6.1", features = ["v4"] }
+chrono = "0.4.31"
+oauth2 = "4.4.2"
+redis = "0.24.0"
+reqwest = {version = "0.11.23", features = ["json"]}
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+makoto_grpc = {path = "../../libs/grpc"}
+makoto_lib = {path = "../../libs/utils"}
+makoto_config = {path = "../../libs/config"}
+makoto_logger = {path = "../../libs/log"}
+makoto_db = {path = "../../libs/db"}
+
+[dev-dependencies]
+lazy_static = "1.4.0"

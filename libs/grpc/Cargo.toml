@@ -1,0 +1,9 @@
+[package]
+name = "makoto_grpc"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tonic-build = "0.10.2"
+prost = "0.12.3"
+tonic = "0.10.2"

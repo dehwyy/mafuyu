@@ -1,0 +1,12 @@
+[package]
+name = "makoto_db"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "makoto_db"
+path = "src/rust/lib.rs"
+
+[dependencies]
+sea-orm = { version = "0.12.9", features = [ "sqlx-postgres", "runtime-tokio-rustls", "with-uuid", "with-time", "macros"] }
+makoto_config = { path = "../config" }

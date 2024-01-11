@@ -1,0 +1,25 @@
+syntax="proto3";
+
+package api;
+
+import "api/auth.proto";
+import "api/general.proto";
+
+service ApiRpc {
+  // Auth
+  rpc SignUp(api_auth.SignUpRequest) returns (api_auth.AuthenticationResponse) {}
+  rpc SignIn(api_auth.SignInRequest) returns (api_auth.AuthenticationResponse) {}
+  rpc Refresh(api_auth.RefreshRequest) returns (api_auth.AuthenticationResponse) {}
+  rpc CreateOAuth2RedirectUrl(api_auth.OAuth2RedirectUrlRequest) returns (api_auth.OAuth2RedirectUrlResponse) {}
+  rpc SignInOauth(api_auth.SignInOauthRequest) returns (api_auth.AuthenticationResponse) {}
+  rpc SignInToken(api_auth.SignInTokenRequest) returns (api_auth.AuthenticationResponse) {}
+  rpc SignOut(api_auth.SignOutRequest) returns (general.BoolStatus) {}
+  rpc ConfirmMailByCode(api_auth.ConfirmMailByCodeRequest) returns (api_auth.AuthenticationResponse) {}
+  rpc ProceedToUpdatePassword(api_auth.ProceedToUpdatePasswordRequest) returns (api_auth.ProceedToUpdatePasswordResponse) {}
+  rpc ProceedToRecoverPassword(api_auth.ProceedToRecoverPasswordRequest) returns (general.BoolStatus) {}
+  rpc SubmitNewPasswordByCode(api_auth.SubmitNewPasswordByCodeRequest) returns (api_auth.AuthenticationResponse) {}
+  rpc IsEmailAvailable(api_auth.IsEmailAvailableRequest) returns (general.BoolStatus) {}
+  rpc IsUsernameAvailable(api_auth.IsUsernameAvailableRequest) returns (general.BoolStatus) {}
+
+  //
+}

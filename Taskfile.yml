@@ -1,0 +1,26 @@
+version: '3'
+
+dotenv: [.env]
+
+tasks:
+  db:migrate:
+    cmds:
+      - go run libs/db/src/main.go migrate
+      - cd libs/db && sea-orm-cli generate entity -u $DATABASE_URL -o src/rust/models
+  db:test-drop:
+    cmds:
+      - go run libs/db/src/main.go test-drop
+
+  db:test-migrate:
+    cmds:
+      - go run libs/db/src/main.go test-migrate
+
+  grpc:
+    cmds:
+      - cd libs/grpc && cargo run
+
+  grpc:ts:
+    dir: libs/grpc
+    cmds:
+      - protoc -I=protos --ts_out=dist --ts_opt=generate_dependencies,eslint_disable,ts_nocheck,output_javascript protos/*.proto
+      - protoc -I protos --ts_out=dist --ts_opt=generate_dependencies,eslint_disable,ts_nocheck,output_javascript protos/api.proto
