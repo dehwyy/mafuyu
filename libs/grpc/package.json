@@ -25,7 +25,8 @@
     "@protobuf-ts/runtime-rpc": "^2.9.3",
     "@protobuf-ts/runtime": "^2.9.3",
     "@grpc/grpc-js": "^1.9.13",
-    "@protobuf-ts/grpc-transport": "^2.9.3"
+    "@protobuf-ts/grpc-transport": "^2.9.3",
+    "@sveltejs/kit": "^2.0.0"
   },
   "devDependencies": {
     "typescript": "^5.3.3"

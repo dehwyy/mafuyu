@@ -38,6 +38,16 @@
 
 	import Header from '$lib/components/header.svelte'
 
+	import type {LayoutData } from "./$types"
+	import { user_store } from '$lib/stores/user';
+
+	export let data: LayoutData
+
+	user_store.set(data.username ? {
+		id: data.userId,
+		username: data.username
+	} : null)
+
 </script>
 
 <AppShell >

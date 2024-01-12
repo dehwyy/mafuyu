@@ -10,6 +10,8 @@ import MoonIcon from 'svelte-icons/fa/FaRegMoon.svelte'
 import ThemeSelectIcon from 'svelte-icons/di/DiNetbeans.svelte'
 
 import ThemeSelector from '$lib/components/theme-selector.svelte'
+	import { user_store } from '$lib/stores/user';
+	import { Routes } from '$lib/const';
 
 const settingsClick: PopupSettings = {
 	event: "click",
@@ -29,7 +31,11 @@ const settingsClick: PopupSettings = {
 				<div class="icon">
 					<UserIcon />
 				</div>
-				<p>dehwyy</p>
+				{#if $user_store}
+					<a href={Routes.Account} class="text-lg underline hover:text-primary-300 transition-all">{$user_store.username}</a>
+					{:else}
+					<a href={Routes.Login}>Login</a>
+				{/if}
 			</div>
 			<hr class="my-4"/>
 			<div class="menu-item">
@@ -45,6 +51,17 @@ const settingsClick: PopupSettings = {
 				</div>
 				<ThemeSelector />
 			</div>
+			<hr class="my-4"/>
+			{#if $user_store}
+			<div class="menu-item">
+				<div class="icon">
+					<MoonIcon />
+				</div>
+				<a href={Routes.Logout}>
+					Logout
+				</a>
+			</div>
+			{/if}
 		</div>
 	</svelte:fragment>
 	<h3 class="h3 ml-3">

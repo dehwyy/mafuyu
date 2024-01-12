@@ -11,6 +11,7 @@ import {
   UnaryCall
 } from '@protobuf-ts/runtime-rpc'
 import { MetadataKeys, GrpcErrors, GrpcCookiesKeys } from './const'
+import { Cookies } from '@sveltejs/kit/src/exports/public';
 
 
 const gateway_host = process.env?.GATEWAY_HOST ?? "localhost:3100"
@@ -23,6 +24,27 @@ const grpc_transport = new GrpcTransport({
 export const GrpcClient = new ApiRpcClient(grpc_transport)
 
 export namespace Interceptors {
+  export class WithTokensPayload {
+
+    private constructor(
+
+      public get_access_token: () => Promise<string | undefined>,
+      public get_refresh_token: () => Promise<string | undefined>,
+      public set_access_token: (token: string) => void,
+      public set_refresh_token: (token: string) => void
+    ) {}
+
+    public static CreateForSvelteKit(cookies: Cookies): WithTokensPayload {
+      return new WithTokensPayload(
+        async () => cookies.get(GrpcCookiesKeys.AccessToken),
+        async () => cookies.get(GrpcCookiesKeys.RefreshToken),
+        (token) => cookies.set(GrpcCookiesKeys.AccessToken, token, {path: '/', httpOnly: true, maxAge: 60 * 10}),
+        (token) => cookies.set(GrpcCookiesKeys.RefreshToken, token, {path: '/', httpOnly: true})
+      )
+    }
+
+  }
+
   class DeferredRequest {
     headers: Deferred<RpcMetadata>
     response: Deferred<object>
@@ -66,9 +88,7 @@ export namespace Interceptors {
     }
   }
   export const WithTokens = (
-    get_access_token: () => Promise<string | undefined>,
-    get_refresh_token: () => Promise<string | undefined>,
-    set_cookie: (key: string, value: string) => void
+    payload: WithTokensPayload
   ): RpcInterceptor  => {
 
     return {
@@ -81,7 +101,7 @@ export namespace Interceptors {
         }
 
         void (async () => {
-          const access_token =  await get_access_token()
+          const access_token =  await payload.get_access_token()
 
           if (access_token) {
             options.meta![MetadataKeys.AccessToken] = access_token
@@ -90,6 +110,16 @@ export namespace Interceptors {
           try {
             const response = await next(method, input, options)
 
+            const access_token_from_response = response.headers[MetadataKeys.AccessToken] as string
+            const refresh_token_from_response = response.headers[MetadataKeys.RefreshToken] as string
+
+            if (access_token_from_response) {
+              payload.set_access_token(access_token_from_response)
+            }
+
+            if (refresh_token_from_response) {
+              payload.set_refresh_token(refresh_token_from_response)
+            }
             deferred_req.resolveAll(response)
           } catch (e) {
             if (! (e instanceof RpcError)) {
@@ -100,7 +130,7 @@ export namespace Interceptors {
 
             if (err.code === GrpcErrors.UNAUTHENTICATED) {
               // try to refresh
-              const refresh_token = await get_refresh_token()
+              const refresh_token = await payload.get_refresh_token()
               if (!refresh_token)  {
                 deferred_req.rejectAll(e)
                 return
@@ -115,7 +145,7 @@ export namespace Interceptors {
 
                 const access_token = headers[MetadataKeys.AccessToken] as string
 
-                set_cookie(GrpcCookiesKeys.AccessToken, access_token)
+                payload.set_access_token(access_token)
                 new_access_token = access_token
 
               } catch (e) {
@@ -150,3 +180,5 @@ export namespace Interceptors {
     }
   }
 }
+
+
