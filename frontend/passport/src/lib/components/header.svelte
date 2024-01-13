@@ -8,10 +8,12 @@ import UserIcon from 'svelte-icons/fa/FaRegUser.svelte'
 import MoonIcon from 'svelte-icons/fa/FaRegMoon.svelte'
 // @ts-ignore
 import ThemeSelectIcon from 'svelte-icons/di/DiNetbeans.svelte'
+// @ts-ignore
+import LogoutIcon from 'svelte-icons/io/IoIosLogOut.svelte'
 
 import ThemeSelector from '$lib/components/theme-selector.svelte'
-	import { user_store } from '$lib/stores/user';
-	import { Routes } from '$lib/const';
+import { user_store } from '$lib/stores/user';
+import { Routes } from '$lib/const';
 
 const settingsClick: PopupSettings = {
 	event: "click",
@@ -55,7 +57,7 @@ const settingsClick: PopupSettings = {
 			{#if $user_store}
 			<div class="menu-item">
 				<div class="icon">
-					<MoonIcon />
+					<LogoutIcon />
 				</div>
 				<a href={Routes.Logout}>
 					Logout

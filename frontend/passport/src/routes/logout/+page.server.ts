@@ -4,12 +4,13 @@ import type {PageServerLoad} from "./$types"
 import { GrpcCookiesKeys } from '@makoto/grpc/const';
 
 export const load: PageServerLoad = async ({cookies}) => {
-	cookies.delete(GrpcCookiesKeys.AccessToken, {
-		path: "/"
-	})
-	cookies.delete(GrpcCookiesKeys.RefreshToken, {
-		path: "/"
-	})
+	console.log(1)
+	// cookies.delete(GrpcCookiesKeys.AccessToken, {
+	// 	path: "/"
+	// })
+	// cookies.delete(GrpcCookiesKeys.RefreshToken, {
+	// 	path: "/"
+	// })
 
 	redirect(302, Routes.Login)
 }
