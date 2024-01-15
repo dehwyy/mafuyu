@@ -16,7 +16,7 @@
 	}
 </script>
 
-<div class="w-full">
+<div style="margin-right: calc(100% - 100vw - 100%)" class="w-full max-w-[1450px]">
 	<div class="w-2/3 mx-auto pt-14 flex gap-x-16">
 		<nav class="min-w-[230px] ">
 			<section class="mb-7">
@@ -36,7 +36,7 @@
 				{/each}
 			</ListBox>
 		</nav>
-		<main class="w-full">
+		<main class="w-full pb-10">
 			<slot />
 		</main>
 	</div>

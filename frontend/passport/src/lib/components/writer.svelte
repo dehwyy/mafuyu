@@ -8,7 +8,7 @@
 </script>
 
 <svelte:window on:click={() => is_focused = false} />
-<div aria-hidden="true" class="w-full writer relative" on:click={(e) => {
+<div aria-hidden="true" class="w-full writer relative overflow-hidden" on:click={(e) => {
 	e.stopPropagation()
 	!is_focused && (is_focused = true)
 }}>
@@ -19,17 +19,17 @@
 		class="writer-input p-6"
 		bind:innerText={text}
 		contenteditable />
-	{#if is_focused || text}
-		<hr class="mb-4 mx-5"/>
-		<div class="w-full flex items-center pl-8 pr-6 pb-4">
-			<div class="">
-				<div class="icon">
-					<CameraIcon />
+		<div class={`${is_focused || text ? "max-h-[100px]" : "max-h-0"} transition-all ease-linear duration-300 `}>
+			<hr class="mb-4 mx-5"/>
+			<div class="w-full flex items-center pl-8 pr-6 pb-4">
+				<div class="">
+					<div class="icon">
+						<CameraIcon />
+					</div>
 				</div>
+				<button disabled={!text} class="text-sm ml-auto block btn variant-filled-surface select-none">Create</button>
 			</div>
-			<button class="text-sm ml-auto block btn variant-filled-surface">Create</button>
 		</div>
-	{/if}
 </div>
 
 <style>

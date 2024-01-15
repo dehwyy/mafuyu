@@ -1,8 +1,9 @@
 
 <script lang="ts">
-	import { page } from '$app/stores';
 	import SocietyPeopleInformation from "./society-people-information.svelte"
 	import Writer from "$lib/components/writer.svelte"
+	import Post from "$lib/components/post.svelte"
+
 	// @ts-ignore
 	import CakeIcon from 'svelte-icons/md/MdCake.svelte'
 	// @ts-ignore
@@ -15,8 +16,8 @@
 	import LanguageIcon from 'svelte-icons/md/MdLanguage.svelte'
 </script>
 
-<div class="flex pt-6 gap-x-5">
-	<section class="w-[500px] flex flex-col gap-y-5">
+<div class="flex pt-6 gap-x-5 items-start">
+	<section class="w-[500px] flex flex-col gap-y-4">
 		<section class="card p-6 w-full">
 			<ul class="flex flex-col gap-y-4">
 				<li class="information">
@@ -67,11 +68,16 @@
 		<section class="card w-full">
 			<Writer />
 		</section>
+		<section class="w-full flex flex-col gap-y-6">
+			<Post />
+			<Post />
+			<Post />
+		</section>
 	</section>
 
-	<aside class="card flex flex-col items-center gap-y-3 overflow-hidden">
+	<aside class="card flex flex-col items-center min-h-[200px] overflow-hidden">
 		<h5 class="h5 card-header bg-surface-200 dark:bg-surface-700 px-5 py-3">Integrations</h5>
-		<p>Empty...</p>
+		<p class="py-3">Empty...</p>
 	</aside>
 </div>
 

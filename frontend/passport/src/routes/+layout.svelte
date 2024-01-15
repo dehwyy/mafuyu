@@ -38,6 +38,8 @@
 
 	import Header from '$lib/components/header.svelte'
 
+	import {page} from '$app/stores';
+
 	import type {LayoutData } from "./$types"
 	import { user_store } from '$lib/stores/user';
 
@@ -50,7 +52,8 @@
 
 </script>
 
-<AppShell >
+
+<AppShell>
 	<svelte:fragment slot="header">
 		<Header />
 	</svelte:fragment>
