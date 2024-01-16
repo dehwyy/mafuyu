@@ -23,12 +23,12 @@ const settingsClick: PopupSettings = {
 
 </script>
 
-<AppBar>
+<AppBar border="border-b-2 border-surface-600">
 	<svelte:fragment slot="lead">
-		<div class="icon ml-[20px] cursor-pointer select-none" use:popup={settingsClick}>
+		<div class="icon  ml-[20px] cursor-pointer select-none" use:popup={settingsClick}>
 			<Options />
 		</div>
-		<div data-popup="settings-popup" class="card p-6 mt-4" >
+		<div data-popup="settings-popup" class="card p-6 mt-5 -ml-5" >
 			<div class="menu-item">
 				<div class="icon">
 					<UserIcon />

@@ -6,8 +6,7 @@
 	const navigation = {
 		"/": "Overview",
 		"/statistics": "Statistics",
-		"/2fa": "Enable 2FA",
-		"/edit":  "Edit"
+		"/edit":  "Settings"
 	}
 
 	let current_navigation: keyof typeof navigation = "/"

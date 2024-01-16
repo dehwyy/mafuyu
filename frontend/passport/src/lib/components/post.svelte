@@ -1,28 +1,40 @@
 <script lang="ts">
 	// @ts-ignore
-	import ThumbsUpIcon from 'svelte-icons/fa/FaRegThumbsUp.svelte'
-	// @ts-ignore
 	import CommentIcon from 'svelte-icons/fa/FaRegComment.svelte'
 	// @ts-ignore
 	import StatsIcon from 'svelte-icons/io/IoIosStats.svelte'
-	// @ts-ignore
-	import BookmarkIcon from 'svelte-icons/io/IoMdBookmark.svelte'
 
-	export let user_image = "/images/r.jpg"
-	export let username = "dehwyy"
-	export let post_date = "21 June"
-	export let post_content = "The propaganda level in legacy media has become tediously high, but also remarkable for how almost all legacy media repeat the same lies verbatim"
+	import PostForModalComponent from '$lib/components/post/post-for-modal.svelte'
+	import LikeComponent from '$lib/components/post/like.svelte'
+	import ShareComponent from '$lib/components/post/share.svelte'
+	import OptionsComponent from '$lib/components/post/options.svelte'
+	import { getModalStore, type ModalSettings, type ModalComponent } from '@skeletonlabs/skeleton'
+
+	const modal_store = getModalStore()
+
+	const modal_component: ModalComponent = { ref: PostForModalComponent }
+
+	const postModalSettings: ModalSettings = {
+		type: 'component',
+		component: modal_component,
+		title: 'post'
+	}
+
+	export let user_image = '/images/r.jpg'
+	export let username = 'dehwyy'
+	export let post_date = '21 June'
+	export let post_content =
+		'The propaganda level in legacy media has become tediously high, but also remarkable for how almost all legacy media repeat the same lies verbatim'
 
 	export let post_statistics = {
 		likes: 14,
 		comments: 2,
-		views: 2185,
+		views: 2185
 	}
-
 </script>
 
 <div class="w-full card p-4 flex gap-x-3">
-	<aside class="">
+	<aside>
 		<div class="object-cover w-[48px] h-[48px] rounded-full overflow-hidden">
 			<img src={user_image} alt={username} />
 		</div>
@@ -33,18 +45,13 @@
 			<p>·</p>
 			<p class="opacity-70">{post_date}</p>
 		</header>
-		<div class="font-[500]">
+		<div on:click={() => modal_store.trigger(postModalSettings)} class="font-[500] cursor-pointer">
 			{post_content}
 		</div>
 		<footer class="text-sm mt-4">
-			<ul class="analytics-bar flex justify-between pr-2">
+			<ul class="analytics-bar grid grid-cols-4 pr-2">
 				<li>
-					<button>
-						<span class="icon">
-							<ThumbsUpIcon />
-						</span>
-						<span>{post_statistics.likes}</span>
-					</button>
+					<LikeComponent />
 				</li>
 				<li>
 					<button>
@@ -62,31 +69,33 @@
 						<span>{post_statistics.views}</span>
 					</button>
 				</li>
-				<li>
-					<button class="icon">
-						<BookmarkIcon />
-					</button>
+				<li class="ml-auto">
+					<ShareComponent />
 				</li>
 			</ul>
 		</footer>
 	</article>
-	<aside class="w-[70px]">
-
+	<aside class="w-[70px] mt-0.5">
+		<OptionsComponent />
 	</aside>
 </div>
 
-
 <style>
 	.icon {
-			margin-top: 1px;
-			width: 16px;
-			height: 16px;
-			display: block;
+		margin-top: -2px;
+		width: 24px;
+		height: 24px;
+		display: block;
+		padding: 4px;
+		@apply rounded-full transition-all dark:stroke-white stroke-black fill-none stroke-2;
 	}
 
-	.analytics-bar li button {
-			display: flex;
-			gap: 0.5rem;
+	.analytics-bar li:hover .icon {
+		@apply bg-gray-500/40;
 	}
 
+	.analytics-bar button {
+		display: flex;
+		gap: 0.5rem;
+	}
 </style>

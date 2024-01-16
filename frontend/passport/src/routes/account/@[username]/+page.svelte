@@ -1,19 +1,18 @@
-
 <script lang="ts">
-	import SocietyPeopleInformation from "./society-people-information.svelte"
-	import Writer from "$lib/components/writer.svelte"
-	import Post from "$lib/components/post.svelte"
+	import SocietyPeopleInformation from './society-people-information.svelte';
+	import Writer from '$lib/components/writer.svelte';
+	import Post from '$lib/components/post.svelte';
 
 	// @ts-ignore
-	import CakeIcon from 'svelte-icons/md/MdCake.svelte'
+	import CakeIcon from 'svelte-icons/md/MdCake.svelte';
 	// @ts-ignore
-	import LocationIcon from 'svelte-icons/md/MdLocationOn.svelte'
+	import LocationIcon from 'svelte-icons/md/MdLocationOn.svelte';
 	// @ts-ignore
-	import FriendsIcon from 'svelte-icons/fa/FaUserFriends.svelte'
+	import FriendsIcon from 'svelte-icons/fa/FaUserFriends.svelte';
 	// @ts-ignore
-	import PeopleGroupIcon from 'svelte-icons/ti/TiGroup.svelte'
+	import PeopleGroupIcon from 'svelte-icons/ti/TiGroup.svelte';
 	// @ts-ignore
-	import LanguageIcon from 'svelte-icons/md/MdLanguage.svelte'
+	import LanguageIcon from 'svelte-icons/md/MdLanguage.svelte';
 </script>
 
 <div class="flex pt-6 gap-x-5 items-start">
@@ -24,7 +23,10 @@
 					<div class="icon pb-0.5">
 						<CakeIcon />
 					</div>
-					<p>Birthday: &nbsp;<span class="text-primary-500 underline">June 21</span>, <span class="text-secondary-500 underline">1999</span></p>
+					<p>
+						Birthday: &nbsp;<span class="text-primary-500 underline">June 21</span>,
+						<span class="text-secondary-500 underline">1999</span>
+					</p>
 				</li>
 				<li class="information">
 					<div class="icon">
@@ -52,21 +54,21 @@
 					<div class="icon">
 						<LanguageIcon />
 					</div>
-					<p class="flex gap-x-5 -ml-0.5">Languages: &nbsp;
+					<p class="flex gap-x-5 -ml-0.5">
+						Languages: &nbsp;
 						<span class="flex flex-wrap gap-x-3">
-						{#each ["Russian", "English", "Japanese"] as language, i}
+							{#each ['Russian', 'English', 'Japanese'] as language, i}
 								<a href={`/${language}`} class="block hover:underline">
-									{language + (i !== 2 ? "," : "")}
+									{language + (i !== 2 ? ',' : '')}
 								</a>
-						{/each}
-					</span>
-
+							{/each}
+						</span>
 					</p>
 				</li>
 			</ul>
 		</section>
 		<section class="card w-full">
-			<Writer />
+			<Writer placeholder="What's new?" button_text="Create" />
 		</section>
 		<section class="w-full flex flex-col gap-y-6">
 			<Post />
@@ -83,14 +85,14 @@
 
 <style>
 	.information {
-				 @apply flex gap-x-5 items-center;
+		@apply flex gap-x-5 items-center;
 	}
 
 	.information .icon {
-			@apply w-[24px] h-[24px];
+		@apply w-[24px] h-[24px];
 	}
 
 	.integration {
-			@apply py-2 px-7 rounded-token variant-ghost-primary;
+		@apply py-2 px-7 rounded-token variant-ghost-primary;
 	}
 </style>
