@@ -2,7 +2,7 @@
 	import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton'
 	import ImageUploaderComponent from './modal.svelte'
 
-	export let image: string
+	export let images: string[]
 
 	const modal_store = getModalStore()
 
@@ -10,8 +10,8 @@
 		title: 'ImageUploader',
 		type: 'component',
 		component: { ref: ImageUploaderComponent },
-		response: (v: string | undefined) => {
-			if (v) image = v
+		response: (v: string[] | undefined) => {
+			if (v && v.length + images.length <= 10) images = [...images, ...v]
 		}
 	}
 </script>

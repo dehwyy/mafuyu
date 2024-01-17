@@ -73,6 +73,7 @@
 	<section class="flex flex-col -mx-6 border-t border-surface-500">
 		{#each comments as comment}
 			<CommentComponent
+				comment_id="id_1"
 				likes={comment.likes}
 				username={comment.username}
 				user_image={comment.user_image}
