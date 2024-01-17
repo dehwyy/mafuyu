@@ -7,3 +7,8 @@ declare namespace App {
 	// interface Error {}
 	// interface Platform {}
 }
+
+declare module 'svelte-icons/*' {
+	import { SvelteComponent } from 'svelte'
+	export default class SvelteIcon extends SvelteComponent {}
+}

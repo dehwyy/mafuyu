@@ -1,22 +1,27 @@
 <script lang="ts">
-	import SocietyPeopleInformation from './society-people-information.svelte';
-	import Writer from '$lib/components/writer.svelte';
-	import Post from '$lib/components/post.svelte';
+	import SocietyPeopleInformation from './society-people-information.svelte'
+	import Writer from '$lib/components/writer.svelte'
+	import Post from '$lib/components/post.svelte'
 
-	// @ts-ignore
-	import CakeIcon from 'svelte-icons/md/MdCake.svelte';
-	// @ts-ignore
-	import LocationIcon from 'svelte-icons/md/MdLocationOn.svelte';
-	// @ts-ignore
-	import FriendsIcon from 'svelte-icons/fa/FaUserFriends.svelte';
-	// @ts-ignore
-	import PeopleGroupIcon from 'svelte-icons/ti/TiGroup.svelte';
-	// @ts-ignore
-	import LanguageIcon from 'svelte-icons/md/MdLanguage.svelte';
+	import CakeIcon from 'svelte-icons/md/MdCake.svelte'
+	import LocationIcon from 'svelte-icons/md/MdLocationOn.svelte'
+	import FriendsIcon from 'svelte-icons/fa/FaUserFriends.svelte'
+	import PeopleGroupIcon from 'svelte-icons/ti/TiGroup.svelte'
+	import LanguageIcon from 'svelte-icons/md/MdLanguage.svelte'
+	import Cropper from '$lib/components/cropper.svelte'
+
+	import CropperJS from 'cropperjs'
+
+	let cropper: CropperJS | null = null
 </script>
 
 <div class="flex pt-6 gap-x-5 items-start">
 	<section class="w-[500px] flex flex-col gap-y-4">
+		<!--		<Cropper-->
+		<!--			src="/images/r.jpg"-->
+		<!--			bind:cropper-->
+		<!--			classes="w-[300px]"-->
+		<!--		/>-->
 		<section class="card p-6 w-full">
 			<ul class="flex flex-col gap-y-4">
 				<li class="information">
@@ -90,9 +95,5 @@
 
 	.information .icon {
 		@apply w-[24px] h-[24px];
-	}
-
-	.integration {
-		@apply py-2 px-7 rounded-token variant-ghost-primary;
 	}
 </style>

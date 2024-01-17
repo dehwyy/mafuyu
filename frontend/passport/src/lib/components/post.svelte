@@ -1,7 +1,5 @@
 <script lang="ts">
-	// @ts-ignore
 	import CommentIcon from 'svelte-icons/fa/FaRegComment.svelte'
-	// @ts-ignore
 	import StatsIcon from 'svelte-icons/io/IoIosStats.svelte'
 
 	import PostForModalComponent from '$lib/components/post/post-for-modal.svelte'
@@ -31,6 +29,8 @@
 		comments: 2,
 		views: 2185
 	}
+
+	const OpenPostAsModal = () => modal_store.trigger(postModalSettings)
 </script>
 
 <div class="w-full card p-4 flex gap-x-3">
@@ -45,7 +45,7 @@
 			<p>·</p>
 			<p class="opacity-70">{post_date}</p>
 		</header>
-		<div on:click={() => modal_store.trigger(postModalSettings)} class="font-[500] cursor-pointer">
+		<div on:click={OpenPostAsModal} class="font-[500] cursor-pointer">
 			{post_content}
 		</div>
 		<footer class="text-sm mt-4">
@@ -54,7 +54,7 @@
 					<LikeComponent />
 				</li>
 				<li>
-					<button>
+					<button on:click={OpenPostAsModal}>
 						<span class="icon">
 							<CommentIcon />
 						</span>
@@ -62,7 +62,7 @@
 					</button>
 				</li>
 				<li>
-					<button>
+					<button on:click={OpenPostAsModal}>
 						<span class="icon">
 							<StatsIcon />
 						</span>

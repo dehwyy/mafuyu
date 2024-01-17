@@ -29,6 +29,6 @@
 		{text}
 	</article>
 	<footer class="pl-14 text-sm mt-3">
-		<LikeComponent />
+		<LikeComponent {likes} />
 	</footer>
 </section>

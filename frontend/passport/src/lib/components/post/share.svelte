@@ -1,20 +1,17 @@
 <script lang="ts">
 	// @ts-ignore
-	import ShareIcon from 'svelte-icons/md/MdShare.svelte';
+	import ShareIcon from 'svelte-icons/md/MdShare.svelte'
+
+	import OptionsPopup from '$lib/components/popups/options.svelte'
+
+	const share_options = [{ icon: ShareIcon, text: 'Copy link' }]
 </script>
 
-<button class="gap-x-[2px] share-button flex !outline-none items-center">
-	<span class="icon">
-		<ShareIcon />
-	</span>
-	<span>Share</span>
-</button>
-
-<style>
-	.share-button:hover .icon {
-		@apply bg-gray-500/40;
-	}
-	.icon {
-		@apply mt-[-2px] w-[24px] h-[24px] block p-[4px] rounded-full;
-	}
-</style>
+<OptionsPopup options={share_options} unique_target_name="share-options-popup">
+	<button class="gap-x-[2px] share-button flex !outline-none items-center">
+		<span class="icon-sm">
+			<ShareIcon />
+		</span>
+		<span>Share</span>
+	</button>
+</OptionsPopup>
