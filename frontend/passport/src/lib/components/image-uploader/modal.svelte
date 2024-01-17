@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { FileDropzone, SlideToggle } from '@skeletonlabs/skeleton'
+	import { FileDropzone, getModalStore, SlideToggle } from '@skeletonlabs/skeleton'
 	import Cropper from '$lib/components/cropper.svelte'
 	import CropperJS from 'cropperjs'
-	import { fade } from 'svelte/transition'
+
+	const modal_store = getModalStore()
 	export let parent: any
 
 	let selected_file_images: FileList
@@ -29,6 +30,12 @@
 		// image_to_load.size > 10 * 8 // TODO: add size
 		// ["image/jpeg", "image/png"].includes(image_to_load.type) // TODO: add .ext validation
 		readFileAsBase64(image_to_load).then((base64file) => (image = base64file))
+	}
+	const SaveImage = () => {
+		const modal = $modal_store.find((v) => v.title === 'ImageUploader')
+		if (!modal || !modal.response) return
+		modal.response(cropper?.getCroppedCanvas().toDataURL())
+		modal_store.close()
 	}
 
 	let is_fullscreen_image = false
@@ -59,12 +66,12 @@
 		<section
 			class={`${
 				is_ready ? 'opacity-100 visible max-h-[800px]' : 'opacity-0 invisible max-h-[450px]'
-			} transition-all overflow-hidden`}
+			} transition-all overflow-hidden flex flex-col gap-y-5 items-center pb-5 border-b-2 border-b-surface-500`}
 		>
-			<ul class="my-5">
+			<ul>
 				<li class="flex gap-x-3 items-center">
 					<SlideToggle name="fullscreen_image" bind:checked={is_fullscreen_image} />
-					<p class="font-[500]">fullscreen?</p>
+					<p class="font-[500]">Fullscreen Mode</p>
 				</li>
 			</ul>
 			<Cropper
@@ -80,6 +87,9 @@
 					dragMode: 'crop'
 				}}
 			/>
+			<button class="btn variant-filled-surface w-full lg:w-1/2" on:click={SaveImage}
+				>Save image</button
+			>
 		</section>
 	{/if}
 	<FileDropzone name="image-uploader" bind:files={selected_file_images} on:change={OnFileSelect} />

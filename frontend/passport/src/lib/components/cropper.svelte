@@ -38,11 +38,6 @@
 		cropper?.reset().clear().replace(src)
 	}
 
-	// $: {
-	// 	;[style]
-	// 	cropper?.reset().clear().replace(src)
-	// }
-
 	export let classes: string = ''
 </script>
 

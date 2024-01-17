@@ -7,6 +7,7 @@
 	export let padding: string = '1.5rem'
 
 	let text = ''
+	let image = ''
 	let is_focused = false
 </script>
 
@@ -34,6 +35,11 @@
 		bind:innerText={text}
 		contenteditable
 	/>
+	{#if image}
+		<div class="max-w-full max-h-[500px] object-cover overflow-hidden p-5 grid place-items-center">
+			<img src={image} alt="writer" class="rounded-xl" />
+		</div>
+	{/if}
 	<div
 		class={`${
 			is_focused || text ? 'max-h-[100px]' : 'max-h-0'
@@ -42,14 +48,15 @@
 		<hr class="mb-4 mx-5" />
 		<div class="w-full flex items-center pl-8 pr-6 pb-4">
 			<div class="">
-				<ImageUploader>
+				<ImageUploader bind:image>
 					<button class="icon-sm">
 						<CameraIcon />
 					</button>
 				</ImageUploader>
 			</div>
-			<button disabled={!text} class="text-sm ml-auto block btn variant-filled-surface select-none"
-				>{button_text}</button
+			<button
+				disabled={!(text || image)}
+				class="text-sm ml-auto block btn variant-filled-surface select-none">{button_text}</button
 			>
 		</div>
 	</div>
