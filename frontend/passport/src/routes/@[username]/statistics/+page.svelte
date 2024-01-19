@@ -1,9 +1,7 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-
-	console.log("hate", )
+  console.log("hate")
 </script>
 
-<div>
-	123
+<div class="pt-10">
+  <h2 class="h2 text-center">No stats yet!</h2>
 </div>

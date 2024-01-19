@@ -1,4 +1,6 @@
 <script lang="ts">
+  import LeftArrowIconRaw from "$lib/assets/left-arrow.svg?raw"
+
   import Writer from "$lib/components/writer.svelte"
   import OptionsComponent from "$lib/components/post/options.svelte"
   import LikeComponent from "$lib/components/post/like.svelte"
@@ -38,9 +40,14 @@
   let datetime = "2024-01-15T19:48:09.000Z"
   let date = "21 June, 2024"
   let views = "12.9K"
+  // TODO: make `Back` button `sticky`
 </script>
 
 <section class="card p-6 max-w-full w-[600px] flex flex-col gap-y-3">
+  <button class="flex mb-3 self-start hover:underline gap-x-1 text-xl items-center" on:click={() => history.back()}>
+    {@html LeftArrowIconRaw}
+    <span class="block">Back</span>
+  </button>
   <header class="flex items-center gap-x-3 w-full">
     <div class="object-cover w-[50px] h-[50px] rounded-full overflow-hidden">
       <img src="/images/r.jpg" alt="user" />

@@ -53,6 +53,7 @@
     "@sveltejs/enhanced-img": "^0.1.8",
     "cropperjs": "^1.6.1",
     "highlight.js": "11.9.0",
+    "svelte-calendar": "^3.1.6",
     "svelte-forms": "^2.3.1",
     "svelte-icons": "^2.1.0"
   }
