@@ -1,6 +1,6 @@
 <script lang="ts">
   import SlideWindow from "$lib/components/slide-window.svelte"
-  import Settings from "./settings.svelte"
+  import About from "./about.svelte"
 
   import GoogleIconRaw from "$lib/assets/google.svg?raw"
   import GithubIconRaw from "$lib/assets/github.svg?raw"
@@ -30,10 +30,10 @@
         </article>
       {/each}</svelte:fragment>
   </SlideWindow>
-  <SlideWindow max_height="700px">
+  <SlideWindow max_height="900px">
     <svelte:fragment slot="heading">About</svelte:fragment>
     <svelte:fragment slot="content">
-      <Settings />
+      <About />
     </svelte:fragment>
   </SlideWindow>
 </div>

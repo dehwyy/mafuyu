@@ -3,13 +3,23 @@
 
   // let store: any
   // TODO: custom calendar theme, fix glitch effect, @see (https://6edesign.github.io/svelte-calendar)
+  import LanguageSelector from "./settings/language-select.svelte"
+  import ProfilePhoto from "./settings/profile-photo.svelte"
+  import Username from "./settings/username.svelte"
+  import Pseudonym from "./settings/pseudonym.svelte"
+  import Bio from "./settings/bio.svelte"
 
-  import { ListBox, ListBoxItem } from "@skeletonlabs/skeleton"
-
-  let valueMultiple: string[] = []
+  let selected_languages: string[] = []
 </script>
 
 <section class="col-span-2 flex flex-col gap-y-5 settings px-5">
+  <div class="flex flex-col gap-y-7">
+    <ProfilePhoto />
+    <Username />
+    <Pseudonym />
+    <Bio />
+  </div>
+  <hr />
   <article class:absolute={false} class="flex items-center gap-x-10">
     <p>Birthday</p>
     <button class="btn variant-glass-primary max-w-full w-[200px]">Pick</button>
@@ -22,15 +32,7 @@
     <button class="btn variant-glass-primary max-w-full w-[200px]">Pick</button>
   </article>
   <hr />
-  <article class="flex flex-col gap-y-5">
-    <p class="text-center">Languages</p>
-    <input class="input" title="Input (text)" type="text" placeholder="Russian, Japanese..." />
-    <ListBox multiple active="variant-glass-primary">
-      <ListBoxItem bind:group={valueMultiple} name="medium" value="jap">Japanese</ListBoxItem>
-      <ListBoxItem bind:group={valueMultiple} name="medium" value="rus">Russian</ListBoxItem>
-      <ListBoxItem bind:group={valueMultiple} name="medium" value="eng">English</ListBoxItem>
-    </ListBox>
-  </article>
+  <LanguageSelector bind:selected_languages />
   <hr />
 </section>
 
