@@ -16,7 +16,7 @@
 
 <article class="w-full grid place-items-center select-none">
   <div class="wrapper">
-    <ImageUploader bind:images max_images={1}>
+    <ImageUploader bind:images max_images={1} keep_ratio aspect_ratio={1}>
       <div class="z-10 p-10 text-white absolute cursor-pointer">
         {@html CameraIconRaw}
       </div>

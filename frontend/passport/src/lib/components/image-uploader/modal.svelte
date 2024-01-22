@@ -47,8 +47,9 @@
     // add images to processed
     const new_processed_images = [...processed_images, image]
 
-    // if there isn't any unprocessed image => assign variables and continue processing
-    if (unprocessed_images.length > 0) {
+    // if there isn't any unprocessed image AND the maximum images limit is not reached yet
+    // => assign variables and continue processing
+    if (unprocessed_images.length > 0 && new_processed_images.length !== MaxImages) {
       processed_images = new_processed_images
       current_image = unprocessed_images.pop()!
       return
@@ -66,7 +67,7 @@
     <ImageEditor aspect_ratio={AspectRatio} keep_ratio={KeepRatio} bind:image={current_image} OnSaveImage={new_image => SaveImage(new_image)} />
   {/if}
   <FileButton
-    multiple
+    multiple={MaxImages !== 1}
     button={`btn variant-soft-primary w-full mx-auto block ${current_image ? "lg:w-1/2" : ""}`}
     name="image-uploader"
     bind:files={selected_file_images}
