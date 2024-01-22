@@ -12,7 +12,7 @@
   let is_focused = false
 </script>
 
-<div aria-hidden="true" class="w-full writer overflow-hidden focus-visible:!outline-none">
+<div on:click|stopPropagation={() => (is_focused = true)} aria-hidden="true" class="w-full writer overflow-hidden focus-visible:!outline-none">
   <Textarea bind:text {placeholder} bind:is_focused {padding} />
   <!--  <div-->
   <!--    aria-hidden="true"-->
