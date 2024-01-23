@@ -1,6 +1,6 @@
 <script lang="ts">
-  import CommentIcon from "svelte-icons/fa/FaRegComment.svelte"
-  import StatsIcon from "svelte-icons/io/IoIosStats.svelte"
+  import CommentIconRaw from "$lib/assets/comment.svg?raw"
+  import StatIconRow from "$lib/assets/stat.svg?raw"
 
   import LikeComponent from "$lib/components/post/like.svelte"
   import ShareComponent from "$lib/components/post/share.svelte"
@@ -48,7 +48,7 @@
           <a href={post_href}>
             <button>
               <span class="icon">
-                <CommentIcon />
+                {@html CommentIconRaw}
               </span>
               <span>{post_statistics.comments}</span>
             </button>
@@ -58,7 +58,7 @@
           <a href={post_href}>
             <button>
               <span class="icon">
-                <StatsIcon />
+                {@html StatIconRow}
               </span>
               <span>{post_statistics.views}</span>
             </button>
@@ -77,10 +77,9 @@
 
 <style>
   .icon {
-    margin-top: -2px;
-    width: 24px;
-    height: 24px;
-    display: block;
+    margin-top: 2px;
+    width: 26px;
+    height: 26px;
     padding: 4px;
     @apply rounded-full transition-all dark:stroke-white stroke-black fill-none stroke-2;
   }
@@ -91,6 +90,7 @@
 
   .analytics-bar button {
     display: flex;
+    align-items: center;
     gap: 0.5rem;
   }
 </style>

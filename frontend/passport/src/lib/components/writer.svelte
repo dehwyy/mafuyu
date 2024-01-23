@@ -1,5 +1,5 @@
 <script lang="ts">
-  import CameraIcon from "svelte-icons/fa/FaCamera.svelte"
+  import CameraIconRaw from "$lib/assets/camera.svg?raw"
   import ImageUploader from "./image-uploader/trigger.svelte"
   import AdaptiveImageGrid from "$lib/components/adaptive-image-grid.svelte"
   import Textarea from "$lib/components/form/textarea.svelte"
@@ -28,7 +28,7 @@
       <div class="">
         <ImageUploader bind:images max_images={10}>
           <button class="icon-sm">
-            <CameraIcon />
+            {@html CameraIconRaw}
           </button>
         </ImageUploader>
       </div>

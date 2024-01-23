@@ -267,21 +267,18 @@ importers:
       '@sveltejs/enhanced-img':
         specifier: ^0.1.8
         version: 0.1.8(svelte@4.2.7)
-      cropperjs:
-        specifier: ^1.6.1
-        version: 1.6.1
       highlight.js:
         specifier: 11.9.0
         version: 11.9.0
       svelte-calendar:
         specifier: ^3.1.6
         version: 3.1.6
+      svelte-cropper:
+        specifier: ^0.0.1
+        version: 0.0.1(cropperjs@1.6.1)(svelte@4.2.7)
       svelte-forms:
         specifier: ^2.3.1
         version: 2.3.1
-      svelte-icons:
-        specifier: ^2.1.0
-        version: 2.1.0
     devDependencies:
       '@makoto/grpc':
         specifier: workspace:*
@@ -343,12 +340,15 @@ importers:
       prettier-plugin-svelte:
         specifier: ^3.1.2
         version: 3.1.2(prettier@3.1.1)(svelte@4.2.7)
+      sass:
+        specifier: ^1.70.0
+        version: 1.70.0
       svelte:
         specifier: ^4.2.7
         version: 4.2.7
       svelte-check:
         specifier: ^3.6.0
-        version: 3.6.0(postcss@8.4.33)(svelte@4.2.7)
+        version: 3.6.0(postcss@8.4.33)(sass@1.70.0)(svelte@4.2.7)
       sveltekit-superforms:
         specifier: ^1.13.2
         version: 1.13.2(@sveltejs/kit@2.0.0)(svelte@4.2.7)(zod@3.22.4)
@@ -363,13 +363,13 @@ importers:
         version: 5.3.3
       vite:
         specifier: ^5.0.3
-        version: 5.0.3(@types/node@20.10.8)
+        version: 5.0.3(@types/node@20.10.8)(sass@1.70.0)
       vite-plugin-tailwind-purgecss:
         specifier: 0.2.0
         version: 0.2.0(vite@5.0.3)
       vitest:
         specifier: ^1.0.0
-        version: 1.0.0(@types/node@20.10.8)
+        version: 1.0.0(@types/node@20.10.8)(sass@1.70.0)
       zod:
         specifier: ^3.22.4
         version: 3.22.4
@@ -2753,7 +2753,7 @@ packages:
       sirv: 2.0.4
       svelte: 4.2.7
       tiny-glob: 0.2.9
-      vite: 5.0.3(@types/node@20.10.8)
+      vite: 5.0.3(@types/node@20.10.8)(sass@1.70.0)
 
   /@sveltejs/vite-plugin-svelte-inspector@2.0.0(@sveltejs/vite-plugin-svelte@3.0.0)(svelte@4.2.7)(vite@5.0.3):
     resolution: {integrity: sha512-gjr9ZFg1BSlIpfZ4PRewigrvYmHWbDrq2uvvPB1AmTWKuM+dI1JXQSUu2pIrYLb/QncyiIGkFDFKTwJ0XqQZZg==}
@@ -2766,7 +2766,7 @@ packages:
       '@sveltejs/vite-plugin-svelte': 3.0.0(svelte@4.2.7)(vite@5.0.3)
       debug: 4.3.4
       svelte: 4.2.7
-      vite: 5.0.3(@types/node@20.10.8)
+      vite: 5.0.3(@types/node@20.10.8)(sass@1.70.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -2784,7 +2784,7 @@ packages:
       magic-string: 0.30.5
       svelte: 4.2.7
       svelte-hmr: 0.15.3(svelte@4.2.7)
-      vite: 5.0.3(@types/node@20.10.8)
+      vite: 5.0.3(@types/node@20.10.8)(sass@1.70.0)
       vitefu: 0.2.5(vite@5.0.3)
     transitivePeerDependencies:
       - supports-color
@@ -4201,6 +4201,9 @@ packages:
       sharp: 0.33.2
     dev: false
 
+  /immutable@4.3.4:
+    resolution: {integrity: sha512-fsXeu4J4i6WNWSikpI88v/PcVflZz+6kMhUfIwc5SY+poQRPnaf5V7qds6SUyUN3cVxEzuCab7QIoLOQ+DQ1wA==}
+
   /import-fresh@3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
     engines: {node: '>=6'}
@@ -5254,6 +5257,15 @@ packages:
       rimraf: 2.7.1
     dev: true
 
+  /sass@1.70.0:
+    resolution: {integrity: sha512-uUxNQ3zAHeAx5nRFskBnrWzDUJrrvpCPD5FNAoRvTi0WwremlheES3tg+56PaVtCs5QDRX5CBLxxKMDJMEa1WQ==}
+    engines: {node: '>=14.0.0'}
+    hasBin: true
+    dependencies:
+      chokidar: 3.5.3
+      immutable: 4.3.4
+      source-map-js: 1.0.2
+
   /scheduler@0.23.0:
     resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==}
     dependencies:
@@ -5477,7 +5489,7 @@ packages:
       just-throttle: 2.3.1
     dev: false
 
-  /svelte-check@3.6.0(postcss@8.4.33)(svelte@4.2.7):
+  /svelte-check@3.6.0(postcss@8.4.33)(sass@1.70.0)(svelte@4.2.7):
     resolution: {integrity: sha512-8VfqhfuRJ1sKW+o8isH2kPi0RhjXH1nNsIbCFGyoUHG+ZxVxHYRKcb+S8eaL/1tyj3VGvWYx3Y5+oCUsJgnzcw==}
     hasBin: true
     peerDependencies:
@@ -5490,7 +5502,7 @@ packages:
       picocolors: 1.0.0
       sade: 1.8.1
       svelte: 4.2.7
-      svelte-preprocess: 5.1.3(postcss@8.4.33)(svelte@4.2.7)(typescript@5.3.3)
+      svelte-preprocess: 5.1.3(postcss@8.4.33)(sass@1.70.0)(svelte@4.2.7)(typescript@5.3.3)
       typescript: 5.3.3
     transitivePeerDependencies:
       - '@babel/core'
@@ -5503,6 +5515,16 @@ packages:
       - stylus
       - sugarss
     dev: true
+
+  /svelte-cropper@0.0.1(cropperjs@1.6.1)(svelte@4.2.7):
+    resolution: {integrity: sha512-4sHtYehqLx3EWqOofCRpplscsW1ZjQRkPBsJJLJMLVmCNZmg7rCffN49x0t+bjMDBFsMDU7EhlwYebs26wf1oA==}
+    peerDependencies:
+      cropperjs: ^1.6.1
+      svelte: ^4.0.0
+    dependencies:
+      cropperjs: 1.6.1
+      svelte: 4.2.7
+    dev: false
 
   /svelte-eslint-parser@0.33.1(svelte@4.2.7):
     resolution: {integrity: sha512-vo7xPGTlKBGdLH8T5L64FipvTrqv3OQRx9d2z5X05KKZDlF4rQk8KViZO4flKERY+5BiVdOh7zZ7JGJWo5P0uA==}
@@ -5535,10 +5557,6 @@ packages:
     dependencies:
       svelte: 4.2.7
 
-  /svelte-icons@2.1.0:
-    resolution: {integrity: sha512-rHPQjweEc9fGSnvM0/4gA3pDHwyZyYsC5KhttCZRhSMJfLttJST5Uq0B16Czhw+HQ+HbSOk8kLigMlPs7gZtfg==}
-    dev: false
-
   /svelte-parse-markup@0.1.2(svelte@4.2.7):
     resolution: {integrity: sha512-DycY7DJr7VqofiJ63ut1/NEG92HrWWL56VWITn/cJCu+LlZhMoBkBXT4opUitPEEwbq1nMQbv4vTKUfbOqIW1g==}
     peerDependencies:
@@ -5547,7 +5565,7 @@ packages:
       svelte: 4.2.7
     dev: false
 
-  /svelte-preprocess@5.1.3(postcss@8.4.33)(svelte@4.2.7)(typescript@5.3.3):
+  /svelte-preprocess@5.1.3(postcss@8.4.33)(sass@1.70.0)(svelte@4.2.7)(typescript@5.3.3):
     resolution: {integrity: sha512-xxAkmxGHT+J/GourS5mVJeOXZzne1FR5ljeOUAMXUkfEhkLEllRreXpbl3dIYJlcJRfL1LO1uIAPpBpBfiqGPw==}
     engines: {node: '>= 16.0.0', pnpm: ^8.0.0}
     requiresBuild: true
@@ -5589,6 +5607,7 @@ packages:
       detect-indent: 6.1.0
       magic-string: 0.30.5
       postcss: 8.4.33
+      sass: 1.70.0
       sorcery: 0.11.0
       strip-indent: 3.0.0
       svelte: 4.2.7
@@ -5851,7 +5870,7 @@ packages:
       - rollup
     dev: false
 
-  /vite-node@1.0.0(@types/node@20.10.8):
+  /vite-node@1.0.0(@types/node@20.10.8)(sass@1.70.0):
     resolution: {integrity: sha512-9pGEPYsHy+7Ok7d6FkvniCmMI58IJ4KfFSK0Xq2FHWPQoBRpJKubaNBvMcXm0+uAwS6K2Rh9qJOKijdgqrjN+Q==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -5860,7 +5879,7 @@ packages:
       debug: 4.3.4
       pathe: 1.1.1
       picocolors: 1.0.0
-      vite: 5.0.3(@types/node@20.10.8)
+      vite: 5.0.3(@types/node@20.10.8)(sass@1.70.0)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -5879,10 +5898,10 @@ packages:
     dependencies:
       estree-walker: 3.0.3
       purgecss: 6.0.0-alpha.0
-      vite: 5.0.3(@types/node@20.10.8)
+      vite: 5.0.3(@types/node@20.10.8)(sass@1.70.0)
     dev: true
 
-  /vite@5.0.3(@types/node@20.10.8):
+  /vite@5.0.3(@types/node@20.10.8)(sass@1.70.0):
     resolution: {integrity: sha512-WgEq8WEKpZ8c0DL4M1+E+kBZEJyjBmGVrul6z8Ljfhv+PPbNF4aGq014DwNYxGz2FGq6NKL0N8usdiESWd2l2w==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -5914,6 +5933,7 @@ packages:
       esbuild: 0.19.11
       postcss: 8.4.33
       rollup: 4.9.4
+      sass: 1.70.0
     optionalDependencies:
       fsevents: 2.3.3
 
@@ -5925,9 +5945,9 @@ packages:
       vite:
         optional: true
     dependencies:
-      vite: 5.0.3(@types/node@20.10.8)
+      vite: 5.0.3(@types/node@20.10.8)(sass@1.70.0)
 
-  /vitest@1.0.0(@types/node@20.10.8):
+  /vitest@1.0.0(@types/node@20.10.8)(sass@1.70.0):
     resolution: {integrity: sha512-jpablj5+ifiFHV3QGOxPews3uxBuu6rQUzTaQYtEd6ocBpdQBil6AvmmGRQ3Rn0WPgyzb+Ni+JekfMyng+qYng==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -5971,8 +5991,8 @@ packages:
       strip-literal: 1.3.0
       tinybench: 2.5.1
       tinypool: 0.8.1
-      vite: 5.0.3(@types/node@20.10.8)
-      vite-node: 1.0.0(@types/node@20.10.8)
+      vite: 5.0.3(@types/node@20.10.8)(sass@1.70.0)
+      vite-node: 1.0.0(@types/node@20.10.8)(sass@1.70.0)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less

@@ -9,10 +9,19 @@
   import Pseudonym from "./settings/pseudonym.svelte"
   import Bio from "./settings/bio.svelte"
 
+  import CheckIconRaw from "$lib/assets/check.svg?raw"
+
   let selected_languages: string[] = []
+
+  $: has_changes = false
 </script>
 
 <section class="col-span-2 flex flex-col gap-y-5 settings px-5">
+  <div class={`${has_changes ? "bottom-5" : "-bottom-20"} fixed self-end  z-10 -mr-6 transition-all duration-200`}>
+    <button class="w-[50px] h-[50px] variant-glass-primary btn rounded-full px-3 border border-primary-700">
+      {@html CheckIconRaw}
+    </button>
+  </div>
   <div class="flex flex-col gap-y-7">
     <ProfilePhoto />
     <Username />

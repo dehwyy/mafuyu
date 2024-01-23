@@ -1,72 +1,81 @@
 <script lang="ts">
-	import '../app.postcss'
+  import "../app.postcss"
+  import "highlight.js/styles/github-dark.css"
+  import { initializeStores, Modal, Toast, getModalStore, AppShell, storeHighlightJs, storePopup } from "@skeletonlabs/skeleton"
+  import hljs from "highlight.js/lib/core"
+  import { computePosition, autoUpdate, flip, shift, offset, arrow } from "@floating-ui/dom"
+  import xml from "highlight.js/lib/languages/xml"
+  import css from "highlight.js/lib/languages/css"
+  import javascript from "highlight.js/lib/languages/javascript"
+  import typescript from "highlight.js/lib/languages/typescript"
+  import type { AfterNavigate } from "@sveltejs/kit"
+  import { afterNavigate, onNavigate } from "$app/navigation"
 
-	//
-	import { initializeStores, Modal, Toast, getModalStore } from '@skeletonlabs/skeleton'
-	initializeStores()
+  // skeleton stores
+  initializeStores()
+  // Highlight JS
+  hljs.registerLanguage("xml", xml) // html
+  hljs.registerLanguage("css", css)
+  hljs.registerLanguage("javascript", javascript)
+  hljs.registerLanguage("typescript", typescript)
+  storeHighlightJs.set(hljs)
+  // Floating UI for Popups
+  storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow })
 
-	// Highlight JS
-	import hljs from 'highlight.js/lib/core'
-	import 'highlight.js/styles/github-dark.css'
-	import { AppShell, storeHighlightJs } from '@skeletonlabs/skeleton'
-	import xml from 'highlight.js/lib/languages/xml'
-	import css from 'highlight.js/lib/languages/css'
-	import javascript from 'highlight.js/lib/languages/javascript'
-	import typescript from 'highlight.js/lib/languages/typescript'
+  // Scroll to top onNavigation
+  afterNavigate((params: AfterNavigate) => {
+    const is_new_page = params.from?.url.pathname !== params.to?.url.pathname
+    const page_element = document.querySelector("#page")
+    if (is_new_page && page_element) {
+      page_element.scrollTop = 0
+    }
+  })
 
-	hljs.registerLanguage('xml', xml) // for HTML
-	hljs.registerLanguage('css', css)
-	hljs.registerLanguage('javascript', javascript)
-	hljs.registerLanguage('typescript', typescript)
-	storeHighlightJs.set(hljs)
+  // Perform transition (Chromium only, if I'm not mistaking)
+  onNavigate(navigation => {
+    // @ts-ignore
+    if (!document.startViewTransition) return
 
-	// Floating UI for Popups
-	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom'
-	import { storePopup } from '@skeletonlabs/skeleton'
-	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow })
+    return new Promise(resolve => {
+      // @ts-ignore
+      document.startViewTransition(async () => {
+        resolve()
+        await navigation.complete
+      })
+    })
+  })
 
-	// Scroll to top onNavigation
-	import type { AfterNavigate } from '@sveltejs/kit'
-	import { afterNavigate } from '$app/navigation'
-	afterNavigate((params: AfterNavigate) => {
-		const isNewPage = params.from?.url.pathname !== params.to?.url.pathname
-		const elemPage = document.querySelector('#page')
-		if (isNewPage && elemPage !== null) {
-			elemPage.scrollTop = 0
-		}
-	})
+  // hide scroll when modal
+  const modal_store = getModalStore()
+  modal_store.subscribe(v => {
+    if (typeof window === "undefined") return
 
-	import Header from '$lib/components/header.svelte'
+    let body = document.querySelector("body")
+    body!.style.overflow = v.length ? "hidden" : "auto"
+  })
 
-	import type { LayoutData } from './$types'
-	import { user_store } from '$lib/stores/user'
+  // Before this line, everything is INIT
+  import Header from "$lib/components/header.svelte"
+  import type { LayoutData } from "./$types"
+  import { user_store } from "$lib/stores/user"
 
-	const modal_store = getModalStore()
+  export let data: LayoutData
 
-	modal_store.subscribe((v) => {
-		if (typeof window === 'undefined') return
-
-		let body = document.querySelector('body')
-		body!.style.overflow = v.length ? 'hidden' : 'auto'
-	})
-
-	export let data: LayoutData
-
-	user_store.set(
-		data.username
-			? {
-					id: data.userId,
-					username: data.username
-				}
-			: null
-	)
+  user_store.set(
+    data.username
+      ? {
+          id: data.userId,
+          username: data.username,
+        }
+      : null,
+  )
 </script>
 
 <Modal />
 <AppShell>
-	<svelte:fragment slot="header">
-		<Header />
-	</svelte:fragment>
-	<Toast />
-	<slot />
+  <svelte:fragment slot="header">
+    <Header />
+  </svelte:fragment>
+  <Toast />
+  <slot />
 </AppShell>
