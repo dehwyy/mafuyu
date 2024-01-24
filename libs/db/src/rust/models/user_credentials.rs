@@ -9,8 +9,8 @@ pub struct Model {
     pub id: Uuid,
     #[sea_orm(column_type = "Text", unique)]
     pub username: String,
-    #[sea_orm(column_type = "Text", unique)]
-    pub email: String,
+    #[sea_orm(column_type = "Text", nullable, unique)]
+    pub email: Option<String>,
     #[sea_orm(column_type = "Text", nullable)]
     pub password: Option<String>,
     pub created_at: Option<DateTimeWithTimeZone>,
@@ -18,15 +18,15 @@ pub struct Model {
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(has_many = "super::user_oauths::Entity")]
-    UserOauths,
+    #[sea_orm(has_many = "super::user_integrations::Entity")]
+    UserIntegrations,
     #[sea_orm(has_many = "super::user_tokens::Entity")]
     UserTokens,
 }
 
-impl Related<super::user_oauths::Entity> for Entity {
+impl Related<super::user_integrations::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::UserOauths.def()
+        Relation::UserIntegrations.def()
     }
 }
 

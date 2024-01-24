@@ -8,10 +8,11 @@ pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
     pub user_id: Uuid,
-    pub access_token: Option<Vec<String>>,
     #[sea_orm(column_type = "Text")]
-    pub refresh_token: String,
-    pub expiry: DateTimeWithTimeZone,
+    pub provider: String,
+    pub access_token: Option<Vec<String>>,
+    #[sea_orm(column_type = "Text", nullable)]
+    pub refresh_token: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

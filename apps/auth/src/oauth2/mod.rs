@@ -1,28 +1,10 @@
-use std::time::Duration;
+mod github;
+mod core;
+
+pub use self::core::OAuth2ProviderName;
 
 use oauth2::CsrfToken;
-
-mod github;
-
-pub struct CreateProviderPayload {
-  pub client_id: String,
-  pub client_secret: String,
-  pub redirect_url: String,
-  pub scopes: Vec<String>,
-}
-
-pub struct OAuth2UserResponse {
-  pub id: i32,
-  pub username: String,
-  pub email: String,
-  pub picture: String
-}
-
-pub struct OAuth2Token {
-  pub access_token: String,
-  pub refresh_token: Option<String>,
-  pub expires_in: Duration
-}
+use self::core::*;
 
 pub struct OAuth2{
   github: github::Github
@@ -42,22 +24,22 @@ impl OAuth2 {
     }
   }
 
-  pub fn get_provider_by_name(&self, provider_name: &str) -> Option<&impl OAuth2Provider> {
-    match provider_name {
-      "github" => Some(&self.github),
-      _ => None
+  pub fn get_provider(&self, provider: OAuth2ProviderName) -> &impl OAuth2Provider {
+    match provider {
+      OAuth2ProviderName::Github => &self.github,
+      OAuth2ProviderName::Google => &self.github // TODO
     }
   }
 }
 
 #[tonic::async_trait]
 pub trait OAuth2Provider {
-  fn new(payload: CreateProviderPayload) -> Self
-  where Self: Sized;
+  fn new(payload: CreateProviderPayload) -> Self;
 
   fn create_redirect_url(&self) -> (String, CsrfToken);
   async fn exchange_code_to_token(&self, code: String) -> Result<OAuth2Token, String>;
   async fn get_user_by_token(&self, access_token: String) -> Result<OAuth2UserResponse, String>;
+  async fn refresh(&self) -> Result<OAuth2Token, String>;
 }
 
 pub mod constants {

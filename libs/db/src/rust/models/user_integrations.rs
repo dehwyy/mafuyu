@@ -3,17 +3,15 @@
 use sea_orm::entity::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq)]
-#[sea_orm(table_name = "user_oauths")]
+#[sea_orm(table_name = "user_integrations")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
     pub user_id: Uuid,
-    #[sea_orm(column_type = "Text", nullable, unique)]
-    pub google_id: Option<String>,
-    #[sea_orm(column_type = "Text", nullable, unique)]
-    pub github_id: Option<String>,
-    #[sea_orm(column_type = "Text", nullable, unique)]
-    pub discord_id: Option<String>,
+    #[sea_orm(column_type = "Text", nullable)]
+    pub user_integration_id: Option<String>,
+    #[sea_orm(column_type = "Text")]
+    pub integration_name: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

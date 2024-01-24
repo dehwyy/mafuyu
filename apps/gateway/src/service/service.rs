@@ -59,7 +59,9 @@ impl ApiRpc for ApiRpcServiceImplementation {
   }
 
   async fn sign_in_oauth(&self, req: Req<SignInOauthRequest>) -> GrpcResult<AuthenticationResponse> {
-    todo!()
+    let service_response = self.auth_client.clone().borrow_mut().sign_in_oauth(req).await?;
+
+    Ok(service_response.into_inner().into())
   }
 
   async fn sign_in_token(&self, req: Req<SignInTokenRequest>) -> GrpcResult<AuthenticationResponse> {

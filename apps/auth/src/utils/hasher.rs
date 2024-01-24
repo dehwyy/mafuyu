@@ -9,9 +9,10 @@ impl Hasher {
     })?)
   }
 
-  pub fn verify<S: AsRef<[u8]>>(s: S, hash: &str) -> Result<bool, ()> {
+  pub fn verify<S: AsRef<[u8]>>(s: S, hash: &str) -> Result<bool, String> {
     Ok(bcrypt::verify(s, hash).map_err(|err| {
       eprintln!("Error verifying password: {}", err);
+      err.to_string()
     })?)
   }
 }

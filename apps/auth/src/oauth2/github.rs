@@ -3,7 +3,10 @@ use std::time::Duration;
 use oauth2::{AuthorizationCode, RedirectUrl, TokenResponse, ClientId, ClientSecret, CsrfToken};
 use oauth2::{basic::BasicClient, AuthUrl, TokenUrl};
 use oauth2::reqwest::async_http_client;
-use super::{OAuth2Provider, CreateProviderPayload, OAuth2Token, OAuth2UserResponse, constants::GITHUB_PROFILE_URL};
+use tonic::codegen::Body;
+use makoto_logger::{error, info};
+use super::*;
+use constants::*;
 
 pub struct Github {
   client: BasicClient
@@ -27,22 +30,20 @@ impl OAuth2Provider for Github {
   }
 
   fn create_redirect_url(&self) -> (String, CsrfToken) {
-    let (url, cstf_token) =  self.client.authorize_url(CsrfToken::new_random)
-      .url();
+    let (url, csrf_token) =  self.client.authorize_url(CsrfToken::new_random).url();
 
-    (url.to_string(), cstf_token)
+    (url.to_string(), csrf_token)
   }
 
   async fn exchange_code_to_token(&self, code: String) -> Result<OAuth2Token, String> {
-    let token = self.client.exchange_code(
-        AuthorizationCode::new(code)
-      ).request_async(async_http_client)
-      .await.map_err(|err| err.to_string())?;
+    let token = self.client
+        .exchange_code(AuthorizationCode::new(code))
+        .request_async(async_http_client)
+        .await.map_err(|err| err.to_string())?;
 
     Ok(OAuth2Token {
       access_token: token.access_token().secret().to_string(),
       refresh_token: token.refresh_token().map(|token| token.secret().to_string()),
-      expires_in: token.expires_in().unwrap_or(Duration::from_secs(0))
     })
   }
 
@@ -51,27 +52,34 @@ impl OAuth2Provider for Github {
     #[derive(serde::Deserialize)]
     struct GithubUserResponse {
       id: i32,
-		  email: String,
-		  name: String,
-		  picture: String
+      email: Option<String>,
+      name: String,
+      avatar_url: Option<String>
     }
 
     let http_client = reqwest::Client::new();
 
-    let response = http_client.get(GITHUB_PROFILE_URL)
-      .bearer_auth(access_token) // add the access token
+    let response= http_client.get(GITHUB_PROFILE_URL)
+      .header("Authorization", format!("Bearer {token}", token=access_token))
       .header("Accept", "application/json") // json response
-      .send()
-      .await.map_err(|err| err.to_string())?
-      .json::<GithubUserResponse>() // response into struct
-      .await.map_err(|err| err.to_string())?;
+      .header("User-Agent", "Mafuyu-App")
+      .send().await.map_err(|err| err.to_string())?;
+
+    let response = response
+        .json::<GithubUserResponse>() // response into struct
+        .await.map_err(|err| {
+      err.to_string()
+    })?;
 
     Ok(OAuth2UserResponse {
-      id: response.id,
+      id: response.id.to_string(),
       username: response.name,
       email: response.email,
-      picture: response.picture
+      picture: response.avatar_url
     })
+  }
 
+  async fn refresh(&self) -> Result<OAuth2Token, String> {
+    todo!()
   }
 }

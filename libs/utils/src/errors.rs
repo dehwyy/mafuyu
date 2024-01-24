@@ -87,11 +87,25 @@ pub mod service {
       }
     }
 
-    pub trait HandleRepositoryError<T> {
-      fn handle(self) -> Result<T, Status>;
+    pub trait SafeUnwrap<T> {
+      fn unwrap_or_status(self, msg: &str) -> Result<T, Status>;
     }
 
-    // Extracts `Value` from `Result` or returns boilplate `tonic::Status` based on kind of `RepositoryError`
+    impl<T> SafeUnwrap<T> for Option<T> {
+      fn unwrap_or_status(self, msg: &str) -> Result<T, Status> {
+        match self {
+          Some(v) => Ok(v),
+          None => Err(Status::internal(msg))
+        }
+      }
+    }
+
+    pub trait HandleRepositoryError<T> {
+      fn handle(self) -> Result<T, Status>;
+      fn is_not_found(&self) -> bool;
+    }
+
+    // Extracts `Value` from `Result` or returns boilerplate `tonic::Status` based on kind of `RepositoryError`
     impl<T> HandleRepositoryError<T> for Result<T, RepositoryError> {
       fn handle(self) -> Result<T, Status> {
         match self {
@@ -104,6 +118,14 @@ pub mod service {
             }
           }
         }
+      }
+      fn is_not_found(&self) -> bool {
+        if let Err(err) = &self {
+          if let RepositoryError::NotFound(err) = err {
+            return true;
+          }
+        }
+        false
       }
     }
   }

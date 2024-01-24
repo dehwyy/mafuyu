@@ -22,11 +22,10 @@ async fn main() -> MakotoResult<()> {
 
     let credentials_repo = repository::credentials::Credentials::new(db.clone());
     let tokens_repo = repository::token::Tokens::new(db.clone());
-    let oauth_repo = repository::oauth::Oauth::new(db.clone());
 
     let redis = redis::Client::open(makoto_config::constants::redis::AUTH_URL).expect("cannot open redis connection");
 
-    let auth_service= AuthRpcServiceImplementation::new(credentials_repo, tokens_repo, oauth_repo, redis);
+    let auth_service= AuthRpcServiceImplementation::new(credentials_repo, tokens_repo, redis);
     let auth_service = AuthRpcServer::new(auth_service);
 
     info!("server start! host: {}", addr);

@@ -1,3 +1,4 @@
+use std::future::Future;
 use sea_orm::prelude::Expr;
 use sea_orm::{DatabaseConnection, ActiveModelTrait, ColumnTrait, QueryFilter, EntityTrait, QueryTrait};
 use uuid::Uuid;
@@ -6,6 +7,7 @@ use makoto_db::models::user_tokens::{self, Entity as UserTokens};
 use makoto_db::utilities::*;
 use makoto_lib::errors::repository::prelude::*;
 use makoto_lib::errors::repository::RepositoryError;
+use crate::oauth2::{OAuth2, OAuth2ProviderName, OAuth2Provider};
 
 use crate::utils::jwt::{Jwt, JwtPayload, TokenValidationError};
 
@@ -21,15 +23,36 @@ pub enum GetRecordBy {
   RefreshToken(String)
 }
 
+pub struct CreateOAuth2TokenRecordPayload {
+  pub user_id: Uuid,
+  pub provider: String,
+  pub access_token: String,
+  pub refresh_token: Option<String>,
+}
+
 pub struct Tokens {
-  db: DatabaseConnection
+  db: DatabaseConnection,
+  oauth2: OAuth2
 }
 
 impl Tokens {
   pub fn new(db: DatabaseConnection) -> Self {
     Self {
-      db
+      db,
+      oauth2: OAuth2::new()
     }
+  }
+
+  pub async fn create_oauth2_record(&self, payload: CreateOAuth2TokenRecordPayload) -> Result<user_tokens::Model, RepositoryError> {
+    let token_model = user_tokens::ActiveModel {
+      user_id: not_null(payload.user_id),
+      provider: not_null(payload.provider),
+      access_token: nullable(vec!(payload.access_token)),
+      refresh_token: not_null(payload.refresh_token),
+      ..Default::default()
+    };
+
+    token_model.insert(&self.db).await.handle()
   }
 
   pub async fn create_new_token_pair(&self, user_id: Uuid, username: &str) -> Result<(String, String), String> {
@@ -44,9 +67,8 @@ impl Tokens {
 
     let new_token_model = user_tokens::ActiveModel {
       access_token: nullable(vec!(new_access_token.0.clone())),
-      refresh_token: not_null(new_refresh_token.clone()),
+      refresh_token: nullable(new_refresh_token.clone()),
       user_id: not_null(user_id),
-      expiry: not_null(new_access_token.1),
       ..Default::default()
     };
     new_token_model.insert(&self.db).await.map_err(|err| {
@@ -76,11 +98,10 @@ impl Tokens {
     old_tokens.push(new_access_token.clone());
 
     token_record.access_token = nullable(old_tokens);
-    token_record.expiry = not_null(expiry);
 
     token_record.update(&self.db).await.map_err(|err| err.to_string())?;
 
-    Ok((new_access_token, refresh_token))
+    Ok((new_access_token, refresh_token.expect("TODO! 101 line"))) // todo
   }
 
   pub async fn validate_token_record(&self, access_token: String) -> TokenValidationStatus {
@@ -100,20 +121,36 @@ impl Tokens {
   /// Removes all invalid tokens from PostgresArray
   pub async fn clear_invalid_tokens(&self, token_record: user_tokens::Model) -> Result<(), RepositoryError> {
 
+    let oauth2_provider = OAuth2ProviderName::from_str(&token_record.provider);
     let mut token_record: user_tokens::ActiveModel = token_record.into();
 
     let all_access_tokens = token_record.access_token.take().unwrap_or_default().unwrap_or_default();
-    let all_access_tokens = all_access_tokens.iter().filter_map(|token| {
 
-      // If token isn't valid -> return None (exclude from result Vector)
-      if let Err(_) = Jwt::validate_access_token(token.to_string()) {
-        return None;
+    let filtered_access_tokens = match oauth2_provider {
+      Some(provider_name) => {
+        let provider = self.oauth2.get_provider(provider_name);
+        let mut access_tokens: Vec<String> = vec!();
+
+        for token in all_access_tokens {
+          if let Ok(_) = provider.get_user_by_token(token.clone()).await {
+            access_tokens.push(token);
+          }
+        }
+
+        access_tokens
+      },
+      None => {
+        all_access_tokens.iter().filter_map(|token| {
+          if let Err(_) = Jwt::validate_access_token(token.to_string()) {
+            return None;
+          }
+
+          Some(token.to_string())
+        }).collect::<_>()
       }
+    };
 
-      Some(token.to_string())
-    }).collect::<Vec<String>>();
-
-    token_record.access_token = nullable(all_access_tokens);
+    token_record.access_token = nullable(filtered_access_tokens);
 
     token_record.update(&self.db).await.handle()?;
 
@@ -126,25 +163,45 @@ impl Tokens {
     let token_record = UserTokens::find()
       .filter(user_tokens::Column::AccessToken.eq(access_token.clone()))
       .one(&self.db)
-      .await.handle()?;
+      .await.handle()?.extract("token not found")?;
 
-    let mut token_record: user_tokens::ActiveModel = token_record.extract("token not found")?.into();
+    let oauth2_provider = OAuth2ProviderName::from_str(&token_record.provider);
+    let mut token_record: user_tokens::ActiveModel = token_record.into();
 
     let all_access_tokens = token_record.access_token.take().unwrap_or_default().unwrap_or_default();
-    let all_access_tokens = all_access_tokens.iter().filter_map(|token| {
+    let filtered_access_tokens = match oauth2_provider {
+      Some(provider_name) => {
+        let provider = self.oauth2.get_provider(provider_name);
+        let mut access_tokens: Vec<String> = vec!();
 
-      // If token is (equal to requested to delete token) or (not valid) -> return None (exclude from result Vector)
-      if token == &access_token {
-        return None;
+        for token in all_access_tokens {
+          if token == access_token {
+            continue
+          }
+
+          if let Ok(_) = provider.get_user_by_token(token.clone()).await {
+            access_tokens.push(token);
+          }
+        }
+
+        access_tokens
+      },
+      None => {
+        all_access_tokens.iter().filter_map(|token| {
+          if token == &access_token {
+            return None;
+          }
+
+          if let Err(_) = Jwt::validate_access_token(token.to_string()) {
+            return None;
+          }
+
+          Some(token.to_string())
+        }).collect::<_>()
       }
-      if let Err(_) = Jwt::validate_access_token(token.to_string()) {
-        return None;
-      }
+    };
 
-      Some(token.to_string())
-    }).collect::<Vec<String>>();
-
-    token_record.access_token = nullable(all_access_tokens);
+    token_record.access_token = nullable(filtered_access_tokens);
 
     let token_record = token_record.update(&self.db).await.handle()?;
 
