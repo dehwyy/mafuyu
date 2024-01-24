@@ -8,6 +8,7 @@
   import css from "highlight.js/lib/languages/css"
   import javascript from "highlight.js/lib/languages/javascript"
   import typescript from "highlight.js/lib/languages/typescript"
+  import { QueryClient, QueryClientProvider } from "@sveltestack/svelte-query"
   import type { AfterNavigate } from "@sveltejs/kit"
   import { afterNavigate, onNavigate } from "$app/navigation"
 
@@ -54,6 +55,9 @@
     body!.style.overflow = v.length ? "hidden" : "auto"
   })
 
+  // Create a client
+  const queryClient = new QueryClient()
+
   // Before this line, everything is INIT
   import Header from "$lib/components/header.svelte"
   import type { LayoutData } from "./$types"
@@ -71,11 +75,13 @@
   )
 </script>
 
-<Modal />
-<AppShell>
-  <svelte:fragment slot="header">
-    <Header />
-  </svelte:fragment>
-  <Toast />
-  <slot />
-</AppShell>
+<QueryClientProvider client={queryClient}>
+  <Modal />
+  <AppShell>
+    <svelte:fragment slot="header">
+      <Header />
+    </svelte:fragment>
+    <Toast />
+    <slot />
+  </AppShell>
+</QueryClientProvider>

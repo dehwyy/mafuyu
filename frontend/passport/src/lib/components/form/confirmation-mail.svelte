@@ -25,7 +25,7 @@
     <button in:fade={{ duration: 150 }} on:click={SendEmail} class="btn variant-soft-primary">{send_at_least_once ? "Resend" : "Send"} email</button>
   {/key}
   <div class={`${send_at_least_once ? "max-h-[30px]" : "max-h-0"} overflow-hidden duration-300 transition-all`}>
-    <p class="text-center text-success-500 font-bold">Email was sent!</p>
+    <p class="text-center text-success-500 font-bold">Email was sent! Please check your inbox!</p>
   </div>
   <hr class="mb-3" />
   <Input label_text="Enter activation code" bind:value={code} disabled={!send_at_least_once} />
