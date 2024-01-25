@@ -1,72 +1,69 @@
+use tonic::Status;
+
+pub trait HandleError<T, R> {
+  fn handle(self) -> Result<T, R>;
+}
+
+pub trait SafeUnwrapWithMessage<T, R> {
+  fn safe_unwrap(self, msg: &str) -> Result<T, R>;
+}
+
+pub trait GrpcHandleError<T> {
+  fn internal_error(self) -> Result<T, Status>;
+  fn invalid_argument_error(self) -> Result<T, Status>;
+  fn not_found_error(self) -> Result<T, Status>;
+  fn already_exists_error(self) -> Result<T, Status>;
+  fn permission_denied_error(self) -> Result<T, Status>;
+  fn unauthenticated_error(self) -> Result<T, Status>;
+}
+
+pub trait HandleRepositoryError<T> {
+  fn is_not_found(&self) -> bool;
+}
 
 
-pub mod repository {
-  use sea_orm::DbErr as SeaOrmDbError;
+mod repository {
+  use super::*;
 
   pub enum RepositoryError {
     DbError(String),
     NotFound(String),
   }
 
-  impl RepositoryError {
-    pub fn to_string(&self) -> String {
-      match self {
-        RepositoryError::DbError(err) => err.clone(),
-        RepositoryError::NotFound(err) => err.clone(),
-      }
-    }
-  }
-
   pub mod prelude {
-  use super::*;
-
-  pub trait HandleDbError<T> {
-    fn handle(self) -> Result<T, RepositoryError>;
-  }
-
-  impl<T> HandleDbError<T> for Result<T, SeaOrmDbError> {
-    /// `Default` database error handler
-    fn handle(self) -> Result<T, RepositoryError> {
-      self.map_err(|err| RepositoryError::DbError(err.to_string()))
-    }
-  }
-
-  pub trait NotFoundModel<T>
-  where T: sea_orm::ModelTrait {
-    fn extract(self, message_on_error: &str) -> Result<T, RepositoryError>;
-  }
-
-  impl<T> NotFoundModel<T> for Option<T>
-  where T: sea_orm::ModelTrait {
-    /// `Default` behavior for handling `NotFoundRecord` cases
-    fn extract(self, message_on_error: &str) -> Result<T, RepositoryError> {
-      match self {
-        Some(model) => Ok(model),
-        None => Err(RepositoryError::NotFound(message_on_error.to_string()))
-      }
-    }
-  }
-}
-}
-
-pub mod service {
-  use tonic::Status;
-
-  pub mod prelude {
-    use crate::errors::repository::RepositoryError;
-
+    use crate::errors::HandleError;
     use super::*;
 
-    pub trait HandleError<T> {
-      fn internal_error(self) -> Result<T, Status>;
-      fn invalid_argument_error(self) -> Result<T, Status>;
-      fn not_found_error(self) -> Result<T, Status>;
-      fn already_exists_error(self) -> Result<T, Status>;
-      fn permission_denied_error(self) -> Result<T, Status>;
-      fn unauthenticated_error(self) -> Result<T, Status>;
+    impl<T> HandleError<T, RepositoryError> for Result<T, sea_orm::DbErr> {
+      /// `Default` database error handler
+      fn handle(self) -> Result<T, RepositoryError> {
+        self.map_err(|err| RepositoryError::DbError(err.to_string()))
+      }
     }
 
-    impl<T> HandleError<T> for Result<T, String> {
+    impl<T> SafeUnwrapWithMessage<T, RepositoryError> for Option<T>
+    where T: sea_orm::ModelTrait {
+      fn safe_unwrap(self, msg: &str) -> Result<T, RepositoryError> {
+        match self {
+          Some(model) => Ok(model),
+          None => Err(RepositoryError::NotFound(msg.to_string()))
+        }
+      }
+    }
+
+  }
+}
+
+mod service {
+  use tonic::Status;
+  use super::*;
+
+  pub mod prelude {
+    use super::*;
+    use super::repository::RepositoryError;
+
+
+    impl<T> GrpcHandleError<T> for Result<T, String> {
       fn internal_error(self) -> Result<T, Status> {
         self.map_err(|err| Status::internal(err))
       }
@@ -87,12 +84,8 @@ pub mod service {
       }
     }
 
-    pub trait SafeUnwrap<T> {
-      fn unwrap_or_status(self, msg: &str) -> Result<T, Status>;
-    }
-
-    impl<T> SafeUnwrap<T> for Option<T> {
-      fn unwrap_or_status(self, msg: &str) -> Result<T, Status> {
+    impl<T> SafeUnwrapWithMessage<T, Status> for Option<T> {
+      fn safe_unwrap(self, msg: &str) -> Result<T, Status> {
         match self {
           Some(v) => Ok(v),
           None => Err(Status::internal(msg))
@@ -100,13 +93,7 @@ pub mod service {
       }
     }
 
-    pub trait HandleRepositoryError<T> {
-      fn handle(self) -> Result<T, Status>;
-      fn is_not_found(&self) -> bool;
-    }
-
-    // Extracts `Value` from `Result` or returns boilerplate `tonic::Status` based on kind of `RepositoryError`
-    impl<T> HandleRepositoryError<T> for Result<T, RepositoryError> {
+    impl<T> HandleError<T, Status> for Result<T, RepositoryError> {
       fn handle(self) -> Result<T, Status> {
         match self {
           Ok(model) => Ok(model),
@@ -119,6 +106,10 @@ pub mod service {
           }
         }
       }
+    }
+
+    // Extracts `Value` from `Result` or returns boilerplate `tonic::Status` based on kind of `RepositoryError`
+    impl<T> HandleRepositoryError<T> for Result<T, RepositoryError> {
       fn is_not_found(&self) -> bool {
         if let Err(err) = &self {
           if let RepositoryError::NotFound(err) = err {
@@ -129,4 +120,9 @@ pub mod service {
       }
     }
   }
+}
+
+pub mod prelude {
+  pub use super::{GrpcHandleError, HandleRepositoryError, HandleError, SafeUnwrapWithMessage};
+  pub use super::repository::RepositoryError;
 }
