@@ -5,7 +5,7 @@ use makoto_grpc::pkg::api::api_rpc_server::ApiRpc;
 use makoto_grpc::pkg::general::BoolStatus;
 use makoto_grpc::Result as GrpcResult;
 
-use makoto_lib::errors::service::prelude::*;
+use makoto_lib::errors::prelude::*;
 
 use makoto_logger::{info, warn};
 

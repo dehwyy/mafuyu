@@ -8,6 +8,9 @@ pub struct Hosts {
 
     #[envconfig(from = "AUTH")]
     pub auth: String,
+
+    #[envconfig(from = "OAUTH2")]
+    pub oauth2: String
 }
 
 impl Hosts {

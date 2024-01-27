@@ -1,10 +1,10 @@
 mod github;
 mod core;
-
 pub use self::core::OAuth2ProviderName;
 
 use oauth2::CsrfToken;
 use self::core::*;
+
 
 pub struct OAuth2{
   github: github::Github
@@ -32,7 +32,7 @@ impl OAuth2 {
   }
 }
 
-#[tonic::async_trait]
+#[async_trait::async_trait]
 pub trait OAuth2Provider {
   fn new(payload: CreateProviderPayload) -> Self;
 

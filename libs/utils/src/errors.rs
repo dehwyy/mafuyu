@@ -23,11 +23,24 @@ pub trait HandleRepositoryError<T> {
 
 
 mod repository {
+  use std::fmt::Formatter;
   use super::*;
 
+  #[derive(Debug)]
   pub enum RepositoryError {
     DbError(String),
     NotFound(String),
+  }
+
+  impl std::fmt::Display for RepositoryError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+      let s = match self {
+        Self::NotFound(v) => v,
+        Self::DbError(v) => v
+      };
+
+      write!(f, "{}", s)
+    }
   }
 
   pub mod prelude {
@@ -100,8 +113,7 @@ mod service {
           Err(err) => {
             match err {
               RepositoryError::DbError(err) => Err(Status::internal(err)),
-              RepositoryError::NotFound(err) => Err(Status::not_found(err)),
-              _ => Err(Status::internal(err.to_string()))
+              RepositoryError::NotFound(err) => Err(Status::not_found(err))
             }
           }
         }

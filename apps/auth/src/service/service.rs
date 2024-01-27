@@ -4,14 +4,13 @@ use makoto_grpc::pkg::api_auth::*;
 use makoto_grpc::Result as GrpcResult;
 use makoto_grpc::pkg::general::BoolStatus;
 use makoto_logger::{error, info, warn};
-use makoto_lib::errors::service::prelude::*;
-use makoto_lib::errors::{repository::RepositoryError};
+use makoto_lib::errors::prelude::*;
 
 use sea_orm::prelude::Uuid;
 use tokio::join;
 use tonic::{Request as Req, Status, Response, async_trait};
 
-use crate::repository::credentials::{Credentials, UserPayload, GetRecordBy};
+use crate::repository::credentials::{Credentials, UserPayload, GetRecordBy as GetUserRecordBy};
 use crate::repository::token::{Tokens, GetRecordBy as GetTokenRecordBy, TokenValidationStatus, CreateOAuth2TokenRecordPayload};
 
 use crate::utils::hasher::Hasher;
@@ -56,8 +55,8 @@ impl AuthRpc for AuthRpcServiceImplementation {
     // check availability
     {
       let (username, email) =  join!(
-        self.credentials_repository.get_user(GetRecordBy::Username(req.username.clone())),
-        self.credentials_repository.get_user(GetRecordBy::Email(req.email.clone()))
+        self.credentials_repository.get_user(GetUserRecordBy::Username(req.username.clone())),
+        self.credentials_repository.get_user(GetUserRecordBy::Email(req.email.clone()))
       );
 
       if !username.is_not_found() {
@@ -69,13 +68,13 @@ impl AuthRpc for AuthRpcServiceImplementation {
       }
     }
 
+    let user_password = Hasher::hash(req.password).invalid_argument_error()?;
 
     // create user
     let record = self.credentials_repository.create_user(UserPayload {
-      user_id: Uuid::new_v4(),
       username: req.username.clone(),
       email: Some(req.email),
-      password: Some(Hasher::hash(req.password).expect("cannot hash password")),
+      password: Some(user_password),
     }).await.handle()?;
 
     // generate tokens
@@ -98,18 +97,32 @@ impl AuthRpc for AuthRpcServiceImplementation {
   async fn sign_in(&self, req: Req<SignInRequest>) -> GrpcResult<AuthenicationServiceResponseWithRefreshToken> {
     let req = req.into_inner();
 
+    // Taking into account the fact that either `username` or `email` should be provided (but not both)
+    // If `username` is empty -> email is provided
     let user = match req.username.is_empty() {
-      true => self.credentials_repository.get_user(GetRecordBy::Email(req.email.clone())).await,
-      false => self.credentials_repository.get_user(GetRecordBy::Username(req.username.clone())).await
-    }.handle()?;;
+      true => {
+        Validator::email(&req.email).invalid_argument_error()?;
 
-     let password = user.password.unwrap_or_status("trying to auth via oauth2 account")?;
+        self.credentials_repository.get_user(GetUserRecordBy::Email(req.email.clone())).await
+      },
+      false => {
+        Validator::username(&req.username).invalid_argument_error()?;
+
+        self.credentials_repository.get_user(GetUserRecordBy::Username(req.username.clone())).await
+      }
+    }.handle()?;
+
+     let password = user.password.safe_unwrap("trying to auth via oauth2 account")?;
 
     // check password
-    Hasher::verify(&req.password, &password).invalid_argument_error()?;
+    let is_equal = Hasher::verify(&req.password, &password).invalid_argument_error()?;
+
+    if !is_equal {
+      return Err(Status::unauthenticated("invalid credentials"));
+    }
 
     // generate new access_token
-    let (new_access_token, refresh_token) = self.tokens_repository.create_new_access_token(user.id.clone(), &user.username)
+    let (new_access_token, refresh_token) = self.tokens_repository.recreate_token_pair(user.id.clone(), &user.username)
       .await.internal_error()?;
 
     Ok(Response::new(
@@ -127,13 +140,13 @@ impl AuthRpc for AuthRpcServiceImplementation {
 
     let found_token_model = self.tokens_repository.get_token_record(GetTokenRecordBy::RefreshToken(req.refresh_token)).await.handle()?;
 
-    let found_user_model = self.credentials_repository.get_user(GetRecordBy::UserId(found_token_model.user_id))
+    let found_user_model = self.credentials_repository.get_user(GetUserRecordBy::UserId(found_token_model.user_id))
         .await.handle()?;
 
     // removes all invalid tokens | create new access token
     let (clear_token, create_token) = tokio::join!(
       self.tokens_repository.clear_invalid_tokens(found_token_model.clone()),
-      self.tokens_repository.create_new_access_token(found_token_model.user_id, &found_user_model.username)
+      self.tokens_repository.recreate_token_pair(found_token_model.user_id, &found_user_model.username)
     );
 
     clear_token.handle()?;
@@ -152,7 +165,7 @@ impl AuthRpc for AuthRpcServiceImplementation {
     let req = req.into_inner();
 
     let provider_name = OAuth2ProviderName::from_str(&req.provider)
-        .unwrap_or_status(&format!("provider {provider} wasn't found!", provider=req.provider))?;
+        .safe_unwrap(&format!("provider {provider} wasn't found!", provider=req.provider))?;
 
     let provider = self.oauth2.get_provider(provider_name);
 
@@ -168,7 +181,7 @@ impl AuthRpc for AuthRpcServiceImplementation {
   async fn sign_in_oauth(&self, req: Req<SignInOauthRequest>) -> GrpcResult<AuthenicationServiceResponseWithRefreshToken> {
     let req = req.into_inner();
 
-    let provider_name = OAuth2ProviderName::from_str(&req.provider).unwrap_or_status("provider not found")?;
+    let provider_name = OAuth2ProviderName::from_str(&req.provider).safe_unwrap("provider not found")?;
 
     let provider = self.oauth2.get_provider(provider_name);
 
@@ -178,7 +191,7 @@ impl AuthRpc for AuthRpcServiceImplementation {
 
     let user = provider.get_user_by_token(token.access_token.clone()).await.internal_error()?;
 
-    let db_user = self.credentials_repository.get_user(GetRecordBy::Username(user.username.clone())).await;
+    let db_user = self.credentials_repository.get_user(GetUserRecordBy::Username(user.username.clone())).await;
 
     // user already in db
     if let Ok(user) = db_user {
@@ -196,13 +209,12 @@ impl AuthRpc for AuthRpcServiceImplementation {
       RepositoryError::DbError(err) => Err(err).internal_error(),
       RepositoryError::NotFound(_) => {
         let record = self.credentials_repository.create_user(UserPayload {
-          user_id: Uuid::new_v4(),
           username: user.username,
           email: user.email,
           password: None
         }).await.handle()?;
 
-        self.tokens_repository.create_oauth2_record(CreateOAuth2TokenRecordPayload {
+        self.tokens_repository.create_oauth2_token_record(CreateOAuth2TokenRecordPayload {
           provider:  req.provider,
           user_id: record.id,
           access_token: token.access_token.clone(),
@@ -245,7 +257,7 @@ impl AuthRpc for AuthRpcServiceImplementation {
       }
       // native token flow
       None => {
-        let token_validation_status = self.tokens_repository.validate_token_record(req.token.clone()).await;
+        let token_validation_status = self.tokens_repository.validate_access_token(req.token.clone()).await;
 
         match token_validation_status {
           TokenValidationStatus::Expired => return Err(Status::unauthenticated("token is expired, try to refresh it")), // on client, `refresh` endpoint should be called
@@ -257,7 +269,7 @@ impl AuthRpc for AuthRpcServiceImplementation {
     };
 
     // Should be found, I guess
-    let found_user_model = self.credentials_repository.get_user(GetRecordBy::UserId(found_token_model.user_id)).await.handle()?;;
+    let found_user_model = self.credentials_repository.get_user(GetUserRecordBy::UserId(found_token_model.user_id)).await.handle()?;;
 
     Ok(Response::new(
       AuthenticationServiceResponse {
@@ -276,11 +288,11 @@ impl AuthRpc for AuthRpcServiceImplementation {
     match self.tokens_repository.clear_access_token(req.token).await {
       Ok(_) => Ok(()),
       Err(err) => {
-        error!("[clear_access_token]: {}", err.to_string());
+        error!("[clear_access_token]"); // todo
 
         match err {
           RepositoryError::NotFound(msg) => Err(Status::not_found(msg)),
-          _ => Err(Status::internal(err.to_string()))
+          _ => Err(Status::internal("internal"))
         }
       }
     }?;
@@ -300,7 +312,7 @@ impl AuthRpc for AuthRpcServiceImplementation {
     let req = req.into_inner();
 
     Ok(Response::new(BoolStatus {
-      status: self.credentials_repository.get_user(GetRecordBy::Email(req.email)).await.is_not_found()
+      status: self.credentials_repository.get_user(GetUserRecordBy::Email(req.email)).await.is_not_found()
     }))
   }
 
@@ -308,7 +320,7 @@ impl AuthRpc for AuthRpcServiceImplementation {
     let req = req.into_inner();
 
     Ok(Response::new(BoolStatus {
-      status: self.credentials_repository.get_user(GetRecordBy::Username(req.username)).await.is_not_found()
+      status: self.credentials_repository.get_user(GetUserRecordBy::Username(req.username)).await.is_not_found()
     }))
   }
 }

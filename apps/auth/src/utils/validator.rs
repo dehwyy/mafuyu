@@ -17,7 +17,7 @@ impl Validator {
   }
 
   pub fn email(email: &str) -> ValidationResult {
-    let reg = Regex::new(r"^([a-z0-9_+]([a-z0-9_+.]*[a-z0-9_+])?)@([a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6})").expect("Invalid regex");
+    let reg = Regex::new(r"^([a-z0-9_+]([a-z0-9_+.]*[a-z0-9_+])?)@([a-z0-9]+([\-.][a-z0-9]+)*\.[a-z]{2,6})").expect("Invalid regex");
 
     if !reg.is_match(email) {
       return Err("Invalid email".to_string());

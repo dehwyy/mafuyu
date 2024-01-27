@@ -1,12 +1,9 @@
-use std::future::Future;
 use sea_orm::prelude::Expr;
-use sea_orm::{DatabaseConnection, ActiveModelTrait, ColumnTrait, QueryFilter, EntityTrait, QueryTrait};
+use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, IntoActiveValue, QueryFilter};
 use uuid::Uuid;
 
 use makoto_db::models::user_tokens::{self, Entity as UserTokens};
-use makoto_db::utilities::*;
-use makoto_lib::errors::repository::prelude::*;
-use makoto_lib::errors::repository::RepositoryError;
+use makoto_lib::errors::prelude::*;
 use crate::oauth2::{OAuth2, OAuth2ProviderName, OAuth2Provider};
 
 use crate::utils::jwt::{Jwt, JwtPayload, TokenValidationError};
@@ -43,12 +40,12 @@ impl Tokens {
     }
   }
 
-  pub async fn create_oauth2_record(&self, payload: CreateOAuth2TokenRecordPayload) -> Result<user_tokens::Model, RepositoryError> {
+  pub async fn create_oauth2_token_record(&self, payload: CreateOAuth2TokenRecordPayload) -> Result<user_tokens::Model, RepositoryError> {
     let token_model = user_tokens::ActiveModel {
-      user_id: not_null(payload.user_id),
-      provider: not_null(payload.provider),
-      access_token: nullable(vec!(payload.access_token)),
-      refresh_token: not_null(payload.refresh_token),
+      user_id: payload.user_id.into_active_value(),
+      provider: payload.provider.into_active_value(),
+      access_token: sea_orm::ActiveValue::Set(Some(vec!(payload.access_token))),
+      refresh_token: payload.refresh_token.into_active_value(),
       ..Default::default()
     };
 
@@ -66,9 +63,9 @@ impl Tokens {
     let new_refresh_token = Jwt::new_refresh_token(payload)?;
 
     let new_token_model = user_tokens::ActiveModel {
-      access_token: nullable(vec!(new_access_token.0.clone())),
-      refresh_token: nullable(new_refresh_token.clone()),
-      user_id: not_null(user_id),
+      access_token: sea_orm::ActiveValue::Set(Some(vec!(new_access_token.0.clone()))),
+      refresh_token: Some(new_refresh_token.clone()).into_active_value(),
+      user_id: user_id.into_active_value(),
       ..Default::default()
     };
     new_token_model.insert(&self.db).await.map_err(|err| {
@@ -79,14 +76,16 @@ impl Tokens {
   }
 
   /// Returns `(new_access_token, refresh_token)`
-  pub async fn create_new_access_token(&self, user_id: Uuid, username: &str) -> Result<(String, String), String> {
+  pub async fn recreate_token_pair(&self, user_id: Uuid, username: &str) -> Result<(String, String), String> {
 
     let payload = JwtPayload {
       user_id: user_id.to_string(),
       username: username.to_string()
     };
 
-    let token_record = self.get_token_record(GetRecordBy::UserId(user_id.clone())).await.map_err(|msg| msg.to_string())?;
+    let token_record = self.get_token_record(GetRecordBy::UserId(user_id.clone())).await.map_err(|_| {
+      "$error".to_string()
+    })?; // todo
     let refresh_token = token_record.clone().refresh_token;
 
     let mut token_record: user_tokens::ActiveModel = token_record.into();
@@ -97,14 +96,14 @@ impl Tokens {
 
     old_tokens.push(new_access_token.clone());
 
-    token_record.access_token = nullable(old_tokens);
+    token_record.access_token = sea_orm::ActiveValue::Set(Some(old_tokens));
 
     token_record.update(&self.db).await.map_err(|err| err.to_string())?;
 
     Ok((new_access_token, refresh_token.expect("TODO! 101 line"))) // todo
   }
 
-  pub async fn validate_token_record(&self, access_token: String) -> TokenValidationStatus {
+  pub async fn validate_access_token(&self, access_token: String) -> TokenValidationStatus {
     let validation_result= Jwt::validate_access_token(access_token);
 
     match validation_result {
@@ -150,7 +149,7 @@ impl Tokens {
       }
     };
 
-    token_record.access_token = nullable(filtered_access_tokens);
+    token_record.access_token = sea_orm::ActiveValue::Set(Some(filtered_access_tokens));
 
     token_record.update(&self.db).await.handle()?;
 
@@ -163,7 +162,7 @@ impl Tokens {
     let token_record = UserTokens::find()
       .filter(user_tokens::Column::AccessToken.eq(access_token.clone()))
       .one(&self.db)
-      .await.handle()?.extract("token not found")?;
+      .await.handle()?.safe_unwrap("token not found")?;
 
     let oauth2_provider = OAuth2ProviderName::from_str(&token_record.provider);
     let mut token_record: user_tokens::ActiveModel = token_record.into();
@@ -201,7 +200,7 @@ impl Tokens {
       }
     };
 
-    token_record.access_token = nullable(filtered_access_tokens);
+    token_record.access_token = sea_orm::ActiveValue::Set(Some(filtered_access_tokens.clone()));
 
     let token_record = token_record.update(&self.db).await.handle()?;
 
@@ -223,7 +222,7 @@ impl Tokens {
     let token_record = UserTokens::find()
       .filter(filter)
       .one(&self.db)
-      .await.handle()?.extract("token not found")?;
+      .await.handle()?.safe_unwrap("token not found")?;
 
     Ok(token_record)
   }

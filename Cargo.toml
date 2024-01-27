@@ -2,6 +2,8 @@
 members = [
   "apps/gateway",
   "apps/auth",
+  "apps/tokens",
+  "apps/oauth2",
 
   "libs/config",
   "libs/db",

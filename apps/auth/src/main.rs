@@ -30,13 +30,12 @@ async fn main() -> MakotoResult<()> {
 
     info!("server start! host: {}", addr);
 
-    // settings for grpc-web library
     Server::builder()
         .add_service(auth_service)
         .serve(addr)
         .await?;
 
-    info!("server stoped!");
+    info!("server stopped!");
 
     Ok(())
 }

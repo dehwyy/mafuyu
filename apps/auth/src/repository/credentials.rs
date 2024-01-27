@@ -1,9 +1,8 @@
-use sea_orm::{DatabaseConnection, prelude::Uuid, ColumnTrait, QueryFilter, EntityTrait, ActiveModelTrait};
+use sea_orm::{DatabaseConnection, prelude::Uuid, ColumnTrait, QueryFilter, EntityTrait, ActiveModelTrait, ActiveValue, IntoActiveValue};
 
 use makoto_db::models::user_credentials::{Entity as UserCredentials, self};
-use makoto_db::utilities::*;
 
-use makoto_lib::errors::repository::{RepositoryError, prelude::*};
+use makoto_lib::errors::prelude::*;
 
 pub enum GetRecordBy {
   UserId(Uuid),
@@ -13,7 +12,6 @@ pub enum GetRecordBy {
 
 #[derive(Default)]
 pub struct UserPayload {
-  pub user_id: Uuid,
   pub username: String,
   pub email: Option<String>,
   pub password: Option<String>
@@ -32,10 +30,10 @@ impl Credentials {
 
   pub async fn create_user(&self, user_payload: UserPayload) -> Result<user_credentials::Model, RepositoryError> {
     let user = user_credentials::ActiveModel {
-      id: not_null(user_payload.user_id),
-      username: not_null(user_payload.username),
-      email: not_null(user_payload.email),
-      password: not_null(user_payload.password),
+      id: Uuid::new_v4().into_active_value(),
+      username: user_payload.username.into_active_value(),
+      email: user_payload.email.into_active_value(),
+      password: user_payload.password.into_active_value(),
       ..Default::default()
     };
 
@@ -51,6 +49,6 @@ impl Credentials {
 
     let user = UserCredentials::find().filter(filter).one(&self.db).await.handle()?;
 
-    user.extract("user not found")
+    user.safe_unwrap("user wasn't found")
   }
 }

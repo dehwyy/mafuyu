@@ -101,7 +101,6 @@ impl Jwt {
     )
   }
 
-
   fn sign(jwt_payload: JwtPayload, token_kind: TokenKind) -> Result<TokenCreated, String> {
     let header = Header {
       algorithm: AlgorithmType::Hs256,

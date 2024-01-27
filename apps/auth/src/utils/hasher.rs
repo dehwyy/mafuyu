@@ -3,9 +3,10 @@ pub struct Hasher;
 const HASH_SALT: u32 = 10;
 
 impl Hasher {
-  pub fn hash<S: AsRef<[u8]>>(s: S) -> Result<String, ()> {
+  pub fn hash<S: AsRef<[u8]>>(s: S) -> Result<String, String> {
     Ok(bcrypt::hash(s, HASH_SALT).map_err(|err| {
       eprintln!("Error hashing password: {}", err);
+      err.to_string()
     })?)
   }
 

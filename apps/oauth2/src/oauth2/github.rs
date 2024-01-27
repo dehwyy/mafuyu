@@ -1,9 +1,6 @@
-use std::time::Duration;
-
 use oauth2::{AuthorizationCode, RedirectUrl, TokenResponse, ClientId, ClientSecret, CsrfToken};
 use oauth2::{basic::BasicClient, AuthUrl, TokenUrl};
 use oauth2::reqwest::async_http_client;
-use tonic::codegen::Body;
 use makoto_logger::{error, info};
 use super::*;
 use constants::*;
@@ -12,7 +9,7 @@ pub struct Github {
   client: BasicClient
 }
 
-#[tonic::async_trait]
+#[async_trait::async_trait]
 impl OAuth2Provider for Github {
   fn new(payload: CreateProviderPayload) -> Self {
     // from docs @see https://github.com/ramosbugs/oauth2-rs/blob/main/examples/github_async.rs
