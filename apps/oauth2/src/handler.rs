@@ -1,6 +1,6 @@
-use actix_web::{Responder, web, get, HttpResponse};
+use actix_web::{Responder, web, get};
 use actix_web::dev::HttpServiceFactory;
-use crate::oauth2::{OAuth2, OAuth2ProviderName};
+use crate::oauth2::OAuth2;
 
 pub struct State {
     pub oauth2: OAuth2
@@ -10,7 +10,7 @@ pub struct Service;
 
 impl Service {
     pub fn new() ->  impl HttpServiceFactory {
-        web::scope("v1")
+        web::scope("/v1")
             .app_data(State { oauth2: OAuth2::new() })
             .service(get_redirect_url)
             .service(get_user_by_token)
@@ -20,10 +20,10 @@ impl Service {
 }
 
 mod routes {
-    use actix_web::{error::{ErrorBadGateway, ErrorNotFound}, get, Result as HttpResult, post, put, Responder, web};
-    use actix_web::error::ErrorBadRequest;
-    use super::{State, OAuth2ProviderName};
-    use crate::oauth2::OAuth2Provider;
+    use actix_web::{error::ErrorNotFound, get, Result as HttpResult, post, put, Responder, web};
+    use actix_web::error::{ErrorBadRequest, ErrorUnauthorized};
+    use super::State;
+    use crate::oauth2::{OAuth2Provider, RefreshError};
 
     mod tools {
         use actix_web::error::ErrorBadGateway;
@@ -79,12 +79,6 @@ mod routes {
             pub redirect_url: String,
             pub csrf_token: String
         }
-
-        #[derive(Serialize)]
-        pub struct GetUserByToken {
-            pub redirect_url: String,
-            pub csrf_token: String
-        }
     }
 
     #[get("/redirect_url")]
@@ -125,11 +119,14 @@ mod routes {
     async fn refresh_token(state: web::Data<State>, req: web::Json<request::RefreshToken>) -> HttpResult<impl Responder> {
         let provider = tools::get_provider_by_str(&state.oauth2, &req.provider)?;
 
-        let r = provider.refresh().await.map_err(|err| {
-            ErrorBadRequest(err)
+        let token = provider.refresh().await.map_err(|err| {
+            match err {
+                RefreshError::NotSupported => ErrorBadRequest("provider doesn't support token refreshment"),
+                RefreshError::Internal => ErrorUnauthorized("cannot refresh oauth2 token")
+            }
         })?;
 
-        Ok("unimplemented")
+        Ok(web::Json(token))
     }
 
 }

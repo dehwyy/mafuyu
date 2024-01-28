@@ -76,7 +76,7 @@ impl OAuth2Provider for Github {
     })
   }
 
-  async fn refresh(&self) -> Result<OAuth2Token, String> {
-    todo!()
+  async fn refresh(&self) -> Result<OAuth2Token, RefreshError> {
+    Err(RefreshError::NotSupported)
   }
 }

@@ -1,6 +1,6 @@
 mod github;
 mod core;
-pub use self::core::OAuth2ProviderName;
+pub use self::core::{OAuth2ProviderName, RefreshError};
 
 use oauth2::CsrfToken;
 use self::core::*;
@@ -39,7 +39,7 @@ pub trait OAuth2Provider {
   fn create_redirect_url(&self) -> (String, CsrfToken);
   async fn exchange_code_to_token(&self, code: String) -> Result<OAuth2Token, String>;
   async fn get_user_by_token(&self, access_token: String) -> Result<OAuth2UserResponse, String>;
-  async fn refresh(&self) -> Result<OAuth2Token, String>;
+  async fn refresh(&self) -> Result<OAuth2Token, RefreshError>;
 }
 
 pub mod constants {

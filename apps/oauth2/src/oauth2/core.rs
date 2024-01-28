@@ -21,6 +21,11 @@ pub struct OAuth2Token {
     pub refresh_token: Option<String>,
 }
 
+pub enum RefreshError {
+    NotSupported,
+    Internal
+}
+
 pub enum OAuth2ProviderName {
     Github,
     Google
