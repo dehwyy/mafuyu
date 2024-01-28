@@ -11,7 +11,7 @@ pub struct Service;
 impl Service {
     pub fn new() ->  impl HttpServiceFactory {
         web::scope("/v1")
-            .app_data(State { oauth2: OAuth2::new() })
+            .app_data(web::Data::new( State { oauth2: OAuth2::new() }))
             .service(get_redirect_url)
             .service(get_user_by_token)
             .service(exchange_code_to_token)
@@ -22,6 +22,7 @@ impl Service {
 mod routes {
     use actix_web::{error::ErrorNotFound, get, Result as HttpResult, post, put, Responder, web};
     use actix_web::error::{ErrorBadRequest, ErrorUnauthorized};
+    use makoto_logger::info;
     use super::State;
     use crate::oauth2::{OAuth2Provider, RefreshError};
 
@@ -33,7 +34,7 @@ mod routes {
         pub fn get_provider_by_str<'a>(oauth2: &'a OAuth2, provider: &str) -> HttpResult<&'a impl OAuth2Provider> {
             let provider_name = match OAuth2ProviderName::from_str(provider) {
                 Some(provider_name) => Ok(provider_name),
-                None => Err(ErrorBadGateway("provider name not found"))
+                None => Err(ErrorBadGateway("Provider name not found"))
             }?;
 
             Ok(oauth2.get_provider(provider_name))
@@ -108,7 +109,7 @@ mod routes {
         let provider = tools::get_provider_by_str(&state.oauth2, &req.provider)?;
 
         let token = provider.exchange_code_to_token(req.code.clone()).await.map_err(|err| {
-            ErrorBadRequest(err)
+            ErrorBadRequest(format!("Cannot exchange code due to provider error: {}.", err))
         })?;
 
         Ok(web::Json(token))
@@ -121,8 +122,8 @@ mod routes {
 
         let token = provider.refresh().await.map_err(|err| {
             match err {
-                RefreshError::NotSupported => ErrorBadRequest("provider doesn't support token refreshment"),
-                RefreshError::Internal => ErrorUnauthorized("cannot refresh oauth2 token")
+                RefreshError::NotSupported => ErrorBadRequest("Provider doesn't support token refreshment"),
+                RefreshError::Internal => ErrorUnauthorized("Cannot refresh oauth2 token")
             }
         })?;
 
