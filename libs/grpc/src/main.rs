@@ -1,8 +1,11 @@
 fn main() -> std::io::Result<()> {
 
-    // compile rust protos
     {
-        let protos = vec!("api/general.proto", "api/auth.proto", "api.proto");
+        let protos = vec!(
+            "api/general.proto", "api/auth.proto", "api/integrations.proto",
+            "api/oauth2.proto", "api/passport.proto", "api/tokens.proto",
+            "api.proto"
+        );
 
         let cwd = std::env::current_dir().unwrap();
         let cwd = cwd.to_string_lossy();

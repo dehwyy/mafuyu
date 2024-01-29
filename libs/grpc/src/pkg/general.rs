@@ -1,6 +1,6 @@
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct BoolStatus {
+pub struct IsOkResponse {
     #[prost(bool, tag = "1")]
-    pub status: bool,
+    pub is_ok: bool,
 }

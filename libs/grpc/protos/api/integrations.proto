@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package integrations;
+
+option go_package = "github.com/dehwyy/makoto/libs/grpc/generated/integrations";
+
+service IntegrationsRpc {
+  rpc GetBasicUser(GetBasicUserRequest) returns (GetBasicUserResponse);
+}
+
+message GetBasicUserRequest {
+  string provider = 1;
+  string access_token = 2;
+}
+
+message GetBasicUserResponse {
+  string provider_id = 1;
+  string username = 2;
+  optional string email = 3;
+  optional string picture = 4;
+}

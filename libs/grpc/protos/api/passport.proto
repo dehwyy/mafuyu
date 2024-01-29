@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package passport;
+
+option go_package = "github.com/dehwyy/makoto/libs/grpc/generated/passport";
+
+service PassportRpc {
+
+}

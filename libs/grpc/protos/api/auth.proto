@@ -1,29 +1,14 @@
 syntax = "proto3";
 
-package api_auth;
+package auth;
 
 import "api/general.proto";
 
-// all termporary codes should be stored in gateway instead of AuthService
-// Request like "ProceedTo..." are not neseccary in this rpc scheme
-
 service AuthRpc {
-  rpc SignUp(SignUpRequest) returns (AuthenicationServiceResponseWithRefreshToken) {}
-  rpc SignIn(SignInRequest) returns (AuthenicationServiceResponseWithRefreshToken) {}
-
-  rpc Refresh(RefreshRequest) returns (AuthenticationServiceResponse) {}
-
-  rpc CreateOAuth2RedirectUrl(OAuth2RedirectUrlRequest) returns (OAuth2RedirectUrlResponse) {}
-  rpc SignInOauth(SignInOauthRequest) returns (AuthenicationServiceResponseWithRefreshToken) {}
-
-  rpc SignInToken(SignInTokenRequest) returns (AuthenticationServiceResponse) {}
-  rpc SignOut(SignOutRequest) returns (general.BoolStatus) {}
-
-  rpc ConfirmEmail(ConfirmMailRequest) returns (general.BoolStatus) {}
-  rpc UpdatePassword(SubmitNewPasswordByCodeRequest) returns (AuthenticationServiceResponse) {}
-
-  rpc IsEmailAvailable(IsEmailAvailableRequest) returns (general.BoolStatus) {}
-  rpc IsUsernameAvailable(IsUsernameAvailableRequest) returns (general.BoolStatus) {}
+  rpc SignUp(SignUpRequest) returns (AuthenticationServiceResponse);
+  rpc SignIn(SignInRequest) returns (AuthenticationServiceResponse);
+  rpc SignInWithToken(SignInWithTokenRequest) returns (AuthenticationServiceResponse);
+  rpc SignOut(SignOutRequest) returns (general.IsOkResponse);
 }
 
 message SignUpRequest {
@@ -33,48 +18,26 @@ message SignUpRequest {
 }
 
 message SignInRequest {
-  // either _username_ or _email_
+  oneof login {
     string username = 1;
     string email = 2;
-  //
+  }
+
   string password = 3;
 }
 
-message RefreshRequest {
-  string refresh_token = 1;
-}
-
-message SignInOauthRequest {
-  string provider = 1;
-  string code = 2;
-}
-
-message SignInTokenRequest {
+message SignInWithTokenRequest {
   string token = 1;
 }
 
 message SignOutRequest {
-  string token = 1;
-}
-
-message OAuth2RedirectUrlRequest {
-  string provider = 1;
-}
-
-message OAuth2RedirectUrlResponse {
-  string url = 1;
+  string access_token = 1;
 }
 
 message AuthenticationServiceResponse {
   string username = 1;
   string user_id = 2;
-  string token = 3;
-}
-
-message AuthenicationServiceResponseWithRefreshToken {
-  string username = 1;
-  string user_id = 2;
-  string token = 3;
+  string access_token = 3;
   string refresh_token = 4;
 }
 
@@ -83,39 +46,3 @@ message AuthenticationResponse {
   string user_id = 2;
 }
 
-message ConfirmMailRequest {
-  string email = 1;
-}
-
-message ConfirmMailByCodeRequest {
-  string code = 1;
-}
-
-message ProceedToUpdatePasswordRequest {
-  string old_password = 1;
-}
-
-message ProceedToUpdatePasswordResponse {
-  // TODO: describe exact without any vulnerabilities
-  string ucode = 1; // unique generated code (hashed?)
-}
-
-message ProceedToRecoverPasswordRequest {
-  string email = 1;
-}
-message UpdatePasswordRequest {
-  string new_password = 1;
-}
-
-message SubmitNewPasswordByCodeRequest {
-  string ucode = 1;
-  string new_password = 2;
-}
-
-message IsEmailAvailableRequest {
-  string email = 1;
-}
-
-message IsUsernameAvailableRequest {
-  string username = 1;
-}
