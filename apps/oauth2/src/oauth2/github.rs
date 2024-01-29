@@ -9,7 +9,7 @@ pub struct Github {
   client: BasicClient
 }
 
-#[async_trait::async_trait]
+#[tonic::async_trait]
 impl OAuth2Provider for Github {
   fn new(payload: CreateProviderPayload) -> Self {
     // from docs @see https://github.com/ramosbugs/oauth2-rs/blob/main/examples/github_async.rs
@@ -44,37 +44,6 @@ impl OAuth2Provider for Github {
     })
   }
 
-  async fn get_user_by_token(&self, access_token: String) -> Result<OAuth2UserResponse, String> {
-
-    #[derive(serde::Deserialize)]
-    struct GithubUserResponse {
-      id: i32,
-      email: Option<String>,
-      name: String,
-      avatar_url: Option<String>
-    }
-
-    let http_client = reqwest::Client::new();
-
-    let response= http_client.get(GITHUB_PROFILE_URL)
-      .header("Authorization", format!("Bearer {token}", token=access_token))
-      .header("Accept", "application/json") // json response
-      .header("User-Agent", "Mafuyu-App")
-      .send().await.map_err(|err| err.to_string())?;
-
-    let response = response
-        .json::<GithubUserResponse>() // response into struct
-        .await.map_err(|err| {
-      err.to_string()
-    })?;
-
-    Ok(OAuth2UserResponse {
-      id: response.id.to_string(),
-      username: response.name,
-      email: response.email,
-      picture: response.avatar_url
-    })
-  }
 
   async fn refresh(&self) -> Result<OAuth2Token, RefreshError> {
     Err(RefreshError::NotSupported)

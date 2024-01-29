@@ -32,13 +32,12 @@ impl OAuth2 {
   }
 }
 
-#[async_trait::async_trait]
+#[tonic::async_trait]
 pub trait OAuth2Provider {
   fn new(payload: CreateProviderPayload) -> Self;
 
   fn create_redirect_url(&self) -> (String, CsrfToken);
   async fn exchange_code_to_token(&self, code: String) -> Result<OAuth2Token, String>;
-  async fn get_user_by_token(&self, access_token: String) -> Result<OAuth2UserResponse, String>;
   async fn refresh(&self) -> Result<OAuth2Token, RefreshError>;
 }
 

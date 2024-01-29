@@ -1,27 +1,32 @@
-mod handler;
+mod service;
 mod oauth2;
 
-use actix_web::{App, HttpServer};
-use actix_cors::Cors;
-use makoto_logger::{info, Logger};
 
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    Logger::init().unwrap();
-    let config = makoto_config::hosts::Hosts::new();
+use makoto_grpc::pkg::oauth2::o_auth2_rpc_server::OAuth2RpcServer;
+use makoto_logger::*;
+use makoto_lib::Result as AnyResult;
 
-    info!("server started: {}", config.oauth2);
+#[tokio::main]
+async fn main() -> AnyResult<()> {
+    Logger::init()?;
 
-    HttpServer::new(|| {
-        let cors = Cors::default()
-            .send_wildcard()
-            .allowed_methods(vec!["GET", "POST", "PUT"])
-            .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT, http::header::CONTENT_TYPE])
-            .max_age(360);
+    let hosts = makoto_config::hosts::Hosts::new();
+    let addr = hosts.oauth2.parse()?;
 
-        App::new().wrap(cors).service(handler::Service::new())
-    })
-        .bind(config.oauth2)?
-        .run()
-        .await
+    let oauth2_service = service::OAuth2RpcServiceImplementation::new(
+        service::OAuth2RpcServiceImplementation{
+            oauth2: oauth2::OAuth2::new()
+        }
+    );
+    let oauth2_service = OAuth2RpcServer::new(oauth2_service);
+
+    info!("server started on host: {}!", addr);
+
+    tonic::transport::Server::builder()
+        .add_service(oauth2_service)
+        .serve(addr)
+        .await?;
+
+    Ok(())
 }
+
