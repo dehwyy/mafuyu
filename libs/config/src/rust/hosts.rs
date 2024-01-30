@@ -10,7 +10,16 @@ pub struct Hosts {
     pub auth: String,
 
     #[envconfig(from = "OAUTH2")]
-    pub oauth2: String
+    pub oauth2: String,
+
+    #[envconfig(from = "TOKENS")]
+    pub tokens: String,
+
+    #[envconfig(from = "PASSPORT")]
+    pub passport: String,
+
+    #[envconfig(from = "INTEGRATIONS")]
+    pub integrations: String
 }
 
 impl Hosts {

@@ -8,9 +8,9 @@ pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
     pub user_id: Uuid,
-    #[sea_orm(column_type = "Text")]
-    pub provider: String,
-    pub access_token: Option<Vec<String>>,
+    #[sea_orm(column_type = "Text", nullable)]
+    pub provider: Option<String>,
+    pub access_tokens: Option<Vec<String>>,
     #[sea_orm(column_type = "Text", nullable)]
     pub refresh_token: Option<String>,
 }

@@ -181,7 +181,6 @@ version = "0.1.0"
 dependencies = [
  "async-nats",
  "bcrypt",
- "chrono",
  "lazy_static",
  "makoto_config",
  "makoto_db",
@@ -1449,6 +1448,7 @@ dependencies = [
 name = "makoto_grpc"
 version = "0.1.0"
 dependencies = [
+ "makoto_config",
  "prost",
  "tonic",
  "tonic-build",
@@ -1735,8 +1735,6 @@ dependencies = [
  "oauth2",
  "prost",
  "reqwest",
- "serde",
- "serde_json",
  "tokio",
  "tonic",
 ]
@@ -3223,22 +3221,44 @@ checksum = "1f3ccbac311fea05f86f61904b462b55fb3df8837a366dfc601a0161d0532f20"
 name = "tokens"
 version = "0.1.0"
 dependencies = [
+ "chrono",
+ "hmac",
+ "jwt",
+ "makoto_config",
+ "makoto_db",
+ "makoto_grpc",
+ "makoto_lib",
+ "makoto_logger",
+ "prost",
+ "sea-orm",
+ "sha2",
+ "tokio",
+ "tonic",
+ "uuid",
+]
+
+[[package]]
+name = "tokens_async"
+version = "0.1.0"
+dependencies = [
  "async-nats",
  "chrono",
  "futures",
  "hmac",
  "jwt",
- "log",
  "makoto_config",
  "makoto_db",
+ "makoto_grpc",
  "makoto_lib",
  "makoto_logger",
+ "prost",
  "reqwest",
  "sea-orm",
  "serde",
  "serde_json",
  "sha2",
  "tokio",
+ "tonic",
  "uuid",
 ]
 
