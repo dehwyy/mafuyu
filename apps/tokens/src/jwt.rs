@@ -8,6 +8,7 @@ use makoto_logger::error;
 
 const ACCESS_TOKEN_EXPIRATION_TIME_SECS: i64 = 60 * 60; // 1 hour
 
+#[derive(Debug)]
 pub enum TokenError {
     Expired,
     Invalid(String), // Additional information
@@ -123,48 +124,45 @@ impl Jwt {
     }
 }
 
-// #[cfg(test)]
-// mod tests {
-//     use std::env;
-//
-//     use super::*;
-//
-//     fn prelude() -> JwtPayload {
-//         let jwt_payload = JwtPayload {
-//             username: "dehwyy".to_string(),
-//             user_id: "1f2".to_string()
-//         };
-//
-//         env::set_var("JWT_SECRET", "jwt_secret_bruh");
-//
-//         jwt_payload
-//     }
-//
-//     #[test]
-//     fn generate_refresh_jwt() {
-//         let jwt_payload = prelude();
-//
-//         let token = Jwt::new_refresh_token(jwt_payload).unwrap();
-//         assert_eq!(true, token.len() > 10);
-//     }
-//
-//     #[test]
-//     fn generate_access_jwt() {
-//         let jwt_payload = prelude();
-//
-//         let token = Jwt::new_access_token(jwt_payload).unwrap();
-//         assert_eq!(true, token.0.len() > 10);
-//     }
-//
-//     #[test]
-//     fn verify_access_jwt() {
-//         let jwt_payload = prelude();
-//
-//         let token = Jwt::new_access_token(jwt_payload).unwrap();
-//         let response = Jwt::validate_access_token(token.0).map_err(|e| {
-//             "invalid token"
-//         }).unwrap();
-//
-//         assert_eq!(response.username, "dehwyy".to_string());
-//     }
-// }
+#[cfg(test)]
+mod tests {
+    use std::env;
+
+    use super::*;
+
+    fn init() -> JwtPayload {
+        let jwt_payload = JwtPayload {
+            user_id: "1f2".to_string()
+        };
+
+        env::set_var("JWT_SECRET", "jwt_secret_bruh");
+
+        jwt_payload
+    }
+
+    #[test]
+    fn generate_refresh_jwt() {
+        let jwt_payload = init();
+
+        let token = Jwt::new_refresh_token(jwt_payload).unwrap();
+        assert_eq!(true, token.len() > 10);
+    }
+
+    #[test]
+    fn generate_access_jwt() {
+        let jwt_payload = init();
+
+        let token = Jwt::new_access_token(jwt_payload).unwrap();
+        assert_eq!(true, token.len() > 10);
+    }
+
+    #[test]
+    fn verify_access_jwt() {
+        let jwt_payload = init();
+
+        let token = Jwt::new_access_token(jwt_payload.clone()).unwrap();
+        let response = Jwt::validate_access_token(token).unwrap();
+
+        assert_eq!(response.user_id, jwt_payload.user_id);
+    }
+}

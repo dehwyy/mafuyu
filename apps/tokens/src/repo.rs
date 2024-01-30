@@ -11,7 +11,6 @@ pub enum GetTokenRecordBy {
     RefreshToken(String)
 }
 
-#[derive(Clone)]
 pub struct Repo {
     db: DatabaseConnection
 }
@@ -30,7 +29,7 @@ impl Repo {
             GetTokenRecordBy::AccessToken(token) => Expr::cust(format!(
                 r#"'{token}' = ANY("{user_tokens}"."access_token")"#,
                 token=token,
-                user_tokens=user_tokens::Column::AccessToken.entity_name().to_string(),
+                user_tokens=user_tokens::Column::AccessTokens.entity_name().to_string(),
             )),
             GetTokenRecordBy::RefreshToken(token) => user_tokens::Column::RefreshToken.eq(token)
         };
@@ -47,36 +46,37 @@ impl Repo {
     pub async fn insert_tokens(&self, user_id: Uuid, access_token: &str, refresh_token: &str) -> Result<(), RepositoryError> {
         let tokens_model = self.get_token_record(GetTokenRecordBy::UserId(user_id.clone())).await;
 
-        let active_model = match tokens_model {
+        let db_update = match tokens_model {
             Ok(v) => {
                 let mut tokens_active_model: user_tokens::ActiveModel = v.into();
 
-                let mut tokens = tokens_active_model.access_token.take().unwrap_or_default().unwrap_or_default();
+                let mut tokens = tokens_active_model.access_tokens.take().unwrap_or_default().unwrap_or_default();
                 tokens.push(access_token.to_string());
-                tokens_active_model.refresh_token = Some(refresh_token.to_string()).into_active_value();
 
-                Ok(tokens_active_model)
+                tokens_active_model.refresh_token = Some(refresh_token.to_string()).into_active_value();
+                tokens_active_model.access_tokens = ActiveValue::Set(Some(tokens));
+
+                Ok(tokens_active_model.update(&self.db))
             },
             Err(err) => {
                 match err {
                     RepositoryError::DbError(err) => Err(RepositoryError::DbError(err)),
                     RepositoryError::NotFound(_) => {
-                        Ok(user_tokens::ActiveModel {
+                        let model = user_tokens::ActiveModel {
                             user_id: user_id.into_active_value(),
                             refresh_token: Some(refresh_token.to_string()).into_active_value(),
-                            access_token: ActiveValue::Set(Some(vec!(access_token.to_string()))),
-                            provider: "native".to_string().into_active_value(),
+                            access_tokens: ActiveValue::Set(Some(vec!(access_token.to_string()))),
+                            provider: ActiveValue::Set(None),
                             ..Default::default()
-                        })
+                        };
+
+                        Ok(model.insert(&self.db))
                     }
                 }
             }
         }?;
 
-
-
-
-        active_model.update(&self.db).await.handle()?;
+       db_update.await.handle()?;
 
         Ok(())
     }
@@ -84,7 +84,7 @@ impl Repo {
     pub async fn set_access_tokens(&self, model: user_tokens::Model, new_access_token: Vec<String>) -> Result<(), RepositoryError> {
         let mut tokens_active_model: user_tokens::ActiveModel = model.into();
 
-        tokens_active_model.access_token = ActiveValue::Set(Some(new_access_token));
+        tokens_active_model.access_tokens = ActiveValue::Set(Some(new_access_token));
 
         tokens_active_model.update(&self.db).await.handle()?;
 
