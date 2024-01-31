@@ -24,6 +24,7 @@ message GenerateTokenPairResponse {
 
 message ValidateTokenRequest {
   string access_token = 1;
+  optional string provider = 2;
 }
 
 message ValidateTokenResponse {

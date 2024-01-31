@@ -16,10 +16,10 @@ impl std::fmt::Display for RouteError {
 impl std::fmt::Display for MessageError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
-            Self::CannotDeserialize(s) => s.to_string(),
-            Self::CannotSerialize(s) => s.to_string(),
-            Self::MalformedRequest(s) => s.to_string(),
-            Self::Internal(s) => s.to_string()
+            Self::CannotDeserialize(s) => format!("[cannot deserialize]: {}", s),
+            Self::CannotSerialize(s) => format!("[cannot serialize]: {}", s),
+            Self::MalformedRequest(s) => format!("[malformed request]: {}", s),
+            Self::Internal(s) => format!("[internal error]: {}", s)
         };
         write!(f, "{}", s)
     }

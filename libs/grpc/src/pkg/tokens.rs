@@ -17,6 +17,8 @@ pub struct GenerateTokenPairResponse {
 pub struct ValidateTokenRequest {
     #[prost(string, tag = "1")]
     pub access_token: ::prost::alloc::string::String,
+    #[prost(string, optional, tag = "2")]
+    pub provider: ::core::option::Option<::prost::alloc::string::String>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]

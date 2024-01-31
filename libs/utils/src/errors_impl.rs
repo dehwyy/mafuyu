@@ -1,4 +1,5 @@
 use tonic::Status;
+use mafuyu_nats::message::MessageError;
 use mafuyu_nats::route::RouteError;
 use crate::errors::{GrpcHandleError, HandleError, HandleNatsError, HandleRepositoryError, SafeUnwrapWithMessage};
 use crate::errors::repository::RepositoryError;
@@ -16,24 +17,22 @@ impl<T> HandleError<T, Status> for Result<T, RepositoryError> {
         }
     }
 }
+impl<T> HandleError<T, Status> for Result<T, MessageError> {
+    fn handle(self) -> Result<T, Status> {
+        self.map_err(|err| {
+            match err {
+                MessageError::MalformedRequest(err) => Status::invalid_argument(err),
+                _ => Status::internal(err.to_string())
+            }
+        })
+    }
+}
 impl<T> HandleNatsError<T> for Result<T, RepositoryError> {
     fn handle_nats(self) -> Result<T, RouteError> {
-        match self {
-            Ok(v) => Ok(v),
-            Err(err) => {
-                Err(RouteError::RepoError(err.to_string()))
-            }
-        }
+        self.map_err(|err| RouteError::RepoError(err.to_string()))
     }
 }
-
-
-impl<T> HandleError<T, RouteError> for Result<T, RepositoryError> {
-    fn handle(self) -> Result<T, RouteError> {
-        todo!()
-    }
-}
-impl<T> HandleError<T, Status> for Result<T, async_nats::RequestError> {
+impl<T> HandleError<T, Status> for Result<T, async_nats::PublishError> {
     fn handle(self) -> Result<T, Status> {
         match self {
             Ok(v) => Ok(v),

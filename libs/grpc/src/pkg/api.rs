@@ -237,7 +237,7 @@ pub mod api_rpc_client {
                 super::super::oauth2::ExchangeCodeToTokenRequest,
             >,
         ) -> std::result::Result<
-            tonic::Response<super::super::general::IsOkResponse>,
+            tonic::Response<super::super::oauth2::ExchangeCodeToTokenResponse>,
             tonic::Status,
         > {
             self.inner
@@ -316,7 +316,7 @@ pub mod api_rpc_server {
             &self,
             request: tonic::Request<super::super::oauth2::ExchangeCodeToTokenRequest>,
         ) -> std::result::Result<
-            tonic::Response<super::super::general::IsOkResponse>,
+            tonic::Response<super::super::oauth2::ExchangeCodeToTokenResponse>,
             tonic::Status,
         >;
     }
@@ -693,7 +693,7 @@ pub mod api_rpc_server {
                     > tonic::server::UnaryService<
                         super::super::oauth2::ExchangeCodeToTokenRequest,
                     > for ExchangeOAuth2CodeToTokenSvc<T> {
-                        type Response = super::super::general::IsOkResponse;
+                        type Response = super::super::oauth2::ExchangeCodeToTokenResponse;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,

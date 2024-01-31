@@ -1,5 +1,5 @@
 use serde::{Serialize, Deserialize};
-use serde_json::{from_slice as from_json, to_string as to_json};
+use serde_json::{from_slice as from_json, to_vec as to_json};
 
 pub enum MessageError {
     CannotSerialize(String),
@@ -13,7 +13,7 @@ pub struct Encoder;
 
 impl Encoder
 {
-    pub fn encode<T>(s: T) -> Result<String, MessageError>
+    pub fn encode<T>(s: T) -> Result<Vec<u8>, MessageError>
         where T: Serialize
     {
         to_json(&s).map_err(|err| MessageError::CannotSerialize(err.to_string()))
