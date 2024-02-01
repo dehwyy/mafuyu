@@ -13,9 +13,11 @@ hmac = "0.12.1"
 sea-orm = { version = "0.12.9", features = [ "sqlx-postgres", "runtime-tokio-rustls", "with-uuid", "with-time", "macros" ] }
 sha2 = "0.10.8"
 uuid = { version = "1.6.1", features = ["v4"] }
+async-nats = {version = "0.33.0", features = ["service"]}
 
 makoto_db = {path = "../../libs/db"}
 makoto_grpc = {path = "../../libs/grpc"}
 makoto_lib = {path = "../../libs/utils"}
 makoto_config = {path = "../../libs/config"}
 makoto_logger = {path = "../../libs/log"}
+mafuyu_nats = {path = "../../libs/nats"}

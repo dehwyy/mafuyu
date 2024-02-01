@@ -13,6 +13,8 @@ async fn main() -> AnyResult<()> {
     let hosts = makoto_config::hosts::Hosts::new();
     let addr = hosts.tokens.parse()?;
 
+    let nats = async_nats::connect(makoto_config::constants::nats::TOKENS_SERVER).await?;
+
     let db = makoto_db::new().await.unwrap();
     let token_repo = repo::Repo::new(db);
 
@@ -21,7 +23,9 @@ async fn main() -> AnyResult<()> {
     let tokens_service = service::TokensRpcServiceImplementation::new(
         service::TokensRpcServiceImplementation{
             token_repo,
-            oauth2_client: rpc_clients.oauth2_client.unwrap()
+            nats_client: nats,
+            oauth2_client: rpc_clients.oauth2_client.unwrap(),
+            integrations_client: rpc_clients.integrations_client.unwrap()
         }
     );
     let tokens_service = TokensRpcServer::new(tokens_service);

@@ -5,18 +5,22 @@ use uuid::Uuid;
 use makoto_lib::errors::prelude::*;
 
 use makoto_grpc::pkg::general::IsOkResponse;
-use makoto_grpc::pkg::tokens as rpc;
-use makoto_grpc::pkg::tokens::RefreshTheTokenRequest;
-use makoto_grpc::pkg::tokens::tokens_rpc_server::TokensRpc;
-use makoto_grpc::pkg::oauth2;
-use makoto_grpc::pkg::oauth2::OAuth2Provider;
+use makoto_grpc::pkg::tokens::{self as rpc, tokens_rpc_server::TokensRpc};
+use makoto_grpc::pkg::oauth2::{self, OAuth2Provider};
+use makoto_grpc::pkg::integrations;
+
+use mafuyu_nats::payload::tokens as nats_tokens;
+use mafuyu_nats::message::Encoder as NatsJsonEncoder;
+use makoto_grpc::pkg::integrations::GetBasicUserRequest;
 
 use crate::jwt::{Jwt, JwtPayload, TokenError};
 use crate::repo::GetTokenRecordBy;
 
 pub struct TokensRpcServiceImplementation<T = tonic::transport::Channel> {
     pub token_repo: crate::repo::Repo,
-    pub oauth2_client: oauth2::o_auth2_rpc_client::OAuth2RpcClient<T>
+    pub nats_client: async_nats::Client,
+    pub oauth2_client: oauth2::o_auth2_rpc_client::OAuth2RpcClient<T>,
+    pub integrations_client: integrations::integrations_rpc_client::IntegrationsRpcClient<T>
 }
 
 impl TokensRpcServiceImplementation {
@@ -69,20 +73,46 @@ impl TokensRpc for TokensRpcServiceImplementation {
     async fn validate_token(&self, req: Request<rpc::ValidateTokenRequest>) -> Result<Response<rpc::ValidateTokenResponse>, Status> {
         let req = req.into_inner();
 
-        let record = self.token_repo.get_token_record(GetTokenRecordBy::AccessToken(req.access_token.clone())).await.handle()?;
+        let access_token = req.access_token.clone();
 
-        let is_valid = match record.provider {
-            Some(oauth2_provider) => todo!(), // request,
-            None => Jwt::validate_access_token(req.access_token).is_ok()
+        let provider_name = match req.provider {
+            Some(provider_name) => Some(provider_name),
+            None => {
+                self.token_repo.get_token_record(GetTokenRecordBy::AccessToken(access_token)).await.handle()?.provider
+            }
+        };
+
+        let user_id = match provider_name {
+            Some(oauth2_provider) => {
+                self.integrations_client.clone().borrow_mut().get_basic_user(Request::new(GetBasicUserRequest {
+                    provider: oauth2_provider,
+                    access_token: req.access_token
+                })).await.map(|_| Option::<String>::None)?
+            },
+            None => Jwt::validate_access_token(req.access_token)
+                .map(|v| Some(v.user_id))
+                .map_err(|err| err.to_string()).unauthenticated_error()?
         };
 
         Ok(Response::new(rpc::ValidateTokenResponse {
-            is_token_valid: is_valid
+            user_id
         }))
     }
 
-    async fn clear_tokens(&self, request: Request<rpc::ClearTokensRequest>) -> Result<Response<IsOkResponse>, Status> {
-        todo!() // NATS REQUEST
+    async fn clear_tokens(&self, req: Request<rpc::ClearTokensRequest>) -> Result<Response<IsOkResponse>, Status> {
+        let req = req.into_inner();
+
+        let payload = NatsJsonEncoder::encode(nats_tokens::ClearTokensRequest {
+            access_token: req.access_token,
+            user_id: req.user_id
+        }).handle()?;
+
+        self.nats_client.publish(nats_tokens::subject::CLEAR_TOKENS, payload.into()).await.handle()?;
+
+
+        Ok(Response::new(IsOkResponse {
+            is_ok: true
+        }))
     }
 
     async fn refresh_the_token(&self, req: Request<rpc::RefreshTheTokenRequest>) -> Result<Response<rpc::RefreshTheTokenResponse>, Status> {
