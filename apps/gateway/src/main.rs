@@ -9,7 +9,7 @@ use makoto_grpc::pkg::api::api_rpc_server::ApiRpcServer;
 use makoto_logger::{Logger, info};
 use makoto_lib::Result as MakotoResult;
 use tonic_web::GrpcWebLayer;
-use tower_http::cors::{CorsLayer, AllowOrigin, AllowHeaders, ExposeHeaders};
+use tower_http::cors::{CorsLayer, AllowOrigin, AllowHeaders};
 use http::header::HeaderName;
 
 
@@ -38,7 +38,6 @@ async fn main() -> MakotoResult<()> {
         .expose_headers(exposed_headers)
         .allow_headers(AllowHeaders::any());
 
-    // settings for grpc-web library
     Server::builder()
         .accept_http1(true)
         .layer(cors)
@@ -47,8 +46,6 @@ async fn main() -> MakotoResult<()> {
         .serve(addr)
         .await?;
 
-
-    info!("server stoped!");
 
     Ok(())
 }
