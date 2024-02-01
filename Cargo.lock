@@ -1290,6 +1290,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "integrations"
+version = "0.1.0"
+dependencies = [
+ "makoto_config",
+ "makoto_db",
+ "makoto_grpc",
+ "makoto_lib",
+ "makoto_logger",
+ "prost",
+ "sea-orm",
+ "tokio",
+ "tonic",
+ "uuid",
+]
+
+[[package]]
 name = "ipnet"
 version = "2.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1450,6 +1466,7 @@ name = "makoto_db"
 version = "0.1.0"
 dependencies = [
  "makoto_config",
+ "makoto_lib",
  "sea-orm",
 ]
 
@@ -1888,6 +1905,22 @@ dependencies = [
  "redox_syscall",
  "smallvec",
  "windows-targets 0.48.5",
+]
+
+[[package]]
+name = "passport"
+version = "0.1.0"
+dependencies = [
+ "makoto_config",
+ "makoto_db",
+ "makoto_grpc",
+ "makoto_lib",
+ "makoto_logger",
+ "prost",
+ "sea-orm",
+ "tokio",
+ "tonic",
+ "uuid",
 ]
 
 [[package]]
@@ -3231,9 +3264,11 @@ checksum = "1f3ccbac311fea05f86f61904b462b55fb3df8837a366dfc601a0161d0532f20"
 name = "tokens"
 version = "0.1.0"
 dependencies = [
+ "async-nats",
  "chrono",
  "hmac",
  "jwt",
+ "mafuyu_nats",
  "makoto_config",
  "makoto_db",
  "makoto_grpc",

@@ -5,6 +5,8 @@ members = [
   "apps/tokens-async",
   "apps/tokens",
   "apps/oauth2",
+  "apps/integrations",
+  "apps/passport",
 
   "libs/config",
   "libs/db",
