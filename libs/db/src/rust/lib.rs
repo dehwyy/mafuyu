@@ -1,4 +1,5 @@
 pub mod models;
+pub mod repo;
 
 use sea_orm::{DatabaseConnection,  Database, ConnectOptions};
 
