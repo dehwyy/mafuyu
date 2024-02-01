@@ -38,7 +38,7 @@ export namespace Interceptors {
       return new WithTokensPayload(
         async () => cookies.get(GrpcCookiesKeys.AccessToken),
         async () => cookies.get(GrpcCookiesKeys.RefreshToken),
-        (token) => cookies.set(GrpcCookiesKeys.AccessToken, token, {path: '/', httpOnly: true, maxAge: 60 * 10}),
+        (token) => cookies.set(GrpcCookiesKeys.AccessToken, token, {path: '/', httpOnly: true, }),
         (token) => cookies.set(GrpcCookiesKeys.RefreshToken, token, {path: '/', httpOnly: true})
       )
     }
