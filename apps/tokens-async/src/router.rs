@@ -6,7 +6,7 @@ use makoto_lib::errors::prelude::*;
 use makoto_logger::error;
 use crate::repo::{GetTokenRecordBy, Repo as TokenRepo};
 
-use makoto_grpc::pkg::{tokens::{tokens_rpc_client::TokensRpcClient, ValidateTokenRequest}, integrations::{integrations_rpc_client::IntegrationsRpcClient, GetBasicUserRequest}};
+use makoto_grpc::pkg::tokens::{tokens_rpc_client::TokensRpcClient, ValidateTokenRequest};
 
 use mafuyu_nats::tools::Tools;
 use mafuyu_nats::route::{RouteError, RouteResult};
@@ -14,7 +14,6 @@ use mafuyu_nats::payload::tokens::ClearTokensRequest;
 
 pub struct Router<T = tonic::transport::Channel> {
     repo: TokenRepo,
-    integrations_client: IntegrationsRpcClient<T>,
     tokens_clients: TokensRpcClient<T>
 }
 
@@ -25,7 +24,6 @@ impl Router {
 
         Self {
             repo: token_repo,
-            integrations_client: clients.integrations_client.unwrap(),
             tokens_clients: clients.tokens_client.unwrap()
         }
     }
@@ -74,22 +72,12 @@ impl Router {
         let mut valid_access_tokens: Vec<String> = vec!();
         for token in access_tokens {
 
-            let is_valid = match &record.provider {
-                Some(oauth2_provider) => {
-                    // Fetch user. If `succeed -> user was fetch from `provider` with current token
-                    self.integrations_client.clone().borrow_mut().get_basic_user(tonic::Request::new(GetBasicUserRequest {
-                        provider: oauth2_provider.to_string(),
-                        access_token: token.clone()
-                    })).await.is_ok()
-                },
-                None => {
-                    self.tokens_clients.clone().borrow_mut().validate_token(tonic::Request::new(ValidateTokenRequest {
-                        access_token: token.clone()
-                    })).await.is_ok()
-                }
-            };
+            let response = self.tokens_clients.clone().borrow_mut().validate_token(tonic::Request::new(ValidateTokenRequest {
+                access_token: token.clone(),
+                provider: record.provider.clone()
+            })).await;
 
-            if is_valid {
+            if response.is_ok() {
                 valid_access_tokens.push(token)
             };
         }
