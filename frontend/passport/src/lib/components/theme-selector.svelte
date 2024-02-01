@@ -1,30 +1,30 @@
 <script lang="ts">
-  import {type  PopupSettings, popup } from '@skeletonlabs/skeleton'
-  import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
+  import { type PopupSettings, popup } from "@skeletonlabs/skeleton"
+  import { ListBox, ListBoxItem } from "@skeletonlabs/skeleton"
 
   const themes = {
-    "modern": "🤖 Modern",
-    "wintry": "❄️ Wintry",
-    "crimson": "🕸️ Crimson",
-    "gold-nouveau": "⭐Goldouveau"
+    darkest: "🦀 Darkest",
+    modern: "🤖 Modern",
+    wintry: "❄️ Wintry",
+    crimson: "🕸️ Crimson",
+    "gold-nouveau": "⭐Goldouveau",
   }
 
-  let current_theme: keyof typeof themes = "modern"
+  let current_theme: keyof typeof themes = "darkest"
 
   const themeSelectClick: PopupSettings = {
     target: "theme-select-popup",
-    placement: 'right',
-    event: 'click'
+    placement: "right",
+    event: "click",
   }
 
   $: {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const body = document.querySelector("body")
       if (body) {
         body.dataset.theme = current_theme
       }
     }
-
   }
 </script>
 

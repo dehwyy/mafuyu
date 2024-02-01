@@ -6,7 +6,7 @@ import type { PageServerLoad } from "./$types"
 export const load: PageServerLoad = async ({ parent }) => {
   const data = await parent()
   if (data.username) {
-    throw redirect(307, Routes.Account + `/@${data.username}`)
+    throw redirect(307, Routes.Account + `@${data.username}`)
   }
 }
 
@@ -19,9 +19,11 @@ export const actions: Actions = {
     try {
       const { response } = await GrpcClient.signIn(
         {
-          email,
           password,
-          username: "",
+          login: {
+            email,
+            oneofKind: "email",
+          },
         },
         {
           interceptors: [Interceptors.WithTokens(Interceptors.WithTokensPayload.CreateForSvelteKit(cookies))],

@@ -6,7 +6,7 @@ import type { PageServerLoad } from "./$types"
 export const load: PageServerLoad = async ({ parent }) => {
   const data = await parent()
   if (data.username) {
-    throw redirect(307, Routes.Account + `/@${data.username}`)
+    throw redirect(307, Routes.Account + `@${data.username}`)
   }
 }
 

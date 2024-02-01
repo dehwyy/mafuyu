@@ -23,7 +23,7 @@
     <div class="icon-sm ml-[20px] cursor-pointer select-none" use:popup={settingsClick}>
       {@html BarsIconRaw}
     </div>
-    <div data-popup="settings-popup" class="card p-6 mt-5 -ml-5">
+    <div data-popup="settings-popup" class="card p-6 mt-5 -ml-5 min-w-[250px]">
       <div class="menu-item">
         <div class="icon-sm">
           {@html UserIconRaw}
