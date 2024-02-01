@@ -1,17 +1,16 @@
-mod service;
 mod repository;
 mod utils;
-mod oauth2;
+mod service;
 
 use tonic::transport::Server;
-use service::service::AuthRpcServiceImplementation;
+use service::AuthRpcServiceImplementation;
 
-use makoto_grpc::pkg::api_auth::auth_rpc_server::AuthRpcServer;
+use makoto_grpc::pkg::auth::auth_rpc_server::AuthRpcServer;
 use makoto_logger::{Logger, info};
-use makoto_lib::Result as MakotoResult;
+use makoto_lib::Result as AnyResult;
 
 #[tokio::main]
-async fn main() -> MakotoResult<()> {
+async fn main() -> AnyResult<()> {
 
     Logger::init()?;
 
@@ -21,11 +20,11 @@ async fn main() -> MakotoResult<()> {
     let db = makoto_db::new().await.expect("cannot open database connection");
 
     let credentials_repo = repository::credentials::Credentials::new(db.clone());
-    let tokens_repo = repository::token::Tokens::new(db.clone());
+    let token_repo  =repository::tokens::Tokens::new(db.clone());
 
-    let redis = redis::Client::open(makoto_config::constants::redis::AUTH_URL).expect("cannot open redis connection");
+    let _redis = redis::Client::open(makoto_config::constants::redis::AUTH_URL).expect("cannot open redis connection");
 
-    let auth_service= AuthRpcServiceImplementation::new(credentials_repo, tokens_repo, redis);
+    let auth_service= AuthRpcServiceImplementation::new(credentials_repo, token_repo).await;
     let auth_service = AuthRpcServer::new(auth_service);
 
     info!("server start! host: {}", addr);
@@ -34,8 +33,6 @@ async fn main() -> MakotoResult<()> {
         .add_service(auth_service)
         .serve(addr)
         .await?;
-
-    info!("server stopped!");
 
     Ok(())
 }
