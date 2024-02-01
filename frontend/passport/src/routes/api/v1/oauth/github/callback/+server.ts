@@ -3,15 +3,16 @@ import { GrpcClient, Interceptors } from "@makoto/grpc"
 
 export const GET: RequestHandler = async ({ url, cookies }) => {
   const code = url.searchParams.get("code")
-  // const state = url.searchParams.get("state")
+  const csrfToken = url.searchParams.get("state")
 
-  if (code === null)
+  if (code === null || csrfToken === null)
     new Response(null, {
       status: 400,
     })
 
-  const { response } = await GrpcClient.signInOauth(
+  const { response } = await GrpcClient.exchangeOAuth2CodeToToken(
     {
+      csrfToken: csrfToken!,
       code: code!,
       provider: "github",
     },
@@ -20,7 +21,5 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
     },
   )
 
-  console.log(response)
-
-  redirect(302, `/@${response.username}`)
+  redirect(302, `/@ta`)
 }

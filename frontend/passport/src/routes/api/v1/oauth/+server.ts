@@ -10,7 +10,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
   return new Response(
     JSON.stringify({
-      redirect_url: response.url,
+      redirect_url: response.redirectUrl,
     }),
     {
       status: 302,
