@@ -17,11 +17,11 @@ impl OAuth2RpcServiceImplementation {
             ..v
         }
     }
-    fn get_provider(&self, provider_i32: i32) -> Result<&impl OAuth2Provider, Status> {
-        let provider_name  = match rpc::OAuth2Provider::try_from(provider_i32) {
-            Ok(rpc::OAuth2Provider::Github) => Ok(OAuth2ProviderName::Github),
-            Ok(rpc::OAuth2Provider::Google) => Ok(OAuth2ProviderName::Google),
-            Err(_) => Err("cannot infer provider".to_string())
+    fn get_provider(&self, provider: &str) -> Result<&impl OAuth2Provider, Status> {
+        let provider_name  = match provider {
+            "github" => Ok(OAuth2ProviderName::Github),
+            "google" => Ok(OAuth2ProviderName::Google),
+            _ => Err("cannot infer provider".to_string())
         }.invalid_argument_error()?;
 
         Ok(self.oauth2.get_provider(provider_name))
@@ -33,7 +33,7 @@ impl OAuth2Rpc for OAuth2RpcServiceImplementation {
     async fn create_redirect_url(&self, request: Request<rpc::CreateRedirectUrlRequest>) -> Result<Response<rpc::CreateRedirectUrlResponse>, Status> {
         let req = request.into_inner();
 
-        let provider = self.get_provider(req.provider)?;
+        let provider = self.get_provider(&req.provider)?;
 
         let (redirect_url, csrf_token) = provider.create_redirect_url();
 
@@ -48,7 +48,7 @@ impl OAuth2Rpc for OAuth2RpcServiceImplementation {
     async fn exchange_code_to_token(&self, request: Request<rpc::ExchangeCodeToTokenRequest>) -> Result<Response<rpc::ExchangeCodeToTokenResponse>, Status> {
         let req = request.into_inner();
 
-        let provider = self.get_provider(req.provider)?;
+        let provider = self.get_provider(&req.provider)?;
 
         let oauth2_token = provider.exchange_code_to_token(req.code).await.unauthenticated_error()?;
 
@@ -64,7 +64,7 @@ impl OAuth2Rpc for OAuth2RpcServiceImplementation {
     async fn refresh_the_token(&self, request: Request<rpc::RefreshTheTokenRequest>) -> Result<Response<rpc::RefreshTheTokenResponse>, Status> {
         let req = request.into_inner();
 
-        let provider = self.get_provider(req.provider)?;
+        let provider = self.get_provider(&req.provider)?;
 
         let oauth2_token = match  provider.refresh().await {
             Ok(token) => Ok(token),
@@ -74,6 +74,7 @@ impl OAuth2Rpc for OAuth2RpcServiceImplementation {
                 })
         }?;
 
+        // TODO: maybe returns both refresh and access tokens
         Ok(Response::new(
             rpc::RefreshTheTokenResponse {
                 access_token: oauth2_token.access_token

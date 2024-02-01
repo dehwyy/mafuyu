@@ -1,9 +1,7 @@
 use oauth2::{AuthorizationCode, RedirectUrl, TokenResponse, ClientId, ClientSecret, CsrfToken};
 use oauth2::{basic::BasicClient, AuthUrl, TokenUrl};
 use oauth2::reqwest::async_http_client;
-use makoto_logger::{error, info};
 use super::*;
-use constants::*;
 
 pub struct Github {
   client: BasicClient

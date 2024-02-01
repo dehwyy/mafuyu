@@ -8,8 +8,6 @@ oauth2 = "4.4.2"
 tonic = "0.10.2"
 prost = "0.12.3"
 tokio = { version = "1.35.0", features = ["macros", "rt-multi-thread"] }
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
 reqwest = "0.11.23"
 
 makoto_grpc = {path = "../../libs/grpc"}

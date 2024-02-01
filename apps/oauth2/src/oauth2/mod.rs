@@ -40,7 +40,3 @@ pub trait OAuth2Provider {
   async fn exchange_code_to_token(&self, code: String) -> Result<OAuth2Token, String>;
   async fn refresh(&self) -> Result<OAuth2Token, RefreshError>;
 }
-
-pub mod constants {
-  pub const GITHUB_PROFILE_URL: &str = "https://api.github.com/user";
-}
