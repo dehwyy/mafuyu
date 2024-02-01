@@ -10,6 +10,7 @@ service TokensRpc {
   rpc GenerateTokenPair(GenerateTokenPairRequest) returns (GenerateTokenPairResponse);
   rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
   rpc ClearTokens(ClearTokensRequest) returns (general.IsOkResponse);
+  rpc SaveTokens(SaveTokensRequest) returns (general.IsOkResponse);
   rpc RefreshTheToken(RefreshTheTokenRequest) returns (RefreshTheTokenResponse);
 }
 
@@ -34,6 +35,13 @@ message ValidateTokenResponse {
 message ClearTokensRequest {
   string user_id = 1;
   optional string access_token = 2; // If access_token is provided -> this token will be deleted too.
+}
+
+message SaveTokensRequest {
+  string user_id = 1;
+  string access_token = 2;
+  optional string refresh_token = 3;
+  optional string provider = 4;
 }
 
 message RefreshTheTokenRequest {

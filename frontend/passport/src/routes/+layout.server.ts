@@ -9,7 +9,7 @@ export const load: LayoutServerLoad = async ({ cookies, url }) => {
     }
 
   try {
-    const { response } = await GrpcClient.signInToken(
+    const { response } = await GrpcClient.signInWithToken(
       {
         token: "", // will be set in interceptor
       },

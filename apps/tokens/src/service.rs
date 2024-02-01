@@ -5,8 +5,8 @@ use uuid::Uuid;
 use makoto_lib::errors::prelude::*;
 
 use makoto_grpc::pkg::general::IsOkResponse;
-use makoto_grpc::pkg::tokens::{self as rpc, tokens_rpc_server::TokensRpc};
-use makoto_grpc::pkg::oauth2::{self, OAuth2Provider};
+use makoto_grpc::pkg::tokens::{self as rpc, SaveTokensRequest, tokens_rpc_server::TokensRpc};
+use makoto_grpc::pkg::oauth2;
 use makoto_grpc::pkg::integrations;
 
 use mafuyu_nats::payload::tokens as nats_tokens;
@@ -62,7 +62,7 @@ impl TokensRpc for TokensRpcServiceImplementation {
         }.map_err(|err| err.to_string() ).internal_error()?;
 
 
-        self.token_repo.insert_tokens(user_id, &access_token, &refresh_token).await.handle()?;
+        self.token_repo.insert_tokens(user_id, access_token.clone(), Some(refresh_token.clone()), None).await.handle()?;
 
         Ok(Response::new(rpc::GenerateTokenPairResponse {
             access_token,
@@ -115,6 +115,18 @@ impl TokensRpc for TokensRpcServiceImplementation {
         }))
     }
 
+    async fn save_tokens(&self, req: Request<SaveTokensRequest>) -> Result<Response<IsOkResponse>, Status> {
+        let req = req.into_inner();
+
+        let user_id = Uuid::try_parse(&req.user_id).map_err(|err| Status::invalid_argument(err.to_string()))?;
+
+        self.token_repo.insert_tokens(user_id, req.access_token, req.refresh_token, req.provider).await.handle()?;
+
+        Ok(Response::new(IsOkResponse {
+            is_ok: true
+        }))
+    }
+
     async fn refresh_the_token(&self, req: Request<rpc::RefreshTheTokenRequest>) -> Result<Response<rpc::RefreshTheTokenResponse>, Status> {
         let req = req.into_inner();
 
@@ -122,11 +134,9 @@ impl TokensRpc for TokensRpcServiceImplementation {
 
         let access_token = match record.provider {
             Some(oauth2_provider) => {
-                let provider = OAuth2Provider::from_str_name(&oauth2_provider).safe_unwrap("invalid oauth2 provider")?;
-
                 let response = self.oauth2_client.clone().borrow_mut().refresh_the_token(oauth2::RefreshTheTokenRequest {
                     refresh_token: req.refresh_token.clone(),
-                    provider: provider as i32
+                    provider: oauth2_provider
                 }).await?.into_inner();
 
                 Ok(response.access_token)

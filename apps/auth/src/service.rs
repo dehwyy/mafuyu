@@ -10,7 +10,7 @@ use tonic::{Status, Response, Request};
 use uuid::Uuid;
 use makoto_grpc::pkg::auth::AuthenticationServiceResponse;
 
-use crate::repository::credentials::{Credentials, GetRecordBy as GetUserRecordBy};
+use crate::repository::credentials::{Credentials, GetCredentialsRecordBy as GetUserRecordBy};
 use crate::repository::tokens::{Tokens, GetTokenRecordBy};
 use crate::utils::hasher::Hasher;
 use crate::utils::validator::Validator;
@@ -69,7 +69,9 @@ impl rpc::auth_rpc_server::AuthRpc for AuthRpcServiceImplementation {
     let created_user = self.passport_client.clone().borrow_mut().create_user(Request::new(passport::CreateUserRequest {
       username: req.username.clone(),
       email: Some(req.email),
-      password: Some(user_password)
+      password: Some(user_password),
+      picture: None,
+      provider_id: None
     })).await?.into_inner();
 
     let tokens = self.tokens_client.clone().borrow_mut().generate_token_pair(Request::new(tokens::GenerateTokenPairRequest {

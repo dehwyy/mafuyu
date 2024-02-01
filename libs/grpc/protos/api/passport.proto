@@ -6,14 +6,32 @@ option go_package = "github.com/dehwyy/makoto/libs/grpc/generated/passport";
 
 service PassportRpc {
   rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+  rpc GetPublicUser(GetPublicUserRequest) returns (GetPublicUserResponse);
 }
 
 message CreateUserRequest {
   string username = 1;
   optional string email = 2;
   optional string password = 3;
+  optional string provider_id = 4;
+  optional string picture = 5;
 }
 
 message CreateUserResponse {
   string user_id = 1;
+}
+
+message GetPublicUserRequest {
+  oneof get_user_by {
+    string user_id = 1;
+    string username = 2;
+    string provider_id = 3;
+  }
+}
+
+message GetPublicUserResponse {
+  string user_id = 1;
+  string username = 2;
+  optional string picture = 3;
+  optional string provider_id = 4;
 }

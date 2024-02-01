@@ -22,7 +22,7 @@ impl Repo {
     }
 
     /// * Creates || updates `user_tokens::Model`
-    pub async fn insert_tokens(&self, user_id: Uuid, access_token: &str, refresh_token: &str) -> Result<(), RepositoryError> {
+    pub async fn insert_tokens(&self, user_id: Uuid, access_token: String, refresh_token: Option<String>, provider: Option<String>) -> Result<(), RepositoryError> {
         let tokens_model = self.get_token_record(GetTokenRecordBy::UserId(user_id.clone())).await;
 
         let db_update = match tokens_model {
@@ -30,9 +30,12 @@ impl Repo {
                 let mut tokens_active_model: user_tokens::ActiveModel = v.into();
 
                 let mut tokens = tokens_active_model.access_tokens.take().unwrap_or_default().unwrap_or_default();
-                tokens.push(access_token.to_string());
+                tokens.push(access_token);
 
-                tokens_active_model.refresh_token = Some(refresh_token.to_string()).into_active_value();
+                if let Some(refresh_token) = refresh_token {
+                    tokens_active_model.refresh_token = Some(refresh_token).into_active_value();
+                }
+
                 tokens_active_model.access_tokens = ActiveValue::Set(Some(tokens));
 
                 Ok(tokens_active_model.update(&self.db))
@@ -43,9 +46,9 @@ impl Repo {
                     RepositoryError::NotFound(_) => {
                         let model = user_tokens::ActiveModel {
                             user_id: user_id.into_active_value(),
-                            refresh_token: Some(refresh_token.to_string()).into_active_value(),
-                            access_tokens: ActiveValue::Set(Some(vec!(access_token.to_string()))),
-                            provider: ActiveValue::Set(None),
+                            refresh_token: refresh_token.into_active_value(),
+                            access_tokens: ActiveValue::Set(Some(vec!(access_token))),
+                            provider: ActiveValue::Set(provider),
                             ..Default::default()
                         };
 
@@ -59,15 +62,4 @@ impl Repo {
 
         Ok(())
     }
-
-    pub async fn set_access_tokens(&self, model: user_tokens::Model, new_access_token: Vec<String>) -> Result<(), RepositoryError> {
-        let mut tokens_active_model: user_tokens::ActiveModel = model.into();
-
-        tokens_active_model.access_tokens = ActiveValue::Set(Some(new_access_token));
-
-        tokens_active_model.update(&self.db).await.handle()?;
-
-        Ok(())
-    }
-
 }

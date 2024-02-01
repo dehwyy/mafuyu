@@ -10,7 +10,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
       status: 400,
     })
 
-  const { response } = await GrpcClient.exchangeOAuth2CodeToToken(
+  const { response } = await GrpcClient.signInOAuth2(
     {
       csrfToken: csrfToken!,
       code: code!,
@@ -21,5 +21,5 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
     },
   )
 
-  redirect(302, `/@ta`)
+  redirect(302, `/@${response.username}`)
 }
