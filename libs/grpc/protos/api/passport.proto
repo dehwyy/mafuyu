@@ -5,5 +5,15 @@ package passport;
 option go_package = "github.com/dehwyy/makoto/libs/grpc/generated/passport";
 
 service PassportRpc {
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+}
 
+message CreateUserRequest {
+  string username = 1;
+  optional string email = 2;
+  optional string password = 3;
+}
+
+message CreateUserResponse {
+  string user_id = 1;
 }

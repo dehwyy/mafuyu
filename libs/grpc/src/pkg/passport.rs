@@ -1,3 +1,19 @@
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateUserRequest {
+    #[prost(string, tag = "1")]
+    pub username: ::prost::alloc::string::String,
+    #[prost(string, optional, tag = "2")]
+    pub email: ::core::option::Option<::prost::alloc::string::String>,
+    #[prost(string, optional, tag = "3")]
+    pub password: ::core::option::Option<::prost::alloc::string::String>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateUserResponse {
+    #[prost(string, tag = "1")]
+    pub user_id: ::prost::alloc::string::String,
+}
 /// Generated client implementations.
 pub mod passport_rpc_client {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
@@ -83,6 +99,31 @@ pub mod passport_rpc_client {
             self.inner = self.inner.max_encoding_message_size(limit);
             self
         }
+        pub async fn create_user(
+            &mut self,
+            request: impl tonic::IntoRequest<super::CreateUserRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::CreateUserResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/passport.PassportRpc/CreateUser",
+            );
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("passport.PassportRpc", "CreateUser"));
+            self.inner.unary(req, path, codec).await
+        }
     }
 }
 /// Generated server implementations.
@@ -91,7 +132,15 @@ pub mod passport_rpc_server {
     use tonic::codegen::*;
     /// Generated trait containing gRPC methods that should be implemented for use with PassportRpcServer.
     #[async_trait]
-    pub trait PassportRpc: Send + Sync + 'static {}
+    pub trait PassportRpc: Send + Sync + 'static {
+        async fn create_user(
+            &self,
+            request: tonic::Request<super::CreateUserRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::CreateUserResponse>,
+            tonic::Status,
+        >;
+    }
     #[derive(Debug)]
     pub struct PassportRpcServer<T: PassportRpc> {
         inner: _Inner<T>,
@@ -171,6 +220,52 @@ pub mod passport_rpc_server {
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
             let inner = self.inner.clone();
             match req.uri().path() {
+                "/passport.PassportRpc/CreateUser" => {
+                    #[allow(non_camel_case_types)]
+                    struct CreateUserSvc<T: PassportRpc>(pub Arc<T>);
+                    impl<
+                        T: PassportRpc,
+                    > tonic::server::UnaryService<super::CreateUserRequest>
+                    for CreateUserSvc<T> {
+                        type Response = super::CreateUserResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::CreateUserRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as PassportRpc>::create_user(&inner, request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = CreateUserSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
                 _ => {
                     Box::pin(async move {
                         Ok(

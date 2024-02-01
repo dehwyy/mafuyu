@@ -23,8 +23,8 @@ pub struct ValidateTokenRequest {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ValidateTokenResponse {
-    #[prost(bool, tag = "1")]
-    pub is_token_valid: bool,
+    #[prost(string, optional, tag = "1")]
+    pub user_id: ::core::option::Option<::prost::alloc::string::String>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]

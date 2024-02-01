@@ -28,7 +28,7 @@ message ValidateTokenRequest {
 }
 
 message ValidateTokenResponse {
-  bool is_token_valid = 1;
+  optional string user_id = 1;
 }
 
 message ClearTokensRequest {
