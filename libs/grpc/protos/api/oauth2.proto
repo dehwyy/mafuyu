@@ -4,11 +4,6 @@ package oauth2;
 
 option go_package = "github.com/dehwyy/makoto/libs/grpc/generated/oauth2";
 
-enum OAuth2Provider {
-  Github = 0;
-  Google = 1;
-}
-
 service OAuth2Rpc {
   rpc CreateRedirectUrl(CreateRedirectUrlRequest) returns (CreateRedirectUrlResponse);
   rpc ExchangeCodeToToken(ExchangeCodeToTokenRequest) returns (ExchangeCodeToTokenResponse);
@@ -16,7 +11,7 @@ service OAuth2Rpc {
 }
 
 message CreateRedirectUrlRequest {
-  OAuth2Provider provider = 1;
+  string provider = 1;
 }
 
 message CreateRedirectUrlResponse {
@@ -25,7 +20,7 @@ message CreateRedirectUrlResponse {
 }
 
 message ExchangeCodeToTokenRequest {
-  OAuth2Provider provider = 1;
+  string provider = 1;
   string code = 2;
   string csrf_token = 3;
 }
@@ -36,7 +31,7 @@ message ExchangeCodeToTokenResponse {
 }
 
 message RefreshTheTokenRequest {
-  OAuth2Provider provider = 1;
+  string provider = 1;
   string refresh_token = 2;
 }
 

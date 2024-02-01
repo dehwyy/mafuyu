@@ -1,8 +1,8 @@
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CreateRedirectUrlRequest {
-    #[prost(enumeration = "OAuth2Provider", tag = "1")]
-    pub provider: i32,
+    #[prost(string, tag = "1")]
+    pub provider: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -15,8 +15,8 @@ pub struct CreateRedirectUrlResponse {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ExchangeCodeToTokenRequest {
-    #[prost(enumeration = "OAuth2Provider", tag = "1")]
-    pub provider: i32,
+    #[prost(string, tag = "1")]
+    pub provider: ::prost::alloc::string::String,
     #[prost(string, tag = "2")]
     pub code: ::prost::alloc::string::String,
     #[prost(string, tag = "3")]
@@ -33,8 +33,8 @@ pub struct ExchangeCodeToTokenResponse {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RefreshTheTokenRequest {
-    #[prost(enumeration = "OAuth2Provider", tag = "1")]
-    pub provider: i32,
+    #[prost(string, tag = "1")]
+    pub provider: ::prost::alloc::string::String,
     #[prost(string, tag = "2")]
     pub refresh_token: ::prost::alloc::string::String,
 }
@@ -43,32 +43,6 @@ pub struct RefreshTheTokenRequest {
 pub struct RefreshTheTokenResponse {
     #[prost(string, tag = "1")]
     pub access_token: ::prost::alloc::string::String,
-}
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
-#[repr(i32)]
-pub enum OAuth2Provider {
-    Github = 0,
-    Google = 1,
-}
-impl OAuth2Provider {
-    /// String value of the enum field names used in the ProtoBuf definition.
-    ///
-    /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
-    pub fn as_str_name(&self) -> &'static str {
-        match self {
-            OAuth2Provider::Github => "Github",
-            OAuth2Provider::Google => "Google",
-        }
-    }
-    /// Creates an enum from field names used in the ProtoBuf definition.
-    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
-        match value {
-            "Github" => Some(Self::Github),
-            "Google" => Some(Self::Google),
-            _ => None,
-        }
-    }
 }
 /// Generated client implementations.
 pub mod o_auth2_rpc_client {
