@@ -7,17 +7,19 @@ pub mod credentials {
     use crate::models::prelude::UserCredentials;
     use crate::models::user_credentials;
 
-    pub enum GetRecordBy {
+    pub enum GetCredentialsRecordBy {
         UserId(Uuid),
         Username(String),
-        Email(String)
+        Email(String),
+        ProviderId(String)
     }
 
-    pub async fn get_user(db_connection: &DatabaseConnection, get_by: GetRecordBy) -> Result<user_credentials::Model, RepositoryError> {
+    pub async fn get_user(db_connection: &DatabaseConnection, get_by: GetCredentialsRecordBy) -> Result<user_credentials::Model, RepositoryError> {
         let filter = match get_by {
-            GetRecordBy::UserId(user_id) => user_credentials::Column::Id.eq(user_id),
-            GetRecordBy::Username(username) => user_credentials::Column::Username.eq(username),
-            GetRecordBy::Email(email) => user_credentials::Column::Email.eq(email)
+            GetCredentialsRecordBy::UserId(user_id) => user_credentials::Column::Id.eq(user_id),
+            GetCredentialsRecordBy::Username(username) => user_credentials::Column::Username.eq(username),
+            GetCredentialsRecordBy::Email(email) => user_credentials::Column::Email.eq(Some(email)),
+            GetCredentialsRecordBy::ProviderId(provider_id) => user_credentials::Column::ProviderId.eq(Some(provider_id))
         };
 
         let user = UserCredentials::find().filter(filter).one(db_connection).await.handle()?;
@@ -43,7 +45,7 @@ pub mod tokens {
             GetTokenRecordBy::UserId(id) => user_tokens::Column::UserId.eq(id),
             // I was struggling in about 2 hour to make this query...
             GetTokenRecordBy::AccessToken(token) => Expr::cust(format!(
-                r#"'{token}' = ANY("{user_tokens}"."access_token")"#,
+                r#"'{token}' = ANY("{user_tokens}"."access_tokens")"#,
                 token=token,
                 user_tokens=user_tokens::Column::AccessTokens.entity_name().to_string(),
             )),

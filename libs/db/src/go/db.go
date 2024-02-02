@@ -32,7 +32,12 @@ func New(database_url string) *gorm.DB {
 	db_settings.SetMaxIdleConns(10)
 	db_settings.SetConnMaxIdleTime(5)
 
-	err = db.AutoMigrate(models.UserCredentials{}, models.UserTokens{}, models.UserIntegration{})
+	err = db.AutoMigrate(
+		models.Language{},
+		models.Post{}, models.PostReports{}, models.Comment{},
+		models.UserCredentials{}, models.UserTokens{}, models.UserIntegrations{}, models.User{},
+	)
+
 	if err != nil {
 		panic(err)
 	}

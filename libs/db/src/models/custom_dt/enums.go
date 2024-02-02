@@ -8,7 +8,6 @@ import (
 type AuthProvider string
 
 const (
-	native AuthProvider = "native" // via common credentials
 	github AuthProvider = "github"
 	google AuthProvider = "google"
 )

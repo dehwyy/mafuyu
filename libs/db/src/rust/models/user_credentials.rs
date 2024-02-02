@@ -7,10 +7,14 @@ use sea_orm::entity::prelude::*;
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
+    #[sea_orm(column_type = "Text", nullable)]
+    pub provider_id: Option<String>,
     #[sea_orm(column_type = "Text", unique)]
     pub username: String,
     #[sea_orm(column_type = "Text", nullable, unique)]
     pub email: Option<String>,
+    #[sea_orm(column_type = "Text", nullable)]
+    pub picture: Option<String>,
     #[sea_orm(column_type = "Text", nullable)]
     pub password: Option<String>,
     pub created_at: Option<DateTimeWithTimeZone>,

@@ -2,6 +2,18 @@
 
 pub mod prelude;
 
+pub mod comments;
+pub mod languages;
+pub mod post_reports;
+pub mod posts;
+pub mod user_blocked;
 pub mod user_credentials;
+pub mod user_followers;
+pub mod user_friends;
+pub mod user_hidden_posts;
 pub mod user_integrations;
+pub mod user_languages;
+pub mod user_liked_comments;
+pub mod user_liked_posts;
 pub mod user_tokens;
+pub mod users;
