@@ -5,7 +5,7 @@
   let images: string[] = []
 
   // prettier-ignore
-  export let photo = "https://sun9-28.userapi.com/impg/nfm26MjdU4tRW3N-OwRaiLh996CjCTLh0vu8Dg/ENC1jP7-KJw.jpg?size=1347x1346&quality=95&sign=ed76ada3e9318d6d216d6b845421f402&type=album"
+  export let photo: string
   $: {
     if (images.length > 0) {
       photo = images[0]

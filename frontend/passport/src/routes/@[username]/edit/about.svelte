@@ -1,32 +1,53 @@
 <script lang="ts">
-  // import { Datepicker, themes } from "svelte-calendar"
-
-  // let store: any
-  // TODO: custom calendar theme, fix glitch effect, @see (https://6edesign.github.io/svelte-calendar)
   import LanguageSelector from "./settings/language-select.svelte"
   import ProfilePhoto from "./settings/profile-photo.svelte"
   import Username from "./settings/username.svelte"
   import Pseudonym from "./settings/pseudonym.svelte"
   import Bio from "./settings/bio.svelte"
-
   import CheckIconRaw from "$lib/assets/check.svg?raw"
+  import { useMutation } from "@sveltestack/svelte-query"
+  import { typedFetch } from "$lib/utils/typed-fetch"
+  import { user_store } from "$lib/stores/user"
 
-  let selected_languages: string[] = []
+  $: has_changes = true
 
-  $: has_changes = false
+  export let photo =
+    "https://sun9-28.userapi.com/impg/nfm26MjdU4tRW3N-OwRaiLh996CjCTLh0vu8Dg/ENC1jP7-KJw.jpg?size=1347x1346&quality=95&sign=ed76ada3e9318d6d216d6b845421f402&type=album"
+
+  export let username: string
+  export let pseudonym = ""
+  export let bio = ""
+  export let selected_languages: string[] = []
+
+  const SaveAll = useMutation(
+    async () => {
+      await typedFetch({
+        route: "user/edit",
+        payload: {
+          username,
+          image: photo,
+          userId: $user_store?.id!,
+        },
+        method: "POST",
+      })
+    },
+    {
+      mutationKey: ["edit.user"],
+    },
+  )
 </script>
 
 <section class="col-span-2 flex flex-col gap-y-5 settings px-5">
   <div class={`${has_changes ? "bottom-5" : "-bottom-20"} fixed self-end  z-10 -mr-6 transition-all duration-200`}>
-    <button class="w-[50px] h-[50px] variant-glass-primary btn rounded-full px-3 border border-primary-700">
+    <button on:click={() => $SaveAll.mutate()} class="w-[50px] h-[50px] variant-glass-success btn rounded-full px-3 border border-success-500">
       {@html CheckIconRaw}
     </button>
   </div>
   <div class="flex flex-col gap-y-7">
-    <ProfilePhoto />
-    <Username />
-    <Pseudonym />
-    <Bio />
+    <ProfilePhoto bind:photo />
+    <Username bind:username />
+    <Pseudonym bind:pseudonym />
+    <Bio bind:bio />
   </div>
   <hr />
   <article class:absolute={false} class="flex items-center gap-x-10">

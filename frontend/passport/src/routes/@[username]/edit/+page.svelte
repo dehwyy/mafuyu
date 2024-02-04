@@ -4,12 +4,15 @@
 
   import GoogleIconRaw from "$lib/assets/google.svg?raw"
   import GithubIconRaw from "$lib/assets/github.svg?raw"
+  import type { LayoutData } from "../$types"
 
   const Integrations = [
     { icon: GoogleIconRaw, text: "Connect", is_connected: false, data: "" },
     { icon: GithubIconRaw, text: "Connect", is_connected: true, data: "dehwyy" },
     { icon: GithubIconRaw, text: "Connect", is_connected: false, data: "" },
   ]
+
+  export let data: LayoutData
 </script>
 
 <div class="flex flex-col gap-y-5">
@@ -33,7 +36,7 @@
   <SlideWindow max_height="900px">
     <svelte:fragment slot="heading">About</svelte:fragment>
     <svelte:fragment slot="content">
-      <About />
+      <About username={data?.username || ""} pseudonym={data.pseudonym} photo={data.picture} bio={data.bio} selected_languages={data.languages} />
     </svelte:fragment>
   </SlideWindow>
 </div>

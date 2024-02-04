@@ -2,15 +2,23 @@
   import GoogleIconRaw from "$lib/assets/google.svg?raw"
   import GithubIconRaw from "$lib/assets/github.svg?raw"
   import { useMutation } from "@sveltestack/svelte-query"
+  import { Routes } from "$lib/utils/typed-fetch"
+
 
   const oauth_redirect = useMutation(
     async (provider: string) => {
-      const response = await fetch("/api/v1/oauth", {
-        method: "POST",
-        body: JSON.stringify({ provider }),
+      const response = await Routes["oauth"].fetch({
+        provider
       })
 
-      window.location.href = (await response.json())["redirect_url"]!
+
+      // const response = await fetch("/api/v1/oauth", {
+      //   method: "POST",
+      //   body: JSON.stringify({ provider }),
+      // })
+
+      // window.location.href = (await response.json())["redirect_url"]!
+      window.location.href = response.redirect_url
     },
     {
       onError: e => {

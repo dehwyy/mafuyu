@@ -2,6 +2,7 @@
   import { ListBox, ListBoxItem } from "@skeletonlabs/skeleton"
   import { Routes } from "$lib/const"
   import { page } from "$app/stores"
+  import type { LayoutData } from "./$types"
 
   const navigation = {
     "/": "Overview",
@@ -13,6 +14,8 @@
   $: {
     current_navigation = ($page.route.id?.split("/@[username]").at(-1) || "/") as keyof typeof navigation
   }
+
+  export let data: LayoutData
 </script>
 
 <div style="margin-right: calc(100vw - 100%)" class="w-full max-w-[1450px]">
@@ -20,11 +23,13 @@
     <nav class="min-w-[230px]">
       <section class="mb-7">
         <div class="w-[175px] h-[175px] object-cover overflow-hidden rounded-full mb-4 border-2 mx-auto">
-          <img alt="account_image" src="/images/r.jpg" />
+          <img alt="account_image" src={data.picture || "/images/r.jpg"} />
         </div>
         <div class="text-center">
           <h4 class="h4">{$page.params.username}</h4>
-          <h6 class="h6 opacity-50">Egor Hoshi</h6>
+          {#if data.pseudonym}
+            <h6 class="h6 opacity-50">{data.pseudonym}</h6>
+          {/if}
         </div>
       </section>
       <ListBox>
