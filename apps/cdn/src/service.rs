@@ -5,6 +5,7 @@ use makoto_grpc::pkg::cdn::{UploadNewImageRequest, UploadNewImageResponse};
 use makoto_lib::errors::HandleError;
 
 use mafuyu_nats::payload::cdn as nats_cdn;
+use makoto_logger::info;
 
 pub struct CdnRpcServiceImplementation {
     url_base: String,
@@ -15,7 +16,7 @@ pub struct CdnRpcServiceImplementation {
 impl CdnRpcServiceImplementation {
     pub fn new(nats_client: async_nats::Client, repo: crate::repo::Repo) -> Self {
         Self {
-            url_base: "https://127.0.0.1/v1/static".to_string(),
+            url_base: "https://localhost:6996/v1/static".to_string(),
             nats_client,
             repo
         }
@@ -32,7 +33,7 @@ impl CdnRpc for CdnRpcServiceImplementation {
             if i > 5 { break None }
 
             let filename = format!("{}.{}", req.keyword, uuid::Uuid::new_v4().to_string());
-            if self.repo.has_value_by_key(&filename).await.map_err(|err| Status::internal(err.to_string()))? {
+            if !self.repo.has_value_by_key(&filename).await.map_err(|err| Status::internal(err.to_string()))? {
                 break Some(filename);
             };
 

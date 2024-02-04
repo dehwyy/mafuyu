@@ -5,6 +5,7 @@ use makoto_db::repo::user::GetUserRecordBy;
 use makoto_grpc::pkg::user as rpc;
 use makoto_grpc::pkg::cdn;
 use makoto_lib::errors::{HandleError, SafeUnwrapWithMessage};
+use makoto_logger::info;
 use crate::repo::user::EditPrimitiveUserPayload;
 
 pub struct UserRpcServiceImplementation<T = tonic::transport::Channel> {
@@ -49,14 +50,17 @@ impl rpc::user_rpc_server::UserRpc for UserRpcServiceImplementation {
         let update_languages_fut = self.languages_repo.set_languages(&user_id, req.languages);
 
         let mut picture: Option<String> = None;
+
         if let Some(image) = req.picture {
             if !image.starts_with("http") {
-                let response = self.cdn_client.clone().borrow_mut().upload_new_image(Request::new(cdn::UploadNewImageRequest {
-                    image_base64: image.into_bytes(),
-                    keyword: req.user_id.clone()
-                })).await?.into_inner();
+                if let Some(image) = image.split_once(",") {
+                    let response = self.cdn_client.clone().borrow_mut().upload_new_image(Request::new(cdn::UploadNewImageRequest {
+                        image_base64: image.1.to_string(),
+                        keyword: req.user_id.clone()
+                    })).await?.into_inner();
 
-                picture = Some(response.full_url)
+                    picture = Some(response.full_url)
+                }
             }
         }
 

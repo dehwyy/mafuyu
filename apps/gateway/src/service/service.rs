@@ -191,10 +191,6 @@ impl api_rpc_server::ApiRpc for ApiRpcServiceImplementation {
   }
 
   async fn edit_user(&self, req: Request<EditUserRequest>) -> Result<Response<()>, Status> {
-    let req= req.into_inner();
-
-
-
     self.user_client.clone().borrow_mut().edit_user(req).await
   }
 

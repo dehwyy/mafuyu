@@ -1,6 +1,7 @@
 use sea_orm::{prelude::*, IntoActiveValue};
 use makoto_db::{models::user_languages, repo::languages::get_language_id_by_name};
 use makoto_lib::errors::prelude::{RepositoryError, HandleError};
+use makoto_logger::info;
 
 pub struct LanguagesRepo {
     db: DatabaseConnection
@@ -24,6 +25,10 @@ impl LanguagesRepo {
 
         }).collect();
 
-        user_languages::Entity::insert_many(models).exec(&self.db).await.handle().map(|_| {})
+        if models.len() != 0 {
+            user_languages::Entity::insert_many(models).exec(&self.db).await.handle().map(|_| {})?;
+        }
+
+        Ok(())
     }
 }
