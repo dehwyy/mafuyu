@@ -231,13 +231,13 @@ pub mod api_rpc_client {
                 .insert(GrpcMethod::new("api.ApiRpc", "CreateOAuth2RedirectUrl"));
             self.inner.unary(req, path, codec).await
         }
-        pub async fn exchange_o_auth2_code_to_token(
+        pub async fn sign_in_o_auth2(
             &mut self,
             request: impl tonic::IntoRequest<
                 super::super::oauth2::ExchangeCodeToTokenRequest,
             >,
         ) -> std::result::Result<
-            tonic::Response<super::super::oauth2::ExchangeCodeToTokenResponse>,
+            tonic::Response<super::super::auth::AuthenticationResponse>,
             tonic::Status,
         > {
             self.inner
@@ -250,12 +250,51 @@ pub mod api_rpc_client {
                     )
                 })?;
             let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static(
-                "/api.ApiRpc/ExchangeOAuth2CodeToToken",
-            );
+            let path = http::uri::PathAndQuery::from_static("/api.ApiRpc/SignInOAuth2");
             let mut req = request.into_request();
-            req.extensions_mut()
-                .insert(GrpcMethod::new("api.ApiRpc", "ExchangeOAuth2CodeToToken"));
+            req.extensions_mut().insert(GrpcMethod::new("api.ApiRpc", "SignInOAuth2"));
+            self.inner.unary(req, path, codec).await
+        }
+        /// User
+        pub async fn edit_user(
+            &mut self,
+            request: impl tonic::IntoRequest<super::super::user::EditUserRequest>,
+        ) -> std::result::Result<tonic::Response<()>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static("/api.ApiRpc/EditUser");
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new("api.ApiRpc", "EditUser"));
+            self.inner.unary(req, path, codec).await
+        }
+        pub async fn get_user(
+            &mut self,
+            request: impl tonic::IntoRequest<super::super::user::GetUserRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::super::user::GetUserResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static("/api.ApiRpc/GetUser");
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new("api.ApiRpc", "GetUser"));
             self.inner.unary(req, path, codec).await
         }
     }
@@ -312,11 +351,23 @@ pub mod api_rpc_server {
             tonic::Response<super::super::oauth2::CreateRedirectUrlResponse>,
             tonic::Status,
         >;
-        async fn exchange_o_auth2_code_to_token(
+        async fn sign_in_o_auth2(
             &self,
             request: tonic::Request<super::super::oauth2::ExchangeCodeToTokenRequest>,
         ) -> std::result::Result<
-            tonic::Response<super::super::oauth2::ExchangeCodeToTokenResponse>,
+            tonic::Response<super::super::auth::AuthenticationResponse>,
+            tonic::Status,
+        >;
+        /// User
+        async fn edit_user(
+            &self,
+            request: tonic::Request<super::super::user::EditUserRequest>,
+        ) -> std::result::Result<tonic::Response<()>, tonic::Status>;
+        async fn get_user(
+            &self,
+            request: tonic::Request<super::super::user::GetUserRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::super::user::GetUserResponse>,
             tonic::Status,
         >;
     }
@@ -685,15 +736,15 @@ pub mod api_rpc_server {
                     };
                     Box::pin(fut)
                 }
-                "/api.ApiRpc/ExchangeOAuth2CodeToToken" => {
+                "/api.ApiRpc/SignInOAuth2" => {
                     #[allow(non_camel_case_types)]
-                    struct ExchangeOAuth2CodeToTokenSvc<T: ApiRpc>(pub Arc<T>);
+                    struct SignInOAuth2Svc<T: ApiRpc>(pub Arc<T>);
                     impl<
                         T: ApiRpc,
                     > tonic::server::UnaryService<
                         super::super::oauth2::ExchangeCodeToTokenRequest,
-                    > for ExchangeOAuth2CodeToTokenSvc<T> {
-                        type Response = super::super::oauth2::ExchangeCodeToTokenResponse;
+                    > for SignInOAuth2Svc<T> {
+                        type Response = super::super::auth::AuthenticationResponse;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,
@@ -706,11 +757,7 @@ pub mod api_rpc_server {
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                <T as ApiRpc>::exchange_o_auth2_code_to_token(
-                                        &inner,
-                                        request,
-                                    )
-                                    .await
+                                <T as ApiRpc>::sign_in_o_auth2(&inner, request).await
                             };
                             Box::pin(fut)
                         }
@@ -722,7 +769,99 @@ pub mod api_rpc_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
-                        let method = ExchangeOAuth2CodeToTokenSvc(inner);
+                        let method = SignInOAuth2Svc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/api.ApiRpc/EditUser" => {
+                    #[allow(non_camel_case_types)]
+                    struct EditUserSvc<T: ApiRpc>(pub Arc<T>);
+                    impl<
+                        T: ApiRpc,
+                    > tonic::server::UnaryService<super::super::user::EditUserRequest>
+                    for EditUserSvc<T> {
+                        type Response = ();
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::super::user::EditUserRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as ApiRpc>::edit_user(&inner, request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = EditUserSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/api.ApiRpc/GetUser" => {
+                    #[allow(non_camel_case_types)]
+                    struct GetUserSvc<T: ApiRpc>(pub Arc<T>);
+                    impl<
+                        T: ApiRpc,
+                    > tonic::server::UnaryService<super::super::user::GetUserRequest>
+                    for GetUserSvc<T> {
+                        type Response = super::super::user::GetUserResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::super::user::GetUserRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as ApiRpc>::get_user(&inner, request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = GetUserSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(

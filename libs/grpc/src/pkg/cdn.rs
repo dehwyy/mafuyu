@@ -1,60 +1,29 @@
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct CreateUserRequest {
-    #[prost(string, tag = "1")]
-    pub username: ::prost::alloc::string::String,
-    #[prost(string, optional, tag = "2")]
-    pub email: ::core::option::Option<::prost::alloc::string::String>,
-    #[prost(string, optional, tag = "3")]
-    pub password: ::core::option::Option<::prost::alloc::string::String>,
-    #[prost(string, optional, tag = "4")]
-    pub provider_id: ::core::option::Option<::prost::alloc::string::String>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct CreateUserResponse {
-    #[prost(string, tag = "1")]
-    pub user_id: ::prost::alloc::string::String,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct GetPublicUserRequest {
-    #[prost(oneof = "get_public_user_request::GetUserBy", tags = "1, 2, 3")]
-    pub get_user_by: ::core::option::Option<get_public_user_request::GetUserBy>,
-}
-/// Nested message and enum types in `GetPublicUserRequest`.
-pub mod get_public_user_request {
-    #[allow(clippy::derive_partial_eq_without_eq)]
-    #[derive(Clone, PartialEq, ::prost::Oneof)]
-    pub enum GetUserBy {
-        #[prost(string, tag = "1")]
-        UserId(::prost::alloc::string::String),
-        #[prost(string, tag = "2")]
-        Username(::prost::alloc::string::String),
-        #[prost(string, tag = "3")]
-        ProviderId(::prost::alloc::string::String),
-    }
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct GetPublicUserResponse {
-    #[prost(string, tag = "1")]
-    pub user_id: ::prost::alloc::string::String,
+pub struct UploadNewImageRequest {
+    #[prost(bytes = "vec", tag = "1")]
+    pub image_base64: ::prost::alloc::vec::Vec<u8>,
     #[prost(string, tag = "2")]
-    pub username: ::prost::alloc::string::String,
-    #[prost(string, optional, tag = "3")]
-    pub provider_id: ::core::option::Option<::prost::alloc::string::String>,
+    pub keyword: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UploadNewImageResponse {
+    #[prost(string, tag = "1")]
+    pub filename: ::prost::alloc::string::String,
+    #[prost(string, tag = "2")]
+    pub full_url: ::prost::alloc::string::String,
 }
 /// Generated client implementations.
-pub mod passport_rpc_client {
+pub mod cdn_rpc_client {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
     use tonic::codegen::http::Uri;
     #[derive(Debug, Clone)]
-    pub struct PassportRpcClient<T> {
+    pub struct CdnRpcClient<T> {
         inner: tonic::client::Grpc<T>,
     }
-    impl PassportRpcClient<tonic::transport::Channel> {
+    impl CdnRpcClient<tonic::transport::Channel> {
         /// Attempt to create a new client by connecting to a given endpoint.
         pub async fn connect<D>(dst: D) -> Result<Self, tonic::transport::Error>
         where
@@ -65,7 +34,7 @@ pub mod passport_rpc_client {
             Ok(Self::new(conn))
         }
     }
-    impl<T> PassportRpcClient<T>
+    impl<T> CdnRpcClient<T>
     where
         T: tonic::client::GrpcService<tonic::body::BoxBody>,
         T::Error: Into<StdError>,
@@ -83,7 +52,7 @@ pub mod passport_rpc_client {
         pub fn with_interceptor<F>(
             inner: T,
             interceptor: F,
-        ) -> PassportRpcClient<InterceptedService<T, F>>
+        ) -> CdnRpcClient<InterceptedService<T, F>>
         where
             F: tonic::service::Interceptor,
             T::ResponseBody: Default,
@@ -97,7 +66,7 @@ pub mod passport_rpc_client {
                 http::Request<tonic::body::BoxBody>,
             >>::Error: Into<StdError> + Send + Sync,
         {
-            PassportRpcClient::new(InterceptedService::new(inner, interceptor))
+            CdnRpcClient::new(InterceptedService::new(inner, interceptor))
         }
         /// Compress requests with the given encoding.
         ///
@@ -130,11 +99,11 @@ pub mod passport_rpc_client {
             self.inner = self.inner.max_encoding_message_size(limit);
             self
         }
-        pub async fn create_user(
+        pub async fn upload_new_image(
             &mut self,
-            request: impl tonic::IntoRequest<super::CreateUserRequest>,
+            request: impl tonic::IntoRequest<super::UploadNewImageRequest>,
         ) -> std::result::Result<
-            tonic::Response<super::CreateUserResponse>,
+            tonic::Response<super::UploadNewImageResponse>,
             tonic::Status,
         > {
             self.inner
@@ -148,64 +117,31 @@ pub mod passport_rpc_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/passport.PassportRpc/CreateUser",
+                "/cdn.CDNRpc/UploadNewImage",
             );
             let mut req = request.into_request();
-            req.extensions_mut()
-                .insert(GrpcMethod::new("passport.PassportRpc", "CreateUser"));
-            self.inner.unary(req, path, codec).await
-        }
-        pub async fn get_public_user(
-            &mut self,
-            request: impl tonic::IntoRequest<super::GetPublicUserRequest>,
-        ) -> std::result::Result<
-            tonic::Response<super::GetPublicUserResponse>,
-            tonic::Status,
-        > {
-            self.inner
-                .ready()
-                .await
-                .map_err(|e| {
-                    tonic::Status::new(
-                        tonic::Code::Unknown,
-                        format!("Service was not ready: {}", e.into()),
-                    )
-                })?;
-            let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static(
-                "/passport.PassportRpc/GetPublicUser",
-            );
-            let mut req = request.into_request();
-            req.extensions_mut()
-                .insert(GrpcMethod::new("passport.PassportRpc", "GetPublicUser"));
+            req.extensions_mut().insert(GrpcMethod::new("cdn.CDNRpc", "UploadNewImage"));
             self.inner.unary(req, path, codec).await
         }
     }
 }
 /// Generated server implementations.
-pub mod passport_rpc_server {
+pub mod cdn_rpc_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
-    /// Generated trait containing gRPC methods that should be implemented for use with PassportRpcServer.
+    /// Generated trait containing gRPC methods that should be implemented for use with CdnRpcServer.
     #[async_trait]
-    pub trait PassportRpc: Send + Sync + 'static {
-        async fn create_user(
+    pub trait CdnRpc: Send + Sync + 'static {
+        async fn upload_new_image(
             &self,
-            request: tonic::Request<super::CreateUserRequest>,
+            request: tonic::Request<super::UploadNewImageRequest>,
         ) -> std::result::Result<
-            tonic::Response<super::CreateUserResponse>,
-            tonic::Status,
-        >;
-        async fn get_public_user(
-            &self,
-            request: tonic::Request<super::GetPublicUserRequest>,
-        ) -> std::result::Result<
-            tonic::Response<super::GetPublicUserResponse>,
+            tonic::Response<super::UploadNewImageResponse>,
             tonic::Status,
         >;
     }
     #[derive(Debug)]
-    pub struct PassportRpcServer<T: PassportRpc> {
+    pub struct CdnRpcServer<T: CdnRpc> {
         inner: _Inner<T>,
         accept_compression_encodings: EnabledCompressionEncodings,
         send_compression_encodings: EnabledCompressionEncodings,
@@ -213,7 +149,7 @@ pub mod passport_rpc_server {
         max_encoding_message_size: Option<usize>,
     }
     struct _Inner<T>(Arc<T>);
-    impl<T: PassportRpc> PassportRpcServer<T> {
+    impl<T: CdnRpc> CdnRpcServer<T> {
         pub fn new(inner: T) -> Self {
             Self::from_arc(Arc::new(inner))
         }
@@ -265,9 +201,9 @@ pub mod passport_rpc_server {
             self
         }
     }
-    impl<T, B> tonic::codegen::Service<http::Request<B>> for PassportRpcServer<T>
+    impl<T, B> tonic::codegen::Service<http::Request<B>> for CdnRpcServer<T>
     where
-        T: PassportRpc,
+        T: CdnRpc,
         B: Body + Send + 'static,
         B::Error: Into<StdError> + Send + 'static,
     {
@@ -283,25 +219,25 @@ pub mod passport_rpc_server {
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
             let inner = self.inner.clone();
             match req.uri().path() {
-                "/passport.PassportRpc/CreateUser" => {
+                "/cdn.CDNRpc/UploadNewImage" => {
                     #[allow(non_camel_case_types)]
-                    struct CreateUserSvc<T: PassportRpc>(pub Arc<T>);
+                    struct UploadNewImageSvc<T: CdnRpc>(pub Arc<T>);
                     impl<
-                        T: PassportRpc,
-                    > tonic::server::UnaryService<super::CreateUserRequest>
-                    for CreateUserSvc<T> {
-                        type Response = super::CreateUserResponse;
+                        T: CdnRpc,
+                    > tonic::server::UnaryService<super::UploadNewImageRequest>
+                    for UploadNewImageSvc<T> {
+                        type Response = super::UploadNewImageResponse;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,
                         >;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::CreateUserRequest>,
+                            request: tonic::Request<super::UploadNewImageRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                <T as PassportRpc>::create_user(&inner, request).await
+                                <T as CdnRpc>::upload_new_image(&inner, request).await
                             };
                             Box::pin(fut)
                         }
@@ -313,53 +249,7 @@ pub mod passport_rpc_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
-                        let method = CreateUserSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec)
-                            .apply_compression_config(
-                                accept_compression_encodings,
-                                send_compression_encodings,
-                            )
-                            .apply_max_message_size_config(
-                                max_decoding_message_size,
-                                max_encoding_message_size,
-                            );
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/passport.PassportRpc/GetPublicUser" => {
-                    #[allow(non_camel_case_types)]
-                    struct GetPublicUserSvc<T: PassportRpc>(pub Arc<T>);
-                    impl<
-                        T: PassportRpc,
-                    > tonic::server::UnaryService<super::GetPublicUserRequest>
-                    for GetPublicUserSvc<T> {
-                        type Response = super::GetPublicUserResponse;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::Response>,
-                            tonic::Status,
-                        >;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::GetPublicUserRequest>,
-                        ) -> Self::Future {
-                            let inner = Arc::clone(&self.0);
-                            let fut = async move {
-                                <T as PassportRpc>::get_public_user(&inner, request).await
-                            };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let max_decoding_message_size = self.max_decoding_message_size;
-                    let max_encoding_message_size = self.max_encoding_message_size;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = GetPublicUserSvc(inner);
+                        let method = UploadNewImageSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
@@ -390,7 +280,7 @@ pub mod passport_rpc_server {
             }
         }
     }
-    impl<T: PassportRpc> Clone for PassportRpcServer<T> {
+    impl<T: CdnRpc> Clone for CdnRpcServer<T> {
         fn clone(&self) -> Self {
             let inner = self.inner.clone();
             Self {
@@ -402,7 +292,7 @@ pub mod passport_rpc_server {
             }
         }
     }
-    impl<T: PassportRpc> Clone for _Inner<T> {
+    impl<T: CdnRpc> Clone for _Inner<T> {
         fn clone(&self) -> Self {
             Self(Arc::clone(&self.0))
         }
@@ -412,7 +302,7 @@ pub mod passport_rpc_server {
             write!(f, "{:?}", self.0)
         }
     }
-    impl<T: PassportRpc> tonic::server::NamedService for PassportRpcServer<T> {
-        const NAME: &'static str = "passport.PassportRpc";
+    impl<T: CdnRpc> tonic::server::NamedService for CdnRpcServer<T> {
+        const NAME: &'static str = "cdn.CDNRpc";
     }
 }

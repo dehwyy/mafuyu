@@ -33,15 +33,7 @@ pub enum Relation {
         on_update = "NoAction",
         on_delete = "NoAction"
     )]
-    UserCredentials2,
-    #[sea_orm(
-        belongs_to = "super::user_credentials::Entity",
-        from = "Column::UserId",
-        to = "super::user_credentials::Column::Id",
-        on_update = "NoAction",
-        on_delete = "NoAction"
-    )]
-    UserCredentials1,
+    UserCredentials,
     #[sea_orm(has_many = "super::user_hidden_posts::Entity")]
     UserHiddenPosts,
     #[sea_orm(has_many = "super::user_languages::Entity")]
@@ -55,6 +47,12 @@ pub enum Relation {
 impl Related<super::posts::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Posts.def()
+    }
+}
+
+impl Related<super::user_credentials::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::UserCredentials.def()
     }
 }
 

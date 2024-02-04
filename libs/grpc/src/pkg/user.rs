@@ -1,76 +1,96 @@
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct GenerateTokenPairRequest {
+pub struct CreateUserRequest {
     #[prost(string, tag = "1")]
     pub user_id: ::prost::alloc::string::String,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct GenerateTokenPairResponse {
-    #[prost(string, tag = "1")]
-    pub access_token: ::prost::alloc::string::String,
-    #[prost(string, tag = "2")]
-    pub refresh_token: ::prost::alloc::string::String,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ValidateTokenRequest {
-    #[prost(string, tag = "1")]
-    pub access_token: ::prost::alloc::string::String,
     #[prost(string, optional, tag = "2")]
-    pub provider: ::core::option::Option<::prost::alloc::string::String>,
+    pub picture: ::core::option::Option<::prost::alloc::string::String>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ValidateTokenResponse {
-    #[prost(string, optional, tag = "1")]
-    pub user_id: ::core::option::Option<::prost::alloc::string::String>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ClearTokensRequest {
+pub struct EditUserRequest {
     #[prost(string, tag = "1")]
     pub user_id: ::prost::alloc::string::String,
-    /// If access_token is provided -> this token will be deleted too.
     #[prost(string, optional, tag = "2")]
-    pub access_token: ::core::option::Option<::prost::alloc::string::String>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct SaveTokensRequest {
-    #[prost(string, tag = "1")]
-    pub user_id: ::prost::alloc::string::String,
-    #[prost(string, tag = "2")]
-    pub access_token: ::prost::alloc::string::String,
-    #[prost(string, optional, tag = "3")]
-    pub refresh_token: ::core::option::Option<::prost::alloc::string::String>,
+    pub location: ::core::option::Option<::prost::alloc::string::String>,
+    #[prost(uint64, optional, tag = "3")]
+    pub birthday: ::core::option::Option<u64>,
     #[prost(string, optional, tag = "4")]
-    pub provider: ::core::option::Option<::prost::alloc::string::String>,
+    pub pseudonym: ::core::option::Option<::prost::alloc::string::String>,
+    #[prost(string, optional, tag = "5")]
+    pub bio: ::core::option::Option<::prost::alloc::string::String>,
+    #[prost(string, optional, tag = "6")]
+    pub picture: ::core::option::Option<::prost::alloc::string::String>,
+    #[prost(string, repeated, tag = "7")]
+    pub languages: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct RefreshTheTokenRequest {
+pub struct GetUserRequest {
     #[prost(string, tag = "1")]
-    pub refresh_token: ::prost::alloc::string::String,
+    pub username: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct RefreshTheTokenResponse {
+pub struct GetUserResponse {
     #[prost(string, tag = "1")]
-    pub access_token: ::prost::alloc::string::String,
+    pub user_id: ::prost::alloc::string::String,
     #[prost(string, tag = "2")]
-    pub refresh_token: ::prost::alloc::string::String,
+    pub username: ::prost::alloc::string::String,
+    #[prost(string, optional, tag = "3")]
+    pub location: ::core::option::Option<::prost::alloc::string::String>,
+    #[prost(uint32, optional, tag = "4")]
+    pub birthday: ::core::option::Option<u32>,
+    #[prost(string, optional, tag = "5")]
+    pub pseudonym: ::core::option::Option<::prost::alloc::string::String>,
+    #[prost(string, optional, tag = "6")]
+    pub bio: ::core::option::Option<::prost::alloc::string::String>,
+    #[prost(string, optional, tag = "7")]
+    pub picture: ::core::option::Option<::prost::alloc::string::String>,
+    #[prost(string, repeated, tag = "8")]
+    pub languages: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    #[prost(string, repeated, tag = "9")]
+    pub friends: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    #[prost(string, repeated, tag = "10")]
+    pub followers: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GetUserPostsResponse {
+    #[prost(message, repeated, tag = "1")]
+    pub posts: ::prost::alloc::vec::Vec<get_user_posts_response::Post>,
+}
+/// Nested message and enum types in `GetUserPostsResponse`.
+pub mod get_user_posts_response {
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct Post {
+        #[prost(string, tag = "2")]
+        pub post_id: ::prost::alloc::string::String,
+        #[prost(string, tag = "3")]
+        pub author_id: ::prost::alloc::string::String,
+        #[prost(string, tag = "4")]
+        pub author_name: ::prost::alloc::string::String,
+        #[prost(uint32, tag = "5")]
+        pub likes: u32,
+        #[prost(uint32, tag = "6")]
+        pub comments: u32,
+        #[prost(uint32, tag = "7")]
+        pub views: u32,
+        #[prost(uint64, tag = "8")]
+        pub timestamp: u64,
+    }
 }
 /// Generated client implementations.
-pub mod tokens_rpc_client {
+pub mod user_rpc_client {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
     use tonic::codegen::http::Uri;
     #[derive(Debug, Clone)]
-    pub struct TokensRpcClient<T> {
+    pub struct UserRpcClient<T> {
         inner: tonic::client::Grpc<T>,
     }
-    impl TokensRpcClient<tonic::transport::Channel> {
+    impl UserRpcClient<tonic::transport::Channel> {
         /// Attempt to create a new client by connecting to a given endpoint.
         pub async fn connect<D>(dst: D) -> Result<Self, tonic::transport::Error>
         where
@@ -81,7 +101,7 @@ pub mod tokens_rpc_client {
             Ok(Self::new(conn))
         }
     }
-    impl<T> TokensRpcClient<T>
+    impl<T> UserRpcClient<T>
     where
         T: tonic::client::GrpcService<tonic::body::BoxBody>,
         T::Error: Into<StdError>,
@@ -99,7 +119,7 @@ pub mod tokens_rpc_client {
         pub fn with_interceptor<F>(
             inner: T,
             interceptor: F,
-        ) -> TokensRpcClient<InterceptedService<T, F>>
+        ) -> UserRpcClient<InterceptedService<T, F>>
         where
             F: tonic::service::Interceptor,
             T::ResponseBody: Default,
@@ -113,7 +133,7 @@ pub mod tokens_rpc_client {
                 http::Request<tonic::body::BoxBody>,
             >>::Error: Into<StdError> + Send + Sync,
         {
-            TokensRpcClient::new(InterceptedService::new(inner, interceptor))
+            UserRpcClient::new(InterceptedService::new(inner, interceptor))
         }
         /// Compress requests with the given encoding.
         ///
@@ -146,13 +166,10 @@ pub mod tokens_rpc_client {
             self.inner = self.inner.max_encoding_message_size(limit);
             self
         }
-        pub async fn generate_token_pair(
+        pub async fn create_user(
             &mut self,
-            request: impl tonic::IntoRequest<super::GenerateTokenPairRequest>,
-        ) -> std::result::Result<
-            tonic::Response<super::GenerateTokenPairResponse>,
-            tonic::Status,
-        > {
+            request: impl tonic::IntoRequest<super::CreateUserRequest>,
+        ) -> std::result::Result<tonic::Response<()>, tonic::Status> {
             self.inner
                 .ready()
                 .await
@@ -163,21 +180,15 @@ pub mod tokens_rpc_client {
                     )
                 })?;
             let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static(
-                "/tokens.TokensRpc/GenerateTokenPair",
-            );
+            let path = http::uri::PathAndQuery::from_static("/user.UserRpc/CreateUser");
             let mut req = request.into_request();
-            req.extensions_mut()
-                .insert(GrpcMethod::new("tokens.TokensRpc", "GenerateTokenPair"));
+            req.extensions_mut().insert(GrpcMethod::new("user.UserRpc", "CreateUser"));
             self.inner.unary(req, path, codec).await
         }
-        pub async fn validate_token(
+        pub async fn edit_user(
             &mut self,
-            request: impl tonic::IntoRequest<super::ValidateTokenRequest>,
-        ) -> std::result::Result<
-            tonic::Response<super::ValidateTokenResponse>,
-            tonic::Status,
-        > {
+            request: impl tonic::IntoRequest<super::EditUserRequest>,
+        ) -> std::result::Result<tonic::Response<()>, tonic::Status> {
             self.inner
                 .ready()
                 .await
@@ -188,19 +199,16 @@ pub mod tokens_rpc_client {
                     )
                 })?;
             let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static(
-                "/tokens.TokensRpc/ValidateToken",
-            );
+            let path = http::uri::PathAndQuery::from_static("/user.UserRpc/EditUser");
             let mut req = request.into_request();
-            req.extensions_mut()
-                .insert(GrpcMethod::new("tokens.TokensRpc", "ValidateToken"));
+            req.extensions_mut().insert(GrpcMethod::new("user.UserRpc", "EditUser"));
             self.inner.unary(req, path, codec).await
         }
-        pub async fn clear_tokens(
+        pub async fn get_user(
             &mut self,
-            request: impl tonic::IntoRequest<super::ClearTokensRequest>,
+            request: impl tonic::IntoRequest<super::GetUserRequest>,
         ) -> std::result::Result<
-            tonic::Response<super::super::general::IsOkResponse>,
+            tonic::Response<super::GetUserResponse>,
             tonic::Status,
         > {
             self.inner
@@ -213,111 +221,35 @@ pub mod tokens_rpc_client {
                     )
                 })?;
             let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static(
-                "/tokens.TokensRpc/ClearTokens",
-            );
+            let path = http::uri::PathAndQuery::from_static("/user.UserRpc/GetUser");
             let mut req = request.into_request();
-            req.extensions_mut()
-                .insert(GrpcMethod::new("tokens.TokensRpc", "ClearTokens"));
-            self.inner.unary(req, path, codec).await
-        }
-        pub async fn save_tokens(
-            &mut self,
-            request: impl tonic::IntoRequest<super::SaveTokensRequest>,
-        ) -> std::result::Result<
-            tonic::Response<super::super::general::IsOkResponse>,
-            tonic::Status,
-        > {
-            self.inner
-                .ready()
-                .await
-                .map_err(|e| {
-                    tonic::Status::new(
-                        tonic::Code::Unknown,
-                        format!("Service was not ready: {}", e.into()),
-                    )
-                })?;
-            let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static(
-                "/tokens.TokensRpc/SaveTokens",
-            );
-            let mut req = request.into_request();
-            req.extensions_mut()
-                .insert(GrpcMethod::new("tokens.TokensRpc", "SaveTokens"));
-            self.inner.unary(req, path, codec).await
-        }
-        pub async fn refresh_the_token(
-            &mut self,
-            request: impl tonic::IntoRequest<super::RefreshTheTokenRequest>,
-        ) -> std::result::Result<
-            tonic::Response<super::RefreshTheTokenResponse>,
-            tonic::Status,
-        > {
-            self.inner
-                .ready()
-                .await
-                .map_err(|e| {
-                    tonic::Status::new(
-                        tonic::Code::Unknown,
-                        format!("Service was not ready: {}", e.into()),
-                    )
-                })?;
-            let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static(
-                "/tokens.TokensRpc/RefreshTheToken",
-            );
-            let mut req = request.into_request();
-            req.extensions_mut()
-                .insert(GrpcMethod::new("tokens.TokensRpc", "RefreshTheToken"));
+            req.extensions_mut().insert(GrpcMethod::new("user.UserRpc", "GetUser"));
             self.inner.unary(req, path, codec).await
         }
     }
 }
 /// Generated server implementations.
-pub mod tokens_rpc_server {
+pub mod user_rpc_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
-    /// Generated trait containing gRPC methods that should be implemented for use with TokensRpcServer.
+    /// Generated trait containing gRPC methods that should be implemented for use with UserRpcServer.
     #[async_trait]
-    pub trait TokensRpc: Send + Sync + 'static {
-        async fn generate_token_pair(
+    pub trait UserRpc: Send + Sync + 'static {
+        async fn create_user(
             &self,
-            request: tonic::Request<super::GenerateTokenPairRequest>,
-        ) -> std::result::Result<
-            tonic::Response<super::GenerateTokenPairResponse>,
-            tonic::Status,
-        >;
-        async fn validate_token(
+            request: tonic::Request<super::CreateUserRequest>,
+        ) -> std::result::Result<tonic::Response<()>, tonic::Status>;
+        async fn edit_user(
             &self,
-            request: tonic::Request<super::ValidateTokenRequest>,
-        ) -> std::result::Result<
-            tonic::Response<super::ValidateTokenResponse>,
-            tonic::Status,
-        >;
-        async fn clear_tokens(
+            request: tonic::Request<super::EditUserRequest>,
+        ) -> std::result::Result<tonic::Response<()>, tonic::Status>;
+        async fn get_user(
             &self,
-            request: tonic::Request<super::ClearTokensRequest>,
-        ) -> std::result::Result<
-            tonic::Response<super::super::general::IsOkResponse>,
-            tonic::Status,
-        >;
-        async fn save_tokens(
-            &self,
-            request: tonic::Request<super::SaveTokensRequest>,
-        ) -> std::result::Result<
-            tonic::Response<super::super::general::IsOkResponse>,
-            tonic::Status,
-        >;
-        async fn refresh_the_token(
-            &self,
-            request: tonic::Request<super::RefreshTheTokenRequest>,
-        ) -> std::result::Result<
-            tonic::Response<super::RefreshTheTokenResponse>,
-            tonic::Status,
-        >;
+            request: tonic::Request<super::GetUserRequest>,
+        ) -> std::result::Result<tonic::Response<super::GetUserResponse>, tonic::Status>;
     }
     #[derive(Debug)]
-    pub struct TokensRpcServer<T: TokensRpc> {
+    pub struct UserRpcServer<T: UserRpc> {
         inner: _Inner<T>,
         accept_compression_encodings: EnabledCompressionEncodings,
         send_compression_encodings: EnabledCompressionEncodings,
@@ -325,7 +257,7 @@ pub mod tokens_rpc_server {
         max_encoding_message_size: Option<usize>,
     }
     struct _Inner<T>(Arc<T>);
-    impl<T: TokensRpc> TokensRpcServer<T> {
+    impl<T: UserRpc> UserRpcServer<T> {
         pub fn new(inner: T) -> Self {
             Self::from_arc(Arc::new(inner))
         }
@@ -377,9 +309,9 @@ pub mod tokens_rpc_server {
             self
         }
     }
-    impl<T, B> tonic::codegen::Service<http::Request<B>> for TokensRpcServer<T>
+    impl<T, B> tonic::codegen::Service<http::Request<B>> for UserRpcServer<T>
     where
-        T: TokensRpc,
+        T: UserRpc,
         B: Body + Send + 'static,
         B::Error: Into<StdError> + Send + 'static,
     {
@@ -395,25 +327,25 @@ pub mod tokens_rpc_server {
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
             let inner = self.inner.clone();
             match req.uri().path() {
-                "/tokens.TokensRpc/GenerateTokenPair" => {
+                "/user.UserRpc/CreateUser" => {
                     #[allow(non_camel_case_types)]
-                    struct GenerateTokenPairSvc<T: TokensRpc>(pub Arc<T>);
+                    struct CreateUserSvc<T: UserRpc>(pub Arc<T>);
                     impl<
-                        T: TokensRpc,
-                    > tonic::server::UnaryService<super::GenerateTokenPairRequest>
-                    for GenerateTokenPairSvc<T> {
-                        type Response = super::GenerateTokenPairResponse;
+                        T: UserRpc,
+                    > tonic::server::UnaryService<super::CreateUserRequest>
+                    for CreateUserSvc<T> {
+                        type Response = ();
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,
                         >;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::GenerateTokenPairRequest>,
+                            request: tonic::Request<super::CreateUserRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                <T as TokensRpc>::generate_token_pair(&inner, request).await
+                                <T as UserRpc>::create_user(&inner, request).await
                             };
                             Box::pin(fut)
                         }
@@ -425,7 +357,7 @@ pub mod tokens_rpc_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
-                        let method = GenerateTokenPairSvc(inner);
+                        let method = CreateUserSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
@@ -441,25 +373,23 @@ pub mod tokens_rpc_server {
                     };
                     Box::pin(fut)
                 }
-                "/tokens.TokensRpc/ValidateToken" => {
+                "/user.UserRpc/EditUser" => {
                     #[allow(non_camel_case_types)]
-                    struct ValidateTokenSvc<T: TokensRpc>(pub Arc<T>);
-                    impl<
-                        T: TokensRpc,
-                    > tonic::server::UnaryService<super::ValidateTokenRequest>
-                    for ValidateTokenSvc<T> {
-                        type Response = super::ValidateTokenResponse;
+                    struct EditUserSvc<T: UserRpc>(pub Arc<T>);
+                    impl<T: UserRpc> tonic::server::UnaryService<super::EditUserRequest>
+                    for EditUserSvc<T> {
+                        type Response = ();
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,
                         >;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::ValidateTokenRequest>,
+                            request: tonic::Request<super::EditUserRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                <T as TokensRpc>::validate_token(&inner, request).await
+                                <T as UserRpc>::edit_user(&inner, request).await
                             };
                             Box::pin(fut)
                         }
@@ -471,7 +401,7 @@ pub mod tokens_rpc_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
-                        let method = ValidateTokenSvc(inner);
+                        let method = EditUserSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
@@ -487,25 +417,23 @@ pub mod tokens_rpc_server {
                     };
                     Box::pin(fut)
                 }
-                "/tokens.TokensRpc/ClearTokens" => {
+                "/user.UserRpc/GetUser" => {
                     #[allow(non_camel_case_types)]
-                    struct ClearTokensSvc<T: TokensRpc>(pub Arc<T>);
-                    impl<
-                        T: TokensRpc,
-                    > tonic::server::UnaryService<super::ClearTokensRequest>
-                    for ClearTokensSvc<T> {
-                        type Response = super::super::general::IsOkResponse;
+                    struct GetUserSvc<T: UserRpc>(pub Arc<T>);
+                    impl<T: UserRpc> tonic::server::UnaryService<super::GetUserRequest>
+                    for GetUserSvc<T> {
+                        type Response = super::GetUserResponse;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,
                         >;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::ClearTokensRequest>,
+                            request: tonic::Request<super::GetUserRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                <T as TokensRpc>::clear_tokens(&inner, request).await
+                                <T as UserRpc>::get_user(&inner, request).await
                             };
                             Box::pin(fut)
                         }
@@ -517,99 +445,7 @@ pub mod tokens_rpc_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
-                        let method = ClearTokensSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec)
-                            .apply_compression_config(
-                                accept_compression_encodings,
-                                send_compression_encodings,
-                            )
-                            .apply_max_message_size_config(
-                                max_decoding_message_size,
-                                max_encoding_message_size,
-                            );
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/tokens.TokensRpc/SaveTokens" => {
-                    #[allow(non_camel_case_types)]
-                    struct SaveTokensSvc<T: TokensRpc>(pub Arc<T>);
-                    impl<
-                        T: TokensRpc,
-                    > tonic::server::UnaryService<super::SaveTokensRequest>
-                    for SaveTokensSvc<T> {
-                        type Response = super::super::general::IsOkResponse;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::Response>,
-                            tonic::Status,
-                        >;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::SaveTokensRequest>,
-                        ) -> Self::Future {
-                            let inner = Arc::clone(&self.0);
-                            let fut = async move {
-                                <T as TokensRpc>::save_tokens(&inner, request).await
-                            };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let max_decoding_message_size = self.max_decoding_message_size;
-                    let max_encoding_message_size = self.max_encoding_message_size;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = SaveTokensSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec)
-                            .apply_compression_config(
-                                accept_compression_encodings,
-                                send_compression_encodings,
-                            )
-                            .apply_max_message_size_config(
-                                max_decoding_message_size,
-                                max_encoding_message_size,
-                            );
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/tokens.TokensRpc/RefreshTheToken" => {
-                    #[allow(non_camel_case_types)]
-                    struct RefreshTheTokenSvc<T: TokensRpc>(pub Arc<T>);
-                    impl<
-                        T: TokensRpc,
-                    > tonic::server::UnaryService<super::RefreshTheTokenRequest>
-                    for RefreshTheTokenSvc<T> {
-                        type Response = super::RefreshTheTokenResponse;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::Response>,
-                            tonic::Status,
-                        >;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::RefreshTheTokenRequest>,
-                        ) -> Self::Future {
-                            let inner = Arc::clone(&self.0);
-                            let fut = async move {
-                                <T as TokensRpc>::refresh_the_token(&inner, request).await
-                            };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let max_decoding_message_size = self.max_decoding_message_size;
-                    let max_encoding_message_size = self.max_encoding_message_size;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = RefreshTheTokenSvc(inner);
+                        let method = GetUserSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
@@ -640,7 +476,7 @@ pub mod tokens_rpc_server {
             }
         }
     }
-    impl<T: TokensRpc> Clone for TokensRpcServer<T> {
+    impl<T: UserRpc> Clone for UserRpcServer<T> {
         fn clone(&self) -> Self {
             let inner = self.inner.clone();
             Self {
@@ -652,7 +488,7 @@ pub mod tokens_rpc_server {
             }
         }
     }
-    impl<T: TokensRpc> Clone for _Inner<T> {
+    impl<T: UserRpc> Clone for _Inner<T> {
         fn clone(&self) -> Self {
             Self(Arc::clone(&self.0))
         }
@@ -662,7 +498,7 @@ pub mod tokens_rpc_server {
             write!(f, "{:?}", self.0)
         }
     }
-    impl<T: TokensRpc> tonic::server::NamedService for TokensRpcServer<T> {
-        const NAME: &'static str = "tokens.TokensRpc";
+    impl<T: UserRpc> tonic::server::NamedService for UserRpcServer<T> {
+        const NAME: &'static str = "user.UserRpc";
     }
 }

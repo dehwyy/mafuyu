@@ -3,8 +3,8 @@ fn main() -> std::io::Result<()> {
     {
         let protos = vec!(
             "api/general.proto", "api/auth.proto", "api/integrations.proto",
-            "api/oauth2.proto", "api/passport.proto", "api/tokens.proto",
-            "api.proto"
+            "api/oauth2.proto", "api/passport.proto", "api/user.proto",
+            "api/tokens.proto", "api/cdn.proto", "api.proto"
         );
 
         let cwd = std::env::current_dir().unwrap();

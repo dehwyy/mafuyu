@@ -6,6 +6,8 @@ use pkg::integrations::integrations_rpc_client::{IntegrationsRpcClient, self};
 use pkg::oauth2::o_auth2_rpc_client::{OAuth2RpcClient, self};
 use pkg::passport::passport_rpc_client::{PassportRpcClient, self};
 use pkg::tokens::tokens_rpc_client::{TokensRpcClient, self};
+use pkg::user::user_rpc_client::{UserRpcClient, self};
+use pkg::cdn::cdn_rpc_client::{CdnRpcClient, self};
 
 pub const METADATA_ACCESS_TOKEN_KEY: &str = "x-access-token";
 pub const METADATA_REFRESH_TOKEN_KEY: &str = "x-refresh-token";
@@ -35,7 +37,9 @@ pub struct RpcClients<T = Channel, E = tonic::transport::Error>  {
     pub integrations_client: Result<IntegrationsRpcClient<T>, E>,
     pub oauth2_client: Result<OAuth2RpcClient<T>, E>,
     pub passport_client: Result<PassportRpcClient<T>, E>,
-    pub tokens_client: Result<TokensRpcClient<T>, E>
+    pub tokens_client: Result<TokensRpcClient<T>, E>,
+    pub user_client: Result<UserRpcClient<T>, E>,
+    pub cdn_client: Result<CdnRpcClient<T>, E>,
 }
 
 impl RpcClients {
@@ -49,13 +53,17 @@ impl RpcClients {
         let oauth2_client = o_auth2_rpc_client::OAuth2RpcClient::connect(with_http(&hosts.oauth2)).await;
         let passport_client = passport_rpc_client::PassportRpcClient::connect(with_http(&hosts.passport)).await;
         let tokens_client =  tokens_rpc_client::TokensRpcClient::connect(with_http(&hosts.tokens)).await;
+        let user_client  = user_rpc_client::UserRpcClient::connect(with_http(&hosts.user)).await;
+        let cdn_client = cdn_rpc_client::CdnRpcClient::connect(with_http(&hosts.cdn_rpc)).await;
 
         Self {
             auth_client,
             integrations_client,
             oauth2_client,
             passport_client,
-            tokens_client
+            tokens_client,
+            user_client,
+            cdn_client
         }
     }
 

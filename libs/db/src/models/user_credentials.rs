@@ -14,8 +14,6 @@ pub struct Model {
     #[sea_orm(column_type = "Text", nullable, unique)]
     pub email: Option<String>,
     #[sea_orm(column_type = "Text", nullable)]
-    pub picture: Option<String>,
-    #[sea_orm(column_type = "Text", nullable)]
     pub password: Option<String>,
     pub created_at: Option<DateTimeWithTimeZone>,
 }
@@ -26,6 +24,8 @@ pub enum Relation {
     UserIntegrations,
     #[sea_orm(has_many = "super::user_tokens::Entity")]
     UserTokens,
+    #[sea_orm(has_one = "super::users::Entity")]
+    Users,
 }
 
 impl Related<super::user_integrations::Entity> for Entity {
@@ -37,6 +37,12 @@ impl Related<super::user_integrations::Entity> for Entity {
 impl Related<super::user_tokens::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::UserTokens.def()
+    }
+}
+
+impl Related<super::users::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Users.def()
     }
 }
 

@@ -38,7 +38,7 @@ export namespace Interceptors {
       return new WithTokensPayload(
         async () => cookies.get(GrpcCookiesKeys.AccessToken),
         async () => cookies.get(GrpcCookiesKeys.RefreshToken),
-        (token) => cookies.set(GrpcCookiesKeys.AccessToken, token, {path: '/', httpOnly: true, }),
+        (token) => cookies.set(GrpcCookiesKeys.AccessToken, token, {path: '/', httpOnly: true}),
         (token) => cookies.set(GrpcCookiesKeys.RefreshToken, token, {path: '/', httpOnly: true})
       )
     }
@@ -139,7 +139,7 @@ export namespace Interceptors {
 
               try {
 
-                const {headers  } = await GrpcClient.refresh({
+                const {headers  } = await GrpcClient.refreshTheToken({
                   refreshToken: refresh_token,
                 })
 

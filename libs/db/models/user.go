@@ -31,7 +31,7 @@ type User struct {
 type UserCredentials struct {
 	ID         uuid.UUID `gorm:"type:uuid;primary_key;default:gen_random_uuid()"` // @see https://www.postgresql.org/docs/current/functions-uuid
 	ProviderId string
-	Username   string `gorm:"unique;uniqueIndex"`
+	Username   string `gorm:"not null;uniqueIndex"`
 	Email      string `gorm:"unique"`
 	Password   string // hashed password
 	CreatedAt  time.Time

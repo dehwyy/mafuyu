@@ -14,7 +14,6 @@ message CreateUserRequest {
   optional string email = 2;
   optional string password = 3;
   optional string provider_id = 4;
-  optional string picture = 5;
 }
 
 message CreateUserResponse {
@@ -32,6 +31,5 @@ message GetPublicUserRequest {
 message GetPublicUserResponse {
   string user_id = 1;
   string username = 2;
-  optional string picture = 3;
-  optional string provider_id = 4;
+  optional string provider_id = 3;
 }

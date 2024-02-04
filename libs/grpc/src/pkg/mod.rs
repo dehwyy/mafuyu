@@ -5,3 +5,5 @@ pub mod auth;
 pub mod tokens;
 pub mod integrations;
 pub mod passport;
+pub mod user;
+pub mod cdn;

@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package cdn;
+
+option go_package = "github.com/dehwyy/makoto/libs/grpc/generated/cdn";
+
+import "google/protobuf/empty.proto";
+
+service CDNRpc {
+  rpc UploadNewImage(UploadNewImageRequest) returns (UploadNewImageResponse);
+}
+
+message UploadNewImageRequest {
+  bytes image_base64 = 1;
+  string keyword = 2;
+}
+
+message UploadNewImageResponse {
+  string filename = 1;
+  string full_url = 2;
+}

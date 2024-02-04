@@ -18,8 +18,14 @@ pub struct Hosts {
     #[envconfig(from = "PASSPORT")]
     pub passport: String,
 
+    #[envconfig(from = "USER")]
+    pub user: String,
+
     #[envconfig(from = "INTEGRATIONS")]
-    pub integrations: String
+    pub integrations: String,
+
+    #[envconfig(from = "CDN_RPC")]
+    pub cdn_rpc: String,
 }
 
 impl Hosts {
