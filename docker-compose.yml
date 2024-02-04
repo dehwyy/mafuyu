@@ -3,7 +3,11 @@ version: "3"
 services:
   nats:
     image: "nats:latest"
-    command: ["-js"]
+    command: "-js -c /etc/nats/nats-server.conf"
+    volumes:
+      - ./config/:/etc/nats
+    ports:
+      - "4222:4222"
 
   integrations:
     container_name: apps-integrations
@@ -12,6 +16,18 @@ services:
       dockerfile: "apps/integrations/Dockerfile"
     ports:
       - "3150:80"
+    env_file:
+      - .env.prod
+    depends_on:
+      - postgres
+
+  passport:
+    container_name: apps-passport
+    build:
+      context: '.'
+      dockerfile: "apps/passport/Dockerfile"
+    ports:
+      - "3140:80"
     env_file:
       - .env.prod
     depends_on:
