@@ -1,0 +1,37 @@
+FROM rust:latest
+
+WORKDIR /
+
+RUN USER=root cargo new --lib libs/config
+RUN USER=root cargo new --lib libs/log
+RUN USER=root cargo new --lib libs/grpc
+RUN USER=root cargo new --lib libs/db
+RUN USER=root cargo new --lib libs/nats
+RUN USER=root cargo new --lib libs/utils
+
+RUN echo 'workspace = {members = ["libs/config","libs/db","libs/grpc","libs/nats", "libs/log","libs/utils"], resolver = "2"}'> Cargo.toml
+
+COPY libs/config/Cargo.toml libs/config/Cargo.toml
+COPY libs/log/Cargo.toml libs/log/Cargo.toml
+COPY libs/grpc/Cargo.toml libs/grpc/Cargo.toml
+COPY libs/db/Cargo.toml libs/db/Cargo.toml
+COPY libs/nats/Cargo.toml libs/nats/Cargo.toml
+COPY libs/utils/Cargo.toml libs/utils/Cargo.toml
+
+RUN cargo build --lib -r
+
+RUN rm libs/config/src/*.rs
+RUN rm libs/log/src/*.rs
+RUN rm libs/grpc/src/*.rs
+RUN rm libs/db/src/*.rs
+RUN rm libs/nats/src/*.rs
+RUN rm libs/utils/src/*.rs
+
+COPY libs/config/src libs/config/src/
+COPY libs/db/src libs/db/src/
+COPY libs/grpc/src libs/grpc/src/
+COPY libs/log/src/lib.rs libs/log/src/
+COPY libs/nats libs/nats/
+COPY libs/utils libs/utils/
+
+RUN cargo build --lib -r
