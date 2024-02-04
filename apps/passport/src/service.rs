@@ -29,7 +29,6 @@ impl rpc::passport_rpc_server::PassportRpc for PassportRpcServiceImplementation 
             email: req.email,
             password: req.password,
             provider_id: req.provider_id,
-            picture: req.picture
         }).await.handle()?;
 
         Ok(Response::new(CreateUserResponse {
@@ -55,7 +54,6 @@ impl rpc::passport_rpc_server::PassportRpc for PassportRpcServiceImplementation 
             user_id: user.id.to_string(),
             provider_id: user.provider_id,
             username: user.username,
-            picture: user.picture
         }))
     }
 }

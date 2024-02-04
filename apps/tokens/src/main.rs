@@ -13,6 +13,8 @@ async fn main() -> AnyResult<()> {
     let hosts = makoto_config::hosts::Hosts::new();
     let addr = hosts.tokens.parse()?;
 
+    info!("server {}", makoto_config::constants::nats::TOKENS_SERVER);
+
     let nats = async_nats::connect(makoto_config::constants::nats::TOKENS_SERVER).await?;
 
     let db = makoto_db::new().await.unwrap();

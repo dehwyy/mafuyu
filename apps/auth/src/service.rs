@@ -70,7 +70,6 @@ impl rpc::auth_rpc_server::AuthRpc for AuthRpcServiceImplementation {
       username: req.username.clone(),
       email: Some(req.email),
       password: Some(user_password),
-      picture: None,
       provider_id: None
     })).await?.into_inner();
 

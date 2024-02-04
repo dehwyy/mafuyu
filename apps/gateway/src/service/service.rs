@@ -10,6 +10,8 @@ use grpc::tokens;
 use grpc::oauth2;
 use grpc::passport;
 use grpc::integrations;
+use grpc::user;
+use grpc::cdn;
 
 use grpc::tokens::RefreshTheTokenRequest;
 
@@ -17,13 +19,16 @@ use makoto_grpc::pkg::general::IsOkResponse;
 use makoto_logger::{info, warn};
 use tonic::{Request, Response, Status};
 use makoto_grpc::pkg::passport::GetPublicUserResponse;
+use makoto_grpc::pkg::user::{EditUserRequest, GetUserRequest, GetUserResponse};
 
 pub struct ApiRpcServiceImplementation<T = tonic::transport::Channel> {
   auth_client: auth::auth_rpc_client::AuthRpcClient<T>,
   tokens_client: tokens::tokens_rpc_client::TokensRpcClient<T>,
   oauth2_client: oauth2::o_auth2_rpc_client::OAuth2RpcClient<T>,
   passport_client: passport::passport_rpc_client::PassportRpcClient<T>,
-  integrations_client: integrations::integrations_rpc_client::IntegrationsRpcClient<T>
+  integrations_client: integrations::integrations_rpc_client::IntegrationsRpcClient<T>,
+  user_client: user::user_rpc_client::UserRpcClient<T>,
+  cdn_client: cdn::cdn_rpc_client::CdnRpcClient<T>
 }
 
 impl ApiRpcServiceImplementation {
@@ -37,7 +42,9 @@ impl ApiRpcServiceImplementation {
       tokens_client: clients.tokens_client.unwrap(),
       oauth2_client: clients.oauth2_client.unwrap(),
       passport_client: clients.passport_client.unwrap(),
-      integrations_client: clients.integrations_client.unwrap()
+      integrations_client: clients.integrations_client.unwrap(),
+      user_client: clients.user_client.unwrap(),
+      cdn_client: clients.cdn_client.unwrap(),
     }
   }
 }
@@ -146,14 +153,17 @@ impl api_rpc_server::ApiRpc for ApiRpcServiceImplementation {
               email: user.email,
               username: user.username.clone(),
               password: None,
-              picture: user.picture.clone(),
               provider_id: Some(user.provider_id.clone())
             })).await?.into_inner();
+
+            self.user_client.clone().borrow_mut().create_user(Request::new(user::CreateUserRequest {
+              user_id: created_user.user_id.clone(),
+              picture: user.picture
+            })).await?;
 
             Ok(GetPublicUserResponse {
               username: user.username,
               user_id: created_user.user_id,
-              picture: user.picture,
               provider_id: Some(user.provider_id)
             })
           },
@@ -178,5 +188,17 @@ impl api_rpc_server::ApiRpc for ApiRpcServiceImplementation {
     );
 
     Ok(response)
+  }
+
+  async fn edit_user(&self, req: Request<EditUserRequest>) -> Result<Response<()>, Status> {
+    let req= req.into_inner();
+
+
+
+    self.user_client.clone().borrow_mut().edit_user(req).await
+  }
+
+  async fn get_user(&self, req: Request<GetUserRequest>) -> Result<Response<GetUserResponse>, Status> {
+    self.user_client.clone().borrow_mut().get_user(req).await
   }
 }

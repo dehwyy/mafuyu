@@ -7,6 +7,9 @@ members = [
   "apps/oauth2",
   "apps/integrations",
   "apps/passport",
+  "apps/user",
+  "apps/cdn",
+  "apps/cdn-node",
 
   "libs/config",
   "libs/db",

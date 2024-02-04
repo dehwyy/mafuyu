@@ -1,18 +1,16 @@
 [package]
-name = "grpc_gateway"
+name = "user"
 version = "0.1.0"
-authors = ["dehwyy <makoto.web3@gmail.com>"]
 edition = "2021"
 
 [dependencies]
 tonic = "0.10.2"
 prost = "0.12.3"
-tonic-web = "0.10.2"
 tokio = { version = "1.35.0", features = ["macros", "rt-multi-thread"] }
-tower-http = { version = "0.4", features = ["cors"] }
-http = "0.2.11"
-async-nats = "0.33.0"
+sea-orm = { version = "0.12.9", features = [ "sqlx-postgres", "runtime-tokio-rustls", "with-uuid", "with-time", "macros" ] }
+uuid = { version = "1.6.1", features = ["v4"] }
 
+makoto_db = {path = "../../libs/db"}
 makoto_grpc = {path = "../../libs/grpc"}
 makoto_lib = {path = "../../libs/utils"}
 makoto_config = {path = "../../libs/config"}

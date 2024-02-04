@@ -9,7 +9,6 @@ pub struct CreateUserPayload {
     pub username: String,
     pub email: Option<String>,
     pub password: Option<String>,
-    pub picture: Option<String>,
     pub provider_id: Option<String>
 }
 
@@ -34,7 +33,6 @@ impl Repo {
             username: p.username.into_active_value(),
             email: p.email.into_active_value(),
             password: p.password.into_active_value(),
-            picture: p.picture.into_active_value(),
             provider_id: p.provider_id.into_active_value(),
             ..Default::default()
         };
