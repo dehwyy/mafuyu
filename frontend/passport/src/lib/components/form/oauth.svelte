@@ -11,13 +11,6 @@
         provider
       })
 
-
-      // const response = await fetch("/api/v1/oauth", {
-      //   method: "POST",
-      //   body: JSON.stringify({ provider }),
-      // })
-
-      // window.location.href = (await response.json())["redirect_url"]!
       window.location.href = response.redirect_url
     },
     {
