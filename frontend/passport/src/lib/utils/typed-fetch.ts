@@ -33,8 +33,12 @@ export const Routes = {
   "user/edit": new TypedFetch<
     {
       userId: string
-      pseudonym: string
-      image: string
+      location?: string
+      birthday?: bigint
+      pseudonym?: string
+      bio?: string
+      picture?: string
+      languages: string[]
     },
     {}
   >("user/edit", "POST"),
