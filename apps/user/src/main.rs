@@ -5,6 +5,7 @@ use makoto_lib::Result as AnyResult;
 
 mod service;
 mod repo;
+mod tools;
 
 #[tokio::main]
 async fn main() -> AnyResult<()> {

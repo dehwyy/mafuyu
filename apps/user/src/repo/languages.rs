@@ -25,9 +25,7 @@ impl LanguagesRepo {
 
         }).collect();
 
-        if models.len() != 0 {
-            user_languages::Entity::insert_many(models).exec(&self.db).await.handle().map(|_| {})?;
-        }
+        user_languages::Entity::insert_many(models).exec(&self.db).await.handle()?;
 
         Ok(())
     }

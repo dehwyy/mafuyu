@@ -7,6 +7,7 @@ use makoto_grpc::pkg::cdn;
 use makoto_lib::errors::{HandleError, SafeUnwrapWithMessage};
 use makoto_logger::info;
 use crate::repo::user::EditPrimitiveUserPayload;
+use crate::tools::image::{Image, ImageType};
 
 pub struct UserRpcServiceImplementation<T = tonic::transport::Channel> {
     cdn_client: cdn::cdn_rpc_client::CdnRpcClient<T>,
@@ -50,33 +51,31 @@ impl rpc::user_rpc_server::UserRpc for UserRpcServiceImplementation {
         let update_languages_fut = self.languages_repo.set_languages(&user_id, req.languages);
 
         let mut picture: Option<String> = None;
-
-        if let Some(image) = req.picture {
-            if !image.starts_with("http") {
-                if let Some(image) = image.split_once(",") {
+        if let Some(Some(image)) = req.picture.map(|image| Image::parse(&image)) {
+            picture = Some(match image {
+                ImageType::Base64(base64_image) => {
                     let response = self.cdn_client.clone().borrow_mut().upload_new_image(Request::new(cdn::UploadNewImageRequest {
-                        image_base64: image.1.to_string(),
+                        image_base64: base64_image,
                         keyword: req.user_id.clone()
                     })).await?.into_inner();
 
-                    picture = Some(response.full_url)
-                }
-            }
+                    response.full_url
+                },
+                ImageType::Url(url_image) => url_image
+            });
         }
 
-
-        let edit_user_fut = self.user_repo.edit_primitive_user(EditPrimitiveUserPayload {
+        self.user_repo.edit_primitive_user(EditPrimitiveUserPayload {
             user_id,
             location: req.location,
             birthday: req.birthday,
             pseudonym: req.pseudonym,
             bio: req.bio,
             picture,
-        });
+        }).await.handle()?;
 
-        let (update_languages, edit_user) = tokio::join!(update_languages_fut, edit_user_fut);
+        let (update_languages, ) = tokio::join!(update_languages_fut);
         update_languages.handle()?;
-        edit_user.handle()?;
 
         Ok(Response::new(()))
     }

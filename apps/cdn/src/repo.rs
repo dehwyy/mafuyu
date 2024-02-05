@@ -1,5 +1,5 @@
 use redb::ReadableTable;
-use makoto_logger::info;
+use makoto_logger::{info, warn};
 
 pub struct Repo {
     db: crate::db::Database
@@ -21,8 +21,14 @@ impl Repo {
                 let found_record = table.get(key)?;
                 Ok(found_record.is_some())
             },
-            Err(_) => {
-                Ok(false)
+            Err(err) => {
+                match err {
+                    redb::TableError::TableDoesNotExist(err) => {
+                        warn!("[redb::tableError] {err}");
+                        Ok(false)
+                    },
+                    err => Err(redb::Error::Corrupted(format!("[redb::tableError] {err}")))
+                }
             }
         }
 
