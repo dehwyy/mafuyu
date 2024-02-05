@@ -33,10 +33,10 @@
 </script>
 
 {#if current_theme}
-<div use:popup={themeSelectClick} class="cursor-pointer">
+<div use:popup={themeSelectClick} class="cursor-pointer flex-auto">
   {themes[current_theme]}
 </div>
-<div data-popup="theme-select-popup" class="ml-7 card p-4">
+<div data-popup="theme-select-popup" class="ml-5 -mt-4 card p-4">
   <ListBox>
     {#each Object.entries(themes) as entry}
       <ListBoxItem on:click={() => SetTheme(entry[0])} bind:group={current_theme} name="theme" value={entry[0]}>{entry[1]}</ListBoxItem>
