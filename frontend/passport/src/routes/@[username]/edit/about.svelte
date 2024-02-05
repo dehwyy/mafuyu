@@ -16,22 +16,22 @@
   const initialPhoto = photo
 
   export let username: string
-  const initialUsernmae = username
+  const initialUsername = username
 
   export let pseudonym = ""
-  const initiaPseudonym = pseudonym
+  const initialPseudonym = pseudonym
 
   export let bio = ""
   const initialBio = bio
 
   export let selected_languages: string[] = []
-  const initialSelctedLanguages = [...selected_languages]
+  const initialSelectedLanguages = [...selected_languages]
 
   const SaveAll = useMutation(
     async () => {
       const user_id = $user_store?.id
       if (user_id === undefined) {
-          window.location.href = "/"
+        window.location.href = "/"
       }
 
       await Routes["user/edit"].fetch({
@@ -41,7 +41,7 @@
         bio,
         birthday: undefined,
         location: undefined,
-        picture: photo
+        picture: photo,
       })
     },
     {
@@ -49,17 +49,20 @@
     },
   )
   const DiscardAll = () => {
-    console.log(selected_languages, initialSelctedLanguages)
-    pseudonym = initiaPseudonym
-    selected_languages = initialSelctedLanguages
+    console.log(selected_languages, initialSelectedLanguages)
+    pseudonym = initialPseudonym
+    selected_languages = [...initialSelectedLanguages]
     bio = initialBio
     photo = initialPhoto
-    username = initialUsernmae
+    username = initialUsername
   }
 
-  $: has_changes = username !== initialUsernmae || pseudonym !== initiaPseudonym || initialPhoto !== photo ||
-  bio !== initialBio || JSON.stringify(selected_languages) !== JSON.stringify(initialSelctedLanguages)
-
+  $: has_changes =
+    username !== initialUsername ||
+    pseudonym !== initialPseudonym ||
+    initialPhoto !== photo ||
+    bio !== initialBio ||
+    JSON.stringify(selected_languages) !== JSON.stringify(initialSelectedLanguages)
 </script>
 
 <section class="col-span-2 flex flex-col gap-y-5 settings px-5">
@@ -68,7 +71,7 @@
       {@html CheckIconRaw}
     </button>
   </div>
-   <div class={`${has_changes ? "bottom-5" : "-bottom-20"} fixed self-end z-10 mr-10 transition-all duration-200 delay-100`}>
+  <div class={`${has_changes ? "bottom-5" : "-bottom-20"} fixed self-end z-10 mr-10 transition-all duration-200 delay-100`}>
     <button on:click={() => DiscardAll()} class="w-[50px] h-[50px] variant-glass-error btn rounded-full px-3 border border-error-500">
       {@html CloseIconRaw}
     </button>
