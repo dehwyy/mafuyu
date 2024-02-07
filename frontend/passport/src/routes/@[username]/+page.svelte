@@ -71,11 +71,6 @@
       <Post />
     </section>
   </section>
-
-  <aside class="card flex flex-col items-center min-h-[200px] overflow-hidden">
-    <h5 class="h5 card-header bg-surface-200 dark:bg-surface-700 px-5 py-3">Integrations</h5>
-    <p class="py-3">Empty...</p>
-  </aside>
 </div>
 
 <style>
