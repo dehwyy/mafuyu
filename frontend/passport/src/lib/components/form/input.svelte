@@ -5,7 +5,7 @@
   let is_focused = false
 </script>
 
-<label class="label relative">
+<label class="label relative w-full">
   <span
     class={`${
       value || is_focused ? "-top-[1.3rem] pt-0.5 px-0.5 opacity-100" : "top-4 opacity-50 cursor-text"

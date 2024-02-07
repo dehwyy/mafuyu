@@ -11,6 +11,10 @@
   import { user_store } from "$lib/stores/user"
   import { onMount } from "svelte"
 
+  import InputWithLabel from "$lib/components/form/input.svelte"
+  export let location: string
+  const initialLocation = location
+
   export let photo =
     "https://sun9-28.userapi.com/impg/nfm26MjdU4tRW3N-OwRaiLh996CjCTLh0vu8Dg/ENC1jP7-KJw.jpg?size=1347x1346&quality=95&sign=ed76ada3e9318d6d216d6b845421f402&type=album"
   const initialPhoto = photo
@@ -91,9 +95,9 @@
     <!--      <button in:receive|local={{ key }} out:send|local={{ key }} class="btn variant-glass-primary mx-auto block px-32">Pick</button>-->
     <!--    </Datepicker>-->
   </article>
-  <article class="flex items-center gap-x-10">
+  <article class="flex items-center gap-x-10 pt-2">
     <p>Location</p>
-    <button class="btn variant-glass-primary max-w-full w-[200px]">Pick</button>
+    <InputWithLabel bind:value={location} label_text="Country, city" />
   </article>
   <hr />
   <LanguageSelector bind:selected_languages />
