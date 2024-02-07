@@ -1,4 +1,5 @@
 pub mod pkg;
+pub mod errors;
 
 use tonic::transport::Channel;
 use pkg::auth::auth_rpc_client::{self, AuthRpcClient};

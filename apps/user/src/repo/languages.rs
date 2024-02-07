@@ -1,7 +1,6 @@
 use sea_orm::{prelude::*, IntoActiveValue};
 use makoto_db::{models::user_languages, repo::languages::get_language_id_by_name};
-use makoto_lib::errors::prelude::{RepositoryError, HandleError};
-use makoto_logger::info;
+use makoto_lib::errors::{prelude::HandleError, RepositoryError};
 
 pub struct LanguagesRepo {
     db: DatabaseConnection

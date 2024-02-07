@@ -1,6 +1,4 @@
-pub enum SubjectError {
-    MalformedSubjectName(String)
-}
+use super::errors::{SubjectError, RouteError, NatsHandleError};
 
 pub struct Tools;
 
@@ -24,10 +22,8 @@ impl Tools {
         }
     }
 
-    pub fn get_payload<'a, T>(b: &'a [u8]) -> Result<T, crate::route::RouteError>
+    pub fn get_payload<'a, T>(b: &'a [u8]) -> Result<T, RouteError>
     where T: serde::Deserialize<'a> {
-        crate::message::Decoder::decode(b).map_err(|err| {
-            crate::route::RouteError::MessageError(err)
-        })
+        crate::message::Decoder::decode(b).invalid_argument_error()
     }
 }

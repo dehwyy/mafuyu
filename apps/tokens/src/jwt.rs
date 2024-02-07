@@ -8,7 +8,6 @@ use makoto_logger::error;
 
 const ACCESS_TOKEN_EXPIRATION_TIME_SECS: i64 = 60 * 60; // 1 hour
 
-#[derive(Debug)]
 pub enum TokenError {
     Expired,
     Invalid(String), // Additional information
@@ -80,7 +79,7 @@ impl Jwt {
             None => return Err(TokenError::Invalid("no user_id in token_claims".to_string()))
         };
 
-        // if Now is greater than Exp -> expiration time has exceed
+        // if Now is greater than Exp -> expiration time has passed
         if exp < Utc::now() {
             return Err(TokenError::Expired);
         };

@@ -4,8 +4,7 @@ use tonic::{Request, Response, Status};
 
 use makoto_grpc::pkg::oauth2 as rpc;
 use makoto_grpc::pkg::oauth2::o_auth2_rpc_server::OAuth2Rpc;
-use makoto_lib::errors::prelude::*;
-
+use makoto_grpc::errors::GrpcHandleError;
 
 pub struct OAuth2RpcServiceImplementation {
     pub oauth2: OAuth2

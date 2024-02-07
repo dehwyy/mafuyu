@@ -3,8 +3,8 @@ use makoto_lib::errors::prelude::*;
 pub mod user {
     use sea_orm::prelude::*;
     use sea_orm::sea_query::SimpleExpr;
-    use makoto_lib::errors::{HandleError, SafeUnwrapWithMessage};
-    use makoto_lib::errors::prelude::RepositoryError;
+    use makoto_lib::errors::prelude::*;
+    use makoto_lib::errors::RepositoryError;
     use crate::models::prelude::{Users as User, UserCredentials};
     use crate::models::{users as user, user_credentials};
 
@@ -38,7 +38,7 @@ pub mod user {
                     Some(filter) => {
                         let user = User::find().filter(filter).one(db_conn).await.handle()?;
 
-                        Ok(user.safe_unwrap("user(info) not found")?)
+                        user.unwrap_or_not_found("user(info) not found")
                     },
                     None => Err(RepositoryError::NotFound("invalid filter".to_string()))
                 }
@@ -50,7 +50,7 @@ pub mod user {
 pub mod credentials {
     use super::*;
     use sea_orm::prelude::*;
-    use makoto_lib::errors::prelude::RepositoryError;
+    use makoto_lib::errors::RepositoryError;
     use crate::models::prelude::UserCredentials;
     use crate::models::user_credentials;
 
@@ -71,13 +71,14 @@ pub mod credentials {
 
         let user = UserCredentials::find().filter(filter).one(db_connection).await.handle()?;
 
-        Ok(user.safe_unwrap("user wasn't found")?)
+        user.unwrap_or_not_found("user wasn't found")
     }
 }
 
 pub mod tokens {
     use super::*;
     use sea_orm::prelude::*;
+    use makoto_lib::errors::RepositoryError;
     use crate::models::prelude::UserTokens;
     use crate::models::user_tokens;
 
@@ -104,7 +105,7 @@ pub mod tokens {
             .one(db_connection)
             .await.handle()?;
 
-        Ok(token_record.safe_unwrap("token not found")?)
+        token_record.unwrap_or_not_found("token not found")
     }
 }
 

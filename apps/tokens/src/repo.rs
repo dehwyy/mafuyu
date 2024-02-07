@@ -2,7 +2,8 @@ use sea_orm::{ActiveValue, DatabaseConnection, IntoActiveValue};
 use sea_orm::prelude::*;
 use makoto_db::models::user_tokens;
 use makoto_db::repo::tokens::get_token_record;
-use makoto_lib::errors::prelude::*;
+use makoto_lib::errors::prelude::HandleError;
+use makoto_lib::errors::RepositoryError;
 
 pub use makoto_db::repo::tokens::GetTokenRecordBy;
 
@@ -42,7 +43,6 @@ impl Repo {
             },
             Err(err) => {
                 match err {
-                    RepositoryError::DbError(err) => Err(RepositoryError::DbError(err)),
                     RepositoryError::NotFound(_) => {
                         let model = user_tokens::ActiveModel {
                             user_id: user_id.into_active_value(),
@@ -53,7 +53,8 @@ impl Repo {
                         };
 
                         Ok(model.insert(&self.db))
-                    }
+                    },
+                    err => Err(err)
                 }
             }
         }?;

@@ -2,13 +2,14 @@ use std::borrow::BorrowMut;
 use makoto_grpc::pkg::auth as rpc;
 use makoto_grpc::pkg::{tokens, passport};
 use makoto_grpc::pkg::general::IsOkResponse;
-
+use makoto_grpc::errors::GrpcHandleError;
 use makoto_logger::{error, info, warn};
 use makoto_lib::errors::prelude::*;
 
 use tonic::{Status, Response, Request};
 use uuid::Uuid;
 use makoto_grpc::pkg::auth::AuthenticationServiceResponse;
+use makoto_lib::errors::RepositoryError;
 
 use crate::repository::credentials::{Credentials, GetCredentialsRecordBy as GetUserRecordBy};
 use crate::repository::tokens::{Tokens, GetTokenRecordBy};
@@ -54,12 +55,12 @@ impl rpc::auth_rpc_server::AuthRpc for AuthRpcServiceImplementation {
         self.credentials_repo.get_user(GetUserRecordBy::Email(req.email.clone()))
       );
 
-      if !username.is_not_found() {
-        return Err(Status::already_exists("username is already taken"));
+      if let Err(RepositoryError::NotFound(err)) = username {
+        return Err(Status::already_exists(format!("username is already taken: {}", err)));
       }
 
-      if !email.is_not_found() {
-        return Err(Status::already_exists("email is already taken"));
+      if let Err(RepositoryError::NotFound(err)) = email {
+        return Err(Status::already_exists(format!("email is already taken: {}", err)));
       }
     }
 
@@ -90,7 +91,7 @@ impl rpc::auth_rpc_server::AuthRpc for AuthRpcServiceImplementation {
   async fn sign_in(&self, req: Request<rpc::SignInRequest>) -> Result<Response<AuthenticationServiceResponse>, Status> {
     let req = req.into_inner();
 
-    let user = match req.login.safe_unwrap("cannot get `login` field from request")? {
+    let user = match req.login.unwrap_or_internal("cannot get `login` field from request")? {
       rpc::sign_in_request::Login::Email(email) => {
         Validator::email(&email).invalid_argument_error()?;
 
@@ -103,7 +104,7 @@ impl rpc::auth_rpc_server::AuthRpc for AuthRpcServiceImplementation {
       },
     }.handle()?;
 
-     let password = user.password.safe_unwrap("trying to auth via oauth2 account")?;
+     let password = user.password.unwrap_or_not_found("no password on user_model")?;
 
     // check password
     if Hasher::verify(&req.password, &password).invalid_argument_error()? {

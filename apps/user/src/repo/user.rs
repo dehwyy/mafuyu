@@ -1,11 +1,10 @@
 use sea_orm::{IntoActiveValue, prelude::*, TryFromU64};
-use makoto_lib::errors::prelude::{RepositoryError, HandleError};
+use makoto_lib::errors::{RepositoryError, prelude::HandleError};
 
 use makoto_db::models::users as user;
 use makoto_db::repo::user::get_user;
 
 pub use makoto_db::repo::user::GetUserRecordBy;
-use makoto_logger::info;
 
 pub struct EditPrimitiveUserPayload {
     pub user_id: Uuid,
@@ -38,7 +37,7 @@ impl UserRepo {
             ..Default::default()
         };
 
-        Ok(model.insert(&self.db).await.handle()?)
+        model.insert(&self.db).await.handle()
     }
 
     pub async fn edit_primitive_user(&self, p: EditPrimitiveUserPayload) -> Result<user::Model, RepositoryError> {
@@ -57,6 +56,6 @@ impl UserRepo {
         user.bio = p.bio.into_active_value();
         user.picture = p.picture.into_active_value();
 
-        Ok(user.update(&self.db).await.handle()?)
+        user.update(&self.db).await.handle()
     }
 }

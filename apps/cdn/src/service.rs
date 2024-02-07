@@ -1,11 +1,10 @@
 use tonic::{Request, Response, Status};
-use tonic::codegen::Body;
 use makoto_grpc::pkg::cdn::cdn_rpc_server::CdnRpc;
 use makoto_grpc::pkg::cdn::{UploadNewImageRequest, UploadNewImageResponse};
-use makoto_lib::errors::HandleError;
+use makoto_grpc::errors::GrpcHandleError;
+use makoto_lib::errors::prelude::HandleError;
 
 use mafuyu_nats::payload::cdn as nats_cdn;
-use makoto_logger::info;
 
 pub struct CdnRpcServiceImplementation {
     url_base: String,
@@ -33,14 +32,14 @@ impl CdnRpc for CdnRpcServiceImplementation {
             if i > 5 { break None }
 
             let filename = format!("{}.{}", req.keyword, uuid::Uuid::new_v4().to_string());
-            if !self.repo.has_value_by_key(&filename).await.map_err(|err| Status::internal(err.to_string()))? {
+            if !self.repo.has_value_by_key(&filename).await.internal_error()? {
                 break Some(filename);
             };
 
             i+=1
         } {
             Some(filename) => {
-                self.repo.reserve_key(&filename).await.map_err(|err| Status::internal(err.to_string()))?;
+                self.repo.reserve_key(&filename).await.internal_error()?;
 
                 filename
             },
@@ -53,7 +52,7 @@ impl CdnRpc for CdnRpcServiceImplementation {
             filename: filename.clone(),
             base64_image: req.image_base64,
             image_ext: image_ext.clone()
-        }).map_err(|err| Status::internal(err.to_string()))?;
+        }).internal_error()?;
 
         self.nats_client.publish(nats_cdn::subject::PUBLISH_IMAGE, payload.into()).await.handle()?;
 

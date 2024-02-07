@@ -2,10 +2,10 @@ use std::borrow::BorrowMut;
 use tonic::{Request, Response, Status};
 use uuid::Uuid;
 use makoto_db::repo::user::GetUserRecordBy;
+use makoto_grpc::errors::GrpcHandleError;
 use makoto_grpc::pkg::user as rpc;
 use makoto_grpc::pkg::cdn;
-use makoto_lib::errors::{HandleError, SafeUnwrapWithMessage};
-use makoto_logger::info;
+use makoto_lib::errors::prelude::*;
 use crate::repo::user::EditPrimitiveUserPayload;
 use crate::tools::image::{Image, ImageType};
 
@@ -36,7 +36,7 @@ impl rpc::user_rpc_server::UserRpc for UserRpcServiceImplementation {
     async fn create_user(&self, req: Request<rpc::CreateUserRequest>) -> Result<Response<()>, Status> {
         let req = req.into_inner();
 
-        let user_id = Uuid::try_parse(&req.user_id).map_err(|err| Status::invalid_argument(err.to_string()))?;
+        let user_id = Uuid::try_parse(&req.user_id).invalid_argument_error()?;
 
         self.user_repo.create_basic_user(user_id, req.picture).await.handle()?;
 
@@ -46,7 +46,7 @@ impl rpc::user_rpc_server::UserRpc for UserRpcServiceImplementation {
     async fn edit_user(&self, req: Request<rpc::EditUserRequest>) -> Result<Response<()>, Status> {
         let req = req.into_inner();
 
-        let user_id = Uuid::try_parse(&req.user_id).map_err(|err| Status::invalid_argument(err.to_string()))?;
+        let user_id = Uuid::try_parse(&req.user_id).invalid_argument_error()?;
 
         let update_languages_fut = self.languages_repo.set_languages(&user_id, req.languages);
 

@@ -1,12 +1,12 @@
-use crate::message::MessageError;
-use crate::route::RouteError;
-use crate::tools::SubjectError;
+use crate::errors::*;
 
 impl std::fmt::Display for RouteError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s=  match self {
-            Self::MessageError(s) => s.to_string(),
-            Self::RepoError(s) => s.to_string()
+            Self::InternalError(s) => format!("[internal error]: {}", s),
+            Self::AlreadyExists(s) => format!("[already exists]: {}", s),
+            Self::NotFound(s) => format!("[not found]: {}", s),
+            Self::InvalidArgument(s) => format!("[invalid argument]: {}", s),
         };
 
         write!(f, "{}", s)

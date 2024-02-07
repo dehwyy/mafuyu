@@ -4,6 +4,7 @@ use uuid::Uuid;
 
 use makoto_lib::errors::prelude::*;
 
+use makoto_grpc::errors::GrpcHandleError;
 use makoto_grpc::pkg::general::IsOkResponse;
 use makoto_grpc::pkg::tokens::{self as rpc, SaveTokensRequest, tokens_rpc_server::TokensRpc};
 use makoto_grpc::pkg::oauth2;
@@ -12,6 +13,7 @@ use makoto_grpc::pkg::integrations;
 use mafuyu_nats::payload::tokens as nats_tokens;
 use mafuyu_nats::message::Encoder as NatsJsonEncoder;
 use makoto_grpc::pkg::integrations::GetBasicUserRequest;
+use makoto_lib::errors::RepositoryError;
 
 use crate::jwt::{Jwt, JwtPayload, TokenError};
 use crate::repo::GetTokenRecordBy;
@@ -31,9 +33,7 @@ impl TokensRpcServiceImplementation {
     }
 
     fn try_as_uuid(&self, uuid: &str) -> Result<Uuid, Status> {
-        Uuid::try_parse(&uuid).map_err(|err| {
-            format!("[cannot parse user_id as uuid]: {}", err.to_string())
-        }).invalid_argument_error()
+        Uuid::try_parse(&uuid).invalid_argument_error()
     }
 }
 
@@ -45,21 +45,32 @@ impl TokensRpc for TokensRpcServiceImplementation {
 
         let record = self.token_repo.get_token_record(GetTokenRecordBy::UserId(user_id)).await;
 
+        // Clarify whether record either `exists` or `not_found`.
+        // If common error occurred => return RpcError (Status)
+        if let Some(has_error) = record.as_ref().map_err(|err| match err {
+            RepositoryError::NotFound(_) => Ok(()),
+                err => Err(err)
+        }).err() {
+            has_error.map_err(|err| err.clone()).handle()?
+        }
+
+
         let jwt_payload = JwtPayload {
             user_id: req.user_id.clone()
         };
 
-        let access_token = Jwt::new_access_token(jwt_payload.clone()).map_err(|err| err.to_string()).internal_error()?;
+        let access_token = Jwt::new_access_token(jwt_payload.clone()).internal_error()?;
 
-        let refresh_token = match record.is_not_found() {
+        // `is_error` is actually `is_not_found` as common errors were handled above (right after `get_token_record`)
+        let refresh_token = match record.is_err() {
             true => Jwt::new_refresh_token(jwt_payload),
-            // Both `record` and `refresh_token` should be defined as as record is !!found => found, and \
-            // `native `token provider
-            false => match record.unwrap().refresh_token {
+            // Both `record` and `refresh_token` should be defined as record is !!found => found, and `provider` is None (not `oauth2`)
+            // Should use `unwrap` instead of `handle`, but I guess it's fine.
+            false => match record.handle()?.refresh_token {
                 Some(token) => Ok(token),
                 None => Err(TokenError::Internal)
             }
-        }.map_err(|err| err.to_string() ).internal_error()?;
+        }.internal_error()?;
 
 
         self.token_repo.insert_tokens(user_id, access_token.clone(), Some(refresh_token.clone()), None).await.handle()?;
@@ -88,10 +99,11 @@ impl TokensRpc for TokensRpcServiceImplementation {
                     provider: oauth2_provider,
                     access_token: req.access_token
                 })).await.map(|_| Option::<String>::None)?
+                // `oauth2_tokens` doesn't have `mafuyu user_id` in their claims,
+                // (for mafuyu tokens `Jwt service` gets `user_id` from claims).
             },
             None => Jwt::validate_access_token(req.access_token)
-                .map(|v| Some(v.user_id))
-                .map_err(|err| err.to_string()).unauthenticated_error()?
+                .map(|v| Some(v.user_id)).unauthenticated_error()?
         };
 
         Ok(Response::new(rpc::ValidateTokenResponse {
@@ -118,7 +130,7 @@ impl TokensRpc for TokensRpcServiceImplementation {
     async fn save_tokens(&self, req: Request<SaveTokensRequest>) -> Result<Response<IsOkResponse>, Status> {
         let req = req.into_inner();
 
-        let user_id = Uuid::try_parse(&req.user_id).map_err(|err| Status::invalid_argument(err.to_string()))?;
+        let user_id = Uuid::try_parse(&req.user_id).invalid_argument_error()?;
 
         self.token_repo.insert_tokens(user_id, req.access_token, req.refresh_token, req.provider).await.handle()?;
 
@@ -144,7 +156,7 @@ impl TokensRpc for TokensRpcServiceImplementation {
             None => {
                 Jwt::new_access_token(JwtPayload {
                     user_id: record.user_id.to_string()
-                }).map_err(|err| err.to_string()).internal_error()
+                }).internal_error()
             }
         }?;
 

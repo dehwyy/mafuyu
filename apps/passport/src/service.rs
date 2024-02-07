@@ -3,7 +3,7 @@ use uuid::Uuid;
 use makoto_db::repo::credentials::GetCredentialsRecordBy;
 use makoto_grpc::pkg::passport as rpc;
 use makoto_grpc::pkg::passport::{CreateUserRequest, CreateUserResponse, GetPublicUserRequest, GetPublicUserResponse};
-use makoto_lib::errors::{HandleError, SafeUnwrapWithMessage};
+use makoto_lib::errors::prelude::*;
 
 use crate::repo as credentials_repo;
 
@@ -40,7 +40,7 @@ impl rpc::passport_rpc_server::PassportRpc for PassportRpcServiceImplementation 
         let req = req.into_inner();
 
 
-        let get_by = match req.get_user_by.safe_unwrap("should specify `get_by`")? {
+        let get_by = match req.get_user_by.unwrap_or_not_found("should specify `get_by`")? {
             rpc::get_public_user_request::GetUserBy::ProviderId(id) => GetCredentialsRecordBy::ProviderId(id),
             rpc::get_public_user_request::GetUserBy::Username(id) => GetCredentialsRecordBy::Username(id),
             rpc::get_public_user_request::GetUserBy::UserId(id) => GetCredentialsRecordBy::UserId(

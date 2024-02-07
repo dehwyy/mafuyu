@@ -1,7 +1,7 @@
 use sea_orm::{DatabaseConnection, IntoActiveValue, prelude::*};
 use uuid::Uuid;
 use makoto_db::models::user_credentials;
-use makoto_lib::errors::prelude::{RepositoryError, HandleError};
+use makoto_lib::errors::{prelude::HandleError, RepositoryError};
 
 pub use makoto_db::repo::credentials::GetCredentialsRecordBy;
 

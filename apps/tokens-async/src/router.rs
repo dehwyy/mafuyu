@@ -1,15 +1,14 @@
 use std::borrow::BorrowMut;
 use async_nats::jetstream::Message;
 use uuid::Uuid;
-use mafuyu_nats::message::MessageError;
-use makoto_lib::errors::prelude::*;
 use makoto_logger::error;
 use crate::repo::{GetTokenRecordBy, Repo as TokenRepo};
 
 use makoto_grpc::pkg::tokens::{tokens_rpc_client::TokensRpcClient, ValidateTokenRequest};
 
 use mafuyu_nats::tools::Tools;
-use mafuyu_nats::route::{RouteError, RouteResult};
+use mafuyu_nats::route::RouteResult;
+use mafuyu_nats::errors::{RouteError, NatsHandleError};
 use mafuyu_nats::payload::tokens::ClearTokensRequest;
 
 pub struct Router<T = tonic::transport::Channel> {
@@ -62,11 +61,9 @@ impl Router {
 
         let payload = Tools::get_payload::<ClearTokensRequest>(&message.payload)?;
 
-        let user_id = Uuid::try_parse(&payload.user_id).map_err(|err| {
-            RouteError::MessageError(MessageError::MalformedRequest(err.to_string()))
-        })?;
+        let user_id = Uuid::try_parse(&payload.user_id).invalid_argument_error()?;
 
-        let record = self.repo.get_token_record(GetTokenRecordBy::UserId(user_id)).await.handle_nats()?;
+        let record = self.repo.get_token_record(GetTokenRecordBy::UserId(user_id)).await.internal_error()?;;
 
         let access_tokens = record.access_tokens.clone().unwrap_or_default();
         let mut valid_access_tokens: Vec<String> = vec!();
@@ -82,7 +79,7 @@ impl Router {
             };
         }
 
-        self.repo.set_access_tokens(record, valid_access_tokens).await.handle_nats()?;
+        self.repo.set_access_tokens(record, valid_access_tokens).await.internal_error()?;
 
         Ok(())
     }

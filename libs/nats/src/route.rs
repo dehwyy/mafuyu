@@ -1,7 +1,3 @@
-
-pub enum RouteError {
-    MessageError(crate::message::MessageError),
-    RepoError(String)
-}
+use super::errors::RouteError;
 
 pub type RouteResult = Result<(), RouteError>;

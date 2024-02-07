@@ -1,6 +1,6 @@
 use sea_orm::{DatabaseConnection, EntityTrait, prelude::*};
 use makoto_db::models::user_tokens;
-use makoto_lib::errors::prelude::*;
+use makoto_lib::errors::RepositoryError;
 
 pub use makoto_db::repo::tokens::GetTokenRecordBy;
 

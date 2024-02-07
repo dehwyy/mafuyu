@@ -1,13 +1,6 @@
 use serde::{Serialize, Deserialize};
 use serde_json::{from_slice as from_json, to_vec as to_json};
-
-pub enum MessageError {
-    CannotSerialize(String),
-    CannotDeserialize(String),
-    MalformedRequest(String),
-    Internal(String),
-}
-
+use crate::errors::MessageError;
 
 pub struct Encoder;
 

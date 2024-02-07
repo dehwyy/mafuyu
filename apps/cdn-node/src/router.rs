@@ -1,8 +1,8 @@
 use async_nats::jetstream::Message;
 use makoto_logger::error;
 
-use mafuyu_nats::{tools::Tools, route::RouteResult, message::MessageError, payload::cdn::{subject, self}};
-use mafuyu_nats::route::RouteError;
+use mafuyu_nats::{tools::Tools, route::RouteResult, payload::cdn::{subject, PublishImageRequest}};
+use mafuyu_nats::errors::NatsHandleError;
 
 pub struct Router {
     cdn_fs: crate::fs::CDNFs
@@ -46,11 +46,10 @@ impl Router {
     }
 
     pub async fn publish_image(&self, message: Message) -> RouteResult {
-        let payload = Tools::get_payload::<cdn::PublishImageRequest>(&message.payload)?;
+        let payload = Tools::get_payload::<PublishImageRequest>(&message.payload)?;
 
 
-        self.cdn_fs.save_image(&payload.filename, payload.base64_image, payload.image_ext)
-            .map_err(|err| RouteError::RepoError(err))?;
+        self.cdn_fs.save_image(&payload.filename, payload.base64_image, payload.image_ext).internal_error()?;
 
         Ok(())
     }
