@@ -41,7 +41,7 @@
         window.location.href = "/"
       }
 
-      await Routes["user/edit"].fetch({
+      const {response, ok, status} = await Routes["user/edit"].fetch({
         userId: user_id!,
         pseudonym,
         bio,
@@ -51,11 +51,19 @@
         languages: selected_languages,
       })
 
+      if (!ok) {
+        Toasts.error(`Failed to save changes. ${status} ${(response as any).message || ""}`)
+        return
+      }
+
+      Toasts.success("Saved ")
+
       initialPseudonym = pseudonym
       initialSelectedLanguages = [...selected_languages]
       initialBio = bio
       initialLocation = location
       initialPhoto = photo
+
     },
     {
       mutationKey: ["edit.user"],

@@ -53,6 +53,7 @@
     "@formkit/auto-animate": "^0.8.1",
     "@sveltejs/enhanced-img": "^0.1.8",
     "@sveltestack/svelte-query": "^1.6.0",
+    "@zerodevx/svelte-toast": "^0.9.5",
     "highlight.js": "11.9.0",
     "optional": "^0.1.4",
     "sharp": "^0.33.2",

@@ -25,7 +25,6 @@
     const loaded_images: string[] = new Array(files_count) // base64[]
     for (let i = 0; i < files_count; i++) {
       const image_to_load = input.files.item(i)! // should exist
-
       // image_to_load.size > 10 * 8 // TODO: add size
       // ["image/jpeg", "image/png"].includes(image_to_load.type) // TODO: add .ext validation
 

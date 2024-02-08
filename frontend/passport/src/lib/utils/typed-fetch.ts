@@ -6,13 +6,23 @@ class TypedFetch<Req, Res> {
     private method: string,
   ) {}
 
-  async fetch(req: Req): Promise<Res> {
+  async fetch(req: Req): Promise<{
+    response: Res
+    ok: boolean
+    status: number
+  }> {
     const response = await fetch(this.api_route, {
       method: this.method,
       body: JSON.stringify(req),
     })
 
-    return response.json()
+    const r = response.json()
+
+    return {
+      response: await r,
+      ok: response.ok,
+      status: response.status,
+    }
   }
 
   async get_request_with_response_creator(req: Request): Promise<[Req, typeof this.create_new_response]> {

@@ -7,7 +7,7 @@
 
   const oauth_redirect = useMutation(
     async (provider: string) => {
-      const response = await Routes["oauth"].fetch({
+      const {response} = await Routes["oauth"].fetch({
         provider
       })
 
