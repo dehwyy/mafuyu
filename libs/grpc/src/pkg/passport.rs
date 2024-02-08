@@ -18,6 +18,14 @@ pub struct CreateUserResponse {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UpdateUsernameRequest {
+    #[prost(string, tag = "1")]
+    pub user_id: ::prost::alloc::string::String,
+    #[prost(string, tag = "2")]
+    pub username: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GetPublicUserRequest {
     #[prost(oneof = "get_public_user_request::GetUserBy", tags = "1, 2, 3")]
     pub get_user_by: ::core::option::Option<get_public_user_request::GetUserBy>,
@@ -155,6 +163,28 @@ pub mod passport_rpc_client {
                 .insert(GrpcMethod::new("passport.PassportRpc", "CreateUser"));
             self.inner.unary(req, path, codec).await
         }
+        pub async fn update_username(
+            &mut self,
+            request: impl tonic::IntoRequest<super::UpdateUsernameRequest>,
+        ) -> std::result::Result<tonic::Response<()>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/passport.PassportRpc/UpdateUsername",
+            );
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("passport.PassportRpc", "UpdateUsername"));
+            self.inner.unary(req, path, codec).await
+        }
         pub async fn get_public_user(
             &mut self,
             request: impl tonic::IntoRequest<super::GetPublicUserRequest>,
@@ -196,6 +226,10 @@ pub mod passport_rpc_server {
             tonic::Response<super::CreateUserResponse>,
             tonic::Status,
         >;
+        async fn update_username(
+            &self,
+            request: tonic::Request<super::UpdateUsernameRequest>,
+        ) -> std::result::Result<tonic::Response<()>, tonic::Status>;
         async fn get_public_user(
             &self,
             request: tonic::Request<super::GetPublicUserRequest>,
@@ -314,6 +348,52 @@ pub mod passport_rpc_server {
                     let fut = async move {
                         let inner = inner.0;
                         let method = CreateUserSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/passport.PassportRpc/UpdateUsername" => {
+                    #[allow(non_camel_case_types)]
+                    struct UpdateUsernameSvc<T: PassportRpc>(pub Arc<T>);
+                    impl<
+                        T: PassportRpc,
+                    > tonic::server::UnaryService<super::UpdateUsernameRequest>
+                    for UpdateUsernameSvc<T> {
+                        type Response = ();
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::UpdateUsernameRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as PassportRpc>::update_username(&inner, request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = UpdateUsernameSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(

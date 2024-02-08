@@ -4,8 +4,11 @@ package passport;
 
 option go_package = "github.com/dehwyy/makoto/libs/grpc/generated/passport";
 
+import "google/protobuf/empty.proto";
+
 service PassportRpc {
   rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+  rpc UpdateUsername(UpdateUsernameRequest) returns (google.protobuf.Empty);
   rpc GetPublicUser(GetPublicUserRequest) returns (GetPublicUserResponse);
 }
 
@@ -18,6 +21,11 @@ message CreateUserRequest {
 
 message CreateUserResponse {
   string user_id = 1;
+}
+
+message UpdateUsernameRequest {
+  string user_id = 1;
+  string username = 2;
 }
 
 message GetPublicUserRequest {

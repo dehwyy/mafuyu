@@ -41,8 +41,18 @@
         window.location.href = "/"
       }
 
+      console.log(username)
+
+      user_store.set({
+        id: user_id!,
+        username,
+        pseudonym,
+        picture: photo,
+      })
+
       const {response, ok, status} = await Routes["user/edit"].fetch({
         userId: user_id!,
+        username,
         pseudonym,
         bio,
         location,
@@ -58,12 +68,14 @@
 
       Toasts.success("Saved ")
 
+      initialUsername = username
       initialPseudonym = pseudonym
       initialSelectedLanguages = [...selected_languages]
       initialBio = bio
       initialLocation = location
       initialPhoto = photo
 
+      history.replaceState(null, "", "/@" + username);
     },
     {
       mutationKey: ["edit.user"],

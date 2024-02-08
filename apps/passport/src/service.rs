@@ -1,8 +1,9 @@
+use makoto_grpc::errors::GrpcHandleError;
 use tonic::{Request, Response, Status};
 use uuid::Uuid;
 use makoto_db::repo::credentials::GetCredentialsRecordBy;
 use makoto_grpc::pkg::passport as rpc;
-use makoto_grpc::pkg::passport::{CreateUserRequest, CreateUserResponse, GetPublicUserRequest, GetPublicUserResponse};
+use makoto_grpc::pkg::passport::{CreateUserRequest, CreateUserResponse, GetPublicUserRequest, GetPublicUserResponse, UpdateUsernameRequest};
 use makoto_lib::errors::prelude::*;
 
 use crate::repo as credentials_repo;
@@ -34,6 +35,16 @@ impl rpc::passport_rpc_server::PassportRpc for PassportRpcServiceImplementation 
         Ok(Response::new(CreateUserResponse {
             user_id: user.id.into()
         }))
+    }
+
+    async fn update_username(&self, req: Request<UpdateUsernameRequest>) -> Result<Response<()>, tonic::Status> {
+        let req =  req.into_inner();
+
+        let user_id = Uuid::try_parse(&req.user_id).invalid_argument_error()?;
+
+        self.credentials_repo.update_username(user_id, req.username).await.handle()?;
+
+        Ok(Response::new(()))
     }
 
     async fn get_public_user(&self, req: Request<GetPublicUserRequest>) -> Result<Response<GetPublicUserResponse>, Status> {

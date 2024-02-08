@@ -27,6 +27,14 @@ impl Repo {
         makoto_db::repo::credentials::get_user(&self.db, get_by).await
     }
 
+    pub async fn update_username(&self, user_id: Uuid, username: String) -> Result<user_credentials::Model, RepositoryError> {
+        user_credentials::ActiveModel {
+            id: user_id.into_active_value(),
+            username: username.into_active_value(),
+            ..Default::default()
+        }.update(&self.db).await.handle()
+    }
+
     pub async fn create_user(&self, p: CreateUserPayload) -> Result<user_credentials::Model, RepositoryError> {
         let user = user_credentials::ActiveModel {
             id: Uuid::new_v4().into_active_value(),

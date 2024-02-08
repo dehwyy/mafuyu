@@ -20,6 +20,9 @@ service ApiRpc {
   rpc SignInWithToken(auth.SignInWithTokenRequest) returns (auth.AuthenticationResponse);
   rpc SignOut(auth.SignOutRequest) returns (general.IsOkResponse);
 
+  // Passport
+  rpc UpdateUsername(passport.UpdateUsernameRequest) returns (google.protobuf.Empty);
+
   // Tokens
   rpc RefreshTheToken(tokens.RefreshTheTokenRequest) returns (general.IsOkResponse);
 

@@ -43,6 +43,7 @@ export const Routes = {
   "user/edit": new TypedFetch<
     {
       userId: string
+      username?: string
       location?: string
       birthday?: bigint
       pseudonym?: string

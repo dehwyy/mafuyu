@@ -18,7 +18,7 @@ use grpc::tokens::RefreshTheTokenRequest;
 use makoto_grpc::pkg::general::IsOkResponse;
 use makoto_logger::{info, warn};
 use tonic::{Request, Response, Status};
-use makoto_grpc::pkg::passport::GetPublicUserResponse;
+use makoto_grpc::pkg::passport::{GetPublicUserResponse, UpdateUsernameRequest};
 use makoto_grpc::pkg::user::{EditUserRequest, GetUserRequest, GetUserResponse};
 
 pub struct ApiRpcServiceImplementation<T = tonic::transport::Channel> {
@@ -188,6 +188,10 @@ impl api_rpc_server::ApiRpc for ApiRpcServiceImplementation {
     );
 
     Ok(response)
+  }
+
+  async fn update_username(&self, req: Request<UpdateUsernameRequest>) -> Result<Response<()>, Status> {
+    self.passport_client.clone().borrow_mut().update_username(req).await
   }
 
   async fn edit_user(&self, req: Request<EditUserRequest>) -> Result<Response<()>, Status> {
