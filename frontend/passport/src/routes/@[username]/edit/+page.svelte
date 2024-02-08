@@ -33,7 +33,7 @@
         </article>
       {/each}</svelte:fragment>
   </SlideWindow>
-  <SlideWindow max_height="900px">
+  <SlideWindow max_height="1200px">
     <svelte:fragment slot="heading">About</svelte:fragment>
     <svelte:fragment slot="content">
       <About username={data?.username || ""} pseudonym={data.pseudonym} photo={data.picture} bio={data.bio} selected_languages={data.languages} location={data.location} />

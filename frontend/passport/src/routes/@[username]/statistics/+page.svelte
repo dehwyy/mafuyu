@@ -1,5 +1,4 @@
 <script lang="ts">
-  console.log("hate")
 </script>
 
 <div class="pt-10">

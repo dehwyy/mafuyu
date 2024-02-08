@@ -19,14 +19,14 @@
 <article class="flex flex-col gap-y-5">
   <p class="text-center font-medium text-xl">Languages</p>
   <input class="input px-5" type="text" bind:value={language_filter} placeholder="Russian, Japanese..." />
-  <div class={`${!selected_languages.length ? "max-h-0 opacity-0" : " max-h-[40px] opacity-100/i"} transition-all duration-300`}>
-    <div class="snap-x h-[34px] min-h-[5px] scroll-px-6 snap-mandatory scroll-smooth flex gap-x-5 select-none overflow-x-auto px-5">
+  <div class={`${!selected_languages.length ? "max-h-0 opacity-0" : " max-h-[45px] opacity-100/i"} transition-all duration-300`}>
+    <div class="snap-x h-[40px] min-h-[5px] scroll-px-6 snap-mandatory scroll-smooth flex gap-x-5 select-none overflow-x-auto px-5">
       {#each selected_languages as language}
         <p class="snap-align-none">{Capitalize(language)}</p>
       {/each}
     </div>
   </div>
-  <div class="h-[150px] overflow-y-scroll select-none mt-[-0.5rem]">
+  <div class="h-[200px] overflow-y-scroll select-none mt-[-0.5rem]">
     <ListBox multiple active="variant-glass-primary">
       {#each MostPopularLanguage as language}
         {#if language.language.toLowerCase().match(unsensitive_to_case_language_filter)}

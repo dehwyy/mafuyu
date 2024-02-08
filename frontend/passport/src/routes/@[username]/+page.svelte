@@ -11,7 +11,7 @@
 </script>
 
 <div class="flex pt-6 gap-x-5 items-start">
-  <section class="w-[500px] flex flex-col gap-y-4">
+  <section class="flex flex-col gap-y-4">
     <section class="card p-6 w-full">
       <ul class="flex flex-col gap-y-4">
         <li class="information">
