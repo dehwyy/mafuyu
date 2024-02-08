@@ -1,21 +1,20 @@
-version: '3'
+version: "3"
 
 dotenv: [.env]
 
 tasks:
   db:migrate:
     cmds:
-      - go run libs/db/src/main.go migrate
-      - cd libs/db && sea-orm-cli generate entity -u $DATABASE_URL -o src/rust/models
+      - go run libs/db/main.go migrate
+      - cd libs/db && sea-orm-cli generate entity -u $DATABASE_URL -o src/models
 
   db:test-drop:
-
     cmds:
-      - go run libs/db/src/main.go test-drop
+      - go run libs/db/main.go test-drop
 
   db:test-migrate:
     cmds:
-      - go run libs/db/src/main.go test-migrate
+      - go run libs/db/main.go test-migrate
 
   grpc:
     dir: libs/grpc
@@ -24,3 +23,43 @@ tasks:
       - protoc -I=protos --ts_out=dist --ts_opt=generate_dependencies,eslint_disable,ts_nocheck,output_javascript protos/*.proto
       - protoc -I protos --ts_out=dist --ts_opt=generate_dependencies,eslint_disable,ts_nocheck,output_javascript protos/api.proto
       - pnpm ts
+
+  r1:
+    cmds:
+      - cargo run -p integrations
+
+  r2:
+    cmds:
+      - cargo run -p passport
+
+  r3:
+    cmds:
+      - cargo run -p cdn_node
+
+  r4:
+    cmds:
+      - cargo run -p cdn
+
+  r5:
+    cmds:
+      - cargo run -p user
+
+  r6:
+    cmds:
+      - cargo run -p oauth
+
+  r7:
+    cmds:
+      - cargo run -p tokens
+
+  r8:
+    cmds:
+      - cargo run -p tokens_async
+
+  r9:
+    cmds:
+      - cargo run -p auth
+
+  r10:
+    cmds:
+      - cargo run -p grpc_gateway

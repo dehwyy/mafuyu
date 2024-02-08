@@ -6,7 +6,7 @@ use sea_orm::entity::prelude::*;
 #[sea_orm(table_name = "user_languages")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    pub user_id: Uuid,
+    pub user_user_id: Uuid,
     #[sea_orm(primary_key, auto_increment = false)]
     pub language_id: i64,
 }
@@ -23,8 +23,8 @@ pub enum Relation {
     Languages,
     #[sea_orm(
         belongs_to = "super::users::Entity",
-        from = "Column::UserId",
-        to = "super::users::Column::Id",
+        from = "Column::UserUserId",
+        to = "super::users::Column::UserId",
         on_update = "NoAction",
         on_delete = "NoAction"
     )]

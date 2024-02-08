@@ -9,27 +9,30 @@
   import { useMutation } from "@sveltestack/svelte-query"
   import { Routes } from "$lib/utils/typed-fetch"
   import { user_store } from "$lib/stores/user"
-  import { onMount } from "svelte"
+  import Datepicker from "$lib/components/form/datepicker.svelte"
 
   import InputWithLabel from "$lib/components/form/input.svelte"
-  export let location: string
-  const initialLocation = location
+  import { Toasts } from "$lib/utils/toast"
+  export let location= ""
+  let initialLocation = location
 
   export let photo =
     "https://sun9-28.userapi.com/impg/nfm26MjdU4tRW3N-OwRaiLh996CjCTLh0vu8Dg/ENC1jP7-KJw.jpg?size=1347x1346&quality=95&sign=ed76ada3e9318d6d216d6b845421f402&type=album"
-  const initialPhoto = photo
+  let initialPhoto = photo
 
   export let username: string
-  const initialUsername = username
+  let initialUsername = username
 
   export let pseudonym = ""
-  const initialPseudonym = pseudonym
+  let initialPseudonym = pseudonym
 
   export let bio = ""
-  const initialBio = bio
+  let initialBio = bio
 
   export let selected_languages: string[] = []
-  const initialSelectedLanguages = [...selected_languages]
+  let initialSelectedLanguages = [...selected_languages]
+
+  let is_datepicker_open = false
 
   const SaveAll = useMutation(
     async () => {
@@ -41,12 +44,18 @@
       await Routes["user/edit"].fetch({
         userId: user_id!,
         pseudonym,
-        languages: selected_languages,
         bio,
+        location,
         birthday: undefined,
-        location: undefined,
         picture: photo,
+        languages: selected_languages,
       })
+
+      initialPseudonym = pseudonym
+      initialSelectedLanguages = [...selected_languages]
+      initialBio = bio
+      initialLocation = location
+      initialPhoto = photo
     },
     {
       mutationKey: ["edit.user"],
@@ -65,6 +74,7 @@
     username !== initialUsername ||
     pseudonym !== initialPseudonym ||
     initialPhoto !== photo ||
+    location !== initialLocation ||
     bio !== initialBio ||
     JSON.stringify(selected_languages) !== JSON.stringify(initialSelectedLanguages)
 </script>
@@ -88,14 +98,12 @@
     <Bio bind:bio />
   </div>
   <hr />
-  <article class:absolute={false} class="flex items-center gap-x-10">
+  <article class:absolute={false} class="flex items-center gap-x-10 opacity-10 line-through select-none">
     <p>Birthday</p>
-    <button class="btn variant-glass-primary max-w-full w-[200px]">Pick</button>
-    <!--    <Datepicker bind:store defaultTheme={themes.dark} end={new Date()} let:key let:send let:receive>-->
-    <!--      <button in:receive|local={{ key }} out:send|local={{ key }} class="btn variant-glass-primary mx-auto block px-32">Pick</button>-->
-    <!--    </Datepicker>-->
+    <button on:click|stopPropagation={() => {}} class="btn variant-glass-primary max-w-full w-[200px]">Pick</button>
+    <Datepicker bind:is_open={is_datepicker_open} />
   </article>
-  <article class="flex items-center gap-x-10 pt-2">
+  <article class="flex items-center gap-x-10 pt-4">
     <p>Location</p>
     <InputWithLabel bind:value={location} label_text="Country, city" />
   </article>

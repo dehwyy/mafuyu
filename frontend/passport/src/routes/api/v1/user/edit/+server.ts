@@ -6,7 +6,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
   const [req, create_response] = await Routes["user/edit"].get_request_with_response_creator(request)
 
   await GrpcClient.editUser({
-    languages: [],
+    languages: req.languages,
     userId: req.userId,
     pseudonym: req.pseudonym,
     picture: req.picture,

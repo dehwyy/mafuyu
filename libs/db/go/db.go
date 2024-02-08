@@ -2,7 +2,7 @@ package _go
 
 import (
 	"fmt"
-	"github.com/dehwyy/makoto/libs/db/src/models"
+	"github.com/dehwyy/makoto/libs/db/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -45,23 +45,23 @@ func New(database_url string) *gorm.DB {
 		fmt.Println("insert default languages...")
 
 		languages := []models.Language{
-			{ID: 1, Name: "Arabic"},
-			{ID: 2, Name: "Dutch"},
-			{ID: 3, Name: "English"},
-			{ID: 4, Name: "French"},
-			{ID: 5, Name: "German"},
-			{ID: 6, Name: "Hindi"},
-			{ID: 7, Name: "Indonesian"},
-			{ID: 8, Name: "Italian"},
-			{ID: 9, Name: "Japanese"},
-			{ID: 10, Name: "Korean"},
-			{ID: 11, Name: "Chinese"},
-			{ID: 12, Name: "Polish"},
-			{ID: 13, Name: "Portuguese"},
-			{ID: 14, Name: "Russian"},
-			{ID: 15, Name: "Spanish"},
-			{ID: 16, Name: "Thai"},
-			{ID: 17, Name: "Turkish"},
+			{ID: 1, Name: "arabic"},
+			{ID: 2, Name: "dutch"},
+			{ID: 3, Name: "english"},
+			{ID: 4, Name: "french"},
+			{ID: 5, Name: "german"},
+			{ID: 6, Name: "hindi"},
+			{ID: 7, Name: "indonesian"},
+			{ID: 8, Name: "italian"},
+			{ID: 9, Name: "japanese"},
+			{ID: 10, Name: "korean"},
+			{ID: 11, Name: "chinese"},
+			{ID: 12, Name: "polish"},
+			{ID: 13, Name: "portuguese"},
+			{ID: 14, Name: "russian"},
+			{ID: 15, Name: "spanish"},
+			{ID: 16, Name: "thai"},
+			{ID: 17, Name: "turkish"},
 		}
 
 		err = db.CreateInBatches(languages, len(languages)).Error

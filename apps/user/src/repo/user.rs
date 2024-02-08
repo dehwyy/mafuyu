@@ -43,8 +43,6 @@ impl UserRepo {
     pub async fn edit_primitive_user(&self, p: EditPrimitiveUserPayload) -> Result<user::Model, RepositoryError> {
         let mut user: user::ActiveModel = self.get_user(GetUserRecordBy::UserId(p.user_id)).await?.into();
 
-        // user.location = p.picture.into_active_value();
-
         user.birthday = match p.birthday {
             Some(timestamp) => {
                 ChronoDateTimeWithTimeZone::try_from_u64(timestamp).map(|t| Some(t)).handle()
@@ -54,6 +52,7 @@ impl UserRepo {
 
         user.pseudonym = p.pseudonym.into_active_value();
         user.bio = p.bio.into_active_value();
+        user.location = p.location.into_active_value();
         user.picture = p.picture.into_active_value();
 
         user.update(&self.db).await.handle()

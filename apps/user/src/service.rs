@@ -84,6 +84,11 @@ impl rpc::user_rpc_server::UserRpc for UserRpcServiceImplementation {
         let req = req.into_inner();
 
         let user = self.user_repo.get_user(GetUserRecordBy::Username(req.username.clone())).await.handle()?;
+        let languages_future = self.languages_repo.get_languages(&user.user_id);
+
+        let (languages, ) = tokio::join!(languages_future);
+        let languages = languages.handle()?;
+
 
         Ok(Response::new(rpc::GetUserResponse {
             user_id: user.user_id.to_string(),
@@ -93,7 +98,7 @@ impl rpc::user_rpc_server::UserRpc for UserRpcServiceImplementation {
             pseudonym: user.pseudonym,
             bio: user.bio,
             picture: user.picture,
-            languages: vec!(),
+            languages,
             followers: vec!(),
             friends: vec!()
         }))

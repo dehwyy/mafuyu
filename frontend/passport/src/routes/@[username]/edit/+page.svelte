@@ -36,7 +36,7 @@
   <SlideWindow max_height="900px">
     <svelte:fragment slot="heading">About</svelte:fragment>
     <svelte:fragment slot="content">
-      <About username={data?.username || ""} pseudonym={data.pseudonym} photo={data.picture} bio={data.bio} selected_languages={data.languages} />
+      <About username={data?.username || ""} pseudonym={data.pseudonym} photo={data.picture} bio={data.bio} selected_languages={data.languages} location={data.location} />
     </svelte:fragment>
   </SlideWindow>
 </div>

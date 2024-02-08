@@ -1,8 +1,9 @@
 package models
 
 import (
-	"github.com/dehwyy/makoto/libs/db/src/models/custom_dt"
 	"time"
+
+	"github.com/dehwyy/makoto/libs/db/models/custom_dt"
 
 	"github.com/google/uuid"
 	"github.com/lib/pq"
@@ -17,15 +18,15 @@ type User struct {
 	Pseudonym       string
 	Bio             string
 	Picture         string
-	Languages       []*Language `gorm:"many2many:user_languages;"`
-	Friends         []*User     `gorm:"many2many:user_friends;"`
-	Blocked         []*User     `gorm:"many2many:user_blocked"`
-	Followers       []*User     `gorm:"many2many:user_followers;"`
-	Posts           []Post      `gorm:"foreignKey:AuthorId"`
-	LikedPosts      []*Post     `gorm:"many2many:user_liked_posts;"`
-	HiddenPosts     []*Post     `gorm:"many2many:user_hidden_posts;"`
-	Comments        []Comment   `gorm:"foreignKey:AuthorId"`
-	LikedComments   []*Comment  `gorm:"many2many:user_liked_comments;"`
+	Languages       []*Language `gorm:"many2many:user_languages;foreignKey:user_id"`
+	Friends         []*User     `gorm:"many2many:user_friends;foreignKey:user_id"`
+	Blocked         []*User     `gorm:"many2many:user_blocked;foreignKey:user_id"`
+	Followers       []*User     `gorm:"many2many:user_followers;foreignKey:user_id"`
+	Posts           []Post      `gorm:"foreignKey:AuthorId;"`
+	LikedPosts      []*Post     `gorm:"many2many:user_liked_posts;foreignKey:user_id;"`
+	HiddenPosts     []*Post     `gorm:"many2many:user_hidden_posts;foreignKey:user_id;"`
+	Comments        []Comment   `gorm:"foreignKey:AuthorId;"`
+	LikedComments   []*Comment  `gorm:"many2many:user_liked_comments;foreignKey:user_id;"`
 }
 
 type UserCredentials struct {
