@@ -13,7 +13,7 @@
   const SaveImage = () => {
     if (!cropper) return
 
-    OnSaveImage(cropper.getCroppedCanvas().toDataURL())
+    OnSaveImage(cropper.getCroppedCanvas().toDataURL("image/jpeg"))
   }
 
   // if image display size (fullscreen) settings is changed, render cropper
