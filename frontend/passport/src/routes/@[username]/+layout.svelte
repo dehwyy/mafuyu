@@ -18,9 +18,9 @@
 
   export let data: LayoutData
   $: is_current_user = data.userId === $user_store?.id
-  $: image = is_current_user ? ($user_store!.picture || data.picture || "/images/r.jpg") : (data.picture || "/images/r.jpg")
-  $: username = is_current_user ? ($user_store!.username || data.username) : data.username
-  $: pseudonym = is_current_user ? ($user_store!.pseudonym || data.pseudonym) : data.pseudonym
+  $: image = is_current_user ? ($user_store?.picture || data?.picture || "/images/r.jpg") : (data?.picture || "/images/r.jpg")
+  $: username = is_current_user ? ($user_store?.username || data?.username) : data?.username
+  $: pseudonym = is_current_user ? ($user_store?.pseudonym || data?.pseudonym) : data?.pseudonym
 </script>
 
 <div style="margin-right: calc(100% - 100vw);" class="max-w-[1450px]">
