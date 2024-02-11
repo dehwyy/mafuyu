@@ -24,7 +24,7 @@
 </script>
 
 <div style="margin-right: calc(100% - 100vw);" class="max-w-[1450px]">
-  <div class="w-full lg:w-[750px] px-5 lg:px-0 mx-auto pt-14 flex flex-col lg:flex-row gap-8 gap-x-16">
+  <div class="w-full lg:w-[800px] px-5 lg:px-0 mx-auto pt-14 flex flex-col lg:flex-row gap-8 gap-x-16">
     <nav class="min-w-[230px]">
       <section class="mb-7">
         <div class="w-[175px] h-[175px] object-cover overflow-hidden rounded-full mb-4 border-2 mx-auto">

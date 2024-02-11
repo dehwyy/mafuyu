@@ -7,8 +7,7 @@
     darkest: "🦀 Darkest",
     modern: "🤖 Modern",
     wintry: "❄️ Wintry",
-    crimson: "🕸️ Crimson",
-    "gold-nouveau": "⭐Goldouveau",
+    crimson: "🕸️ Crimson"
   }
 
   let current_theme: keyof typeof themes | undefined
@@ -34,9 +33,12 @@
 
 {#if current_theme}
 <div use:popup={themeSelectClick} class="cursor-pointer flex-auto">
-  {themes[current_theme]}
+  <div class="flex items-center h-[40px] hover:bg-surface-300/10 text-surface-200 hover:text-white w-full pl-4 gap-x-2 font-medium rounded-3xl">
+    <slot />
+    <div>{themes[current_theme]}</div>
+  </div>
 </div>
-<div data-popup="theme-select-popup" class="card rounded-2xl overflow-hidden !left-[-150px]">
+<div data-popup="theme-select-popup" class="card rounded-2xl overflow-hidden !left-[-125px]">
   <ListBox>
     {#each Object.entries(themes) as entry}
       <ListBoxItem on:click={() => SetTheme(entry[0])} bind:group={current_theme} name="theme" value={entry[0]}>{entry[1]}</ListBoxItem>

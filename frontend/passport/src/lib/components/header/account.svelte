@@ -49,9 +49,10 @@
         </button>
       </li>
       <li>
-        <div class="flex items-center h-[40px] hover:bg-surface-300/10 text-surface-200 hover:text-white w-full pl-4 gap-x-2 font-medium">
-          <span class="icon-sm block">{@html ThemeSelectIconRaw}</span>
-          <ThemeSelector />
+        <div class="">
+          <ThemeSelector>
+            <span class="icon-sm block">{@html ThemeSelectIconRaw}</span>
+          </ThemeSelector>
         </div>
       </li>
       <li>

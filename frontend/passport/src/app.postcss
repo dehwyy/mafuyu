@@ -4,50 +4,81 @@
 @tailwind variants;
 
 body {
-    font-family: "Twemoji Country Flags", var(--theme-font-family-base);
+  font-family: "Twemoji Country Flags", var(--theme-font-family-base);
 }
 
-h1,h2,h3,h4,h5,h6,div {
-    font-weight: bold;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+div {
+  font-weight: bold;
+}
+
+:root {
+  --logo-color: white;
+  --logo-fill-color: transparent;
+}
+
+:root [data-theme="wintry"] {
+  --logo-color: transparent;
+  --logo-fill-color: rgb(59 130 246);
+}
+
+:root [data-theme="crimson"] {
+  --logo-color: transparent;
+  --logo-fill-color: rgb(212 22 60);
+}
+
+:root [data-theme="modern"] {
+  --logo-color: transparent;
+  --logo-fill-color: rgb(236 72 153);
+}
+
+:root [data-theme="darkest"] {
+  --logo-color: #ed2a2a;
+  --logo-fill-color: transparent;
 }
 
 #shell-header {
-    position: fixed;
-    z-index: 50;
-    left: 0;
-    right: 0;
+  position: fixed;
+  z-index: 50;
+  left: 0;
+  right: 0;
 }
 
 #page {
-    margin-top: 64px;
+  margin-top: 64px;
 }
 
 .icon-sm {
-    width: 24px;
-    height: 24px
+  width: 24px;
+  height: 24px;
 }
 .icon-md {
-    width: 24px;
-    height: 24px;
+  width: 24px;
+  height: 24px;
 }
 
 .cropper-bg {
-    background-image: none!important;
+  background-image: none !important;
 }
 
 .modal-backdrop {
-    overflow-y: auto!important;
+  overflow-y: auto !important;
 }
 
 /* modern theme */
 @font-face {
-	font-family: 'Quicksand';
-	src: url('/fonts/Quicksand.ttf');
-	font-display: swap;
+  font-family: "Quicksand";
+  src: url("/fonts/Quicksand.ttf");
+  font-display: swap;
 }
 /* gold-nouveau theme */
 @font-face {
-	font-family: 'Quicksand';
-	src: url('/fonts/Quicksand.ttf');
-	font-display: swap;
+  font-family: "Quicksand";
+  src: url("/fonts/Quicksand.ttf");
+  font-display: swap;
 }
