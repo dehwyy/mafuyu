@@ -1,0 +1,7 @@
+go 1.21.2
+
+use (
+  ./libs/db
+  ./libs/log
+  ./libs/config
+)
