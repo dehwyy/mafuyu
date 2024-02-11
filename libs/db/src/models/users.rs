@@ -7,7 +7,6 @@ use sea_orm::entity::prelude::*;
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
-    #[sea_orm(unique)]
     pub user_id: Uuid,
     #[sea_orm(column_type = "Text", nullable)]
     pub location: Option<String>,
@@ -22,10 +21,6 @@ pub struct Model {
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(has_one = "super::comments::Entity")]
-    Comments,
-    #[sea_orm(has_one = "super::posts::Entity")]
-    Posts,
     #[sea_orm(
         belongs_to = "super::user_credentials::Entity",
         from = "Column::UserId",
@@ -34,20 +29,8 @@ pub enum Relation {
         on_delete = "NoAction"
     )]
     UserCredentials,
-    #[sea_orm(has_many = "super::user_hidden_posts::Entity")]
-    UserHiddenPosts,
     #[sea_orm(has_many = "super::user_languages::Entity")]
     UserLanguages,
-    #[sea_orm(has_many = "super::user_liked_comments::Entity")]
-    UserLikedComments,
-    #[sea_orm(has_many = "super::user_liked_posts::Entity")]
-    UserLikedPosts,
-}
-
-impl Related<super::posts::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::Posts.def()
-    }
 }
 
 impl Related<super::user_credentials::Entity> for Entity {
@@ -56,36 +39,9 @@ impl Related<super::user_credentials::Entity> for Entity {
     }
 }
 
-impl Related<super::user_hidden_posts::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::UserHiddenPosts.def()
-    }
-}
-
 impl Related<super::user_languages::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::UserLanguages.def()
-    }
-}
-
-impl Related<super::user_liked_comments::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::UserLikedComments.def()
-    }
-}
-
-impl Related<super::user_liked_posts::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::UserLikedPosts.def()
-    }
-}
-
-impl Related<super::comments::Entity> for Entity {
-    fn to() -> RelationDef {
-        super::user_liked_comments::Relation::Comments.def()
-    }
-    fn via() -> Option<RelationDef> {
-        Some(super::user_liked_comments::Relation::Users.def().rev())
     }
 }
 

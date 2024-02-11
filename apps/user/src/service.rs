@@ -18,7 +18,7 @@ pub struct UserRpcServiceImplementation<T = tonic::transport::Channel> {
 impl UserRpcServiceImplementation {
     pub async fn new(
         user_repo: crate::repo::user::UserRepo,
-        languages_repo: crate::repo::languages::LanguagesRepo
+        languages_repo: crate::repo::languages::LanguagesRepo,
     ) -> Self {
 
         let clients = makoto_grpc::RpcClients::get_all_client().await;
@@ -26,7 +26,7 @@ impl UserRpcServiceImplementation {
         Self {
             cdn_client: clients.cdn_client.unwrap(),
             user_repo,
-            languages_repo
+            languages_repo,
         }
     }
 }
@@ -104,4 +104,8 @@ impl rpc::user_rpc_server::UserRpc for UserRpcServiceImplementation {
         }))
 
     }
+
 }
+
+
+//

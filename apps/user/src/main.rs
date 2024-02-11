@@ -18,7 +18,7 @@ async fn main() -> AnyResult<()> {
     let db = makoto_db::new().await.expect("cannot open database connection");
 
     let user_repo = repo::user::UserRepo::new(db.clone());
-    let languages_repo  = repo::languages::LanguagesRepo::new(db);
+    let languages_repo  = repo::languages::LanguagesRepo::new(db.clone());
 
     let user_service = service::UserRpcServiceImplementation::new(user_repo, languages_repo).await;
     let user_service = UserRpcServer::new(user_service);

@@ -54,33 +54,6 @@ pub struct GetUserResponse {
     #[prost(string, repeated, tag = "10")]
     pub followers: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct GetUserPostsResponse {
-    #[prost(message, repeated, tag = "1")]
-    pub posts: ::prost::alloc::vec::Vec<get_user_posts_response::Post>,
-}
-/// Nested message and enum types in `GetUserPostsResponse`.
-pub mod get_user_posts_response {
-    #[allow(clippy::derive_partial_eq_without_eq)]
-    #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct Post {
-        #[prost(string, tag = "2")]
-        pub post_id: ::prost::alloc::string::String,
-        #[prost(string, tag = "3")]
-        pub author_id: ::prost::alloc::string::String,
-        #[prost(string, tag = "4")]
-        pub author_name: ::prost::alloc::string::String,
-        #[prost(uint32, tag = "5")]
-        pub likes: u32,
-        #[prost(uint32, tag = "6")]
-        pub comments: u32,
-        #[prost(uint32, tag = "7")]
-        pub views: u32,
-        #[prost(uint64, tag = "8")]
-        pub timestamp: u64,
-    }
-}
 /// Generated client implementations.
 pub mod user_rpc_client {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]

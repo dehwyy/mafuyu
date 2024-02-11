@@ -6,17 +6,16 @@ use sea_orm::entity::prelude::*;
 #[sea_orm(table_name = "user_followers")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    pub user_id: Uuid,
-    #[sea_orm(primary_key, auto_increment = false)]
-    pub follower_id: Uuid,
     pub user_user_id: Uuid,
+    #[sea_orm(primary_key, auto_increment = false)]
+    pub user_id: Uuid,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
     #[sea_orm(
         belongs_to = "super::users::Entity",
-        from = "Column::FollowerId",
+        from = "Column::UserId",
         to = "super::users::Column::Id",
         on_update = "NoAction",
         on_delete = "NoAction"
@@ -24,8 +23,8 @@ pub enum Relation {
     Users2,
     #[sea_orm(
         belongs_to = "super::users::Entity",
-        from = "Column::UserId",
-        to = "super::users::Column::Id",
+        from = "Column::UserUserId",
+        to = "super::users::Column::UserId",
         on_update = "NoAction",
         on_delete = "NoAction"
     )]

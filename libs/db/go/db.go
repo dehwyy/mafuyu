@@ -2,6 +2,7 @@ package _go
 
 import (
 	"fmt"
+
 	"github.com/dehwyy/makoto/libs/db/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -32,9 +33,8 @@ func New(database_url string) *gorm.DB {
 	db_settings.SetConnMaxIdleTime(5)
 
 	err = db.AutoMigrate(
-		models.Language{},
-		models.Post{}, models.PostReports{}, models.Comment{},
-		models.UserCredentials{}, models.UserTokens{}, models.UserIntegrations{}, models.User{},
+		models.Language{}, models.UserCredentials{}, models.UserTokens{},
+		models.UserIntegrations{}, models.User{},
 	)
 
 	var language_record_count int64

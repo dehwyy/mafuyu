@@ -22,11 +22,6 @@ type User struct {
 	Friends         []*User     `gorm:"many2many:user_friends;foreignKey:user_id"`
 	Blocked         []*User     `gorm:"many2many:user_blocked;foreignKey:user_id"`
 	Followers       []*User     `gorm:"many2many:user_followers;foreignKey:user_id"`
-	Posts           []Post      `gorm:"foreignKey:AuthorId;"`
-	LikedPosts      []*Post     `gorm:"many2many:user_liked_posts;foreignKey:user_id;"`
-	HiddenPosts     []*Post     `gorm:"many2many:user_hidden_posts;foreignKey:user_id;"`
-	Comments        []Comment   `gorm:"foreignKey:AuthorId;"`
-	LikedComments   []*Comment  `gorm:"many2many:user_liked_comments;foreignKey:user_id;"`
 }
 
 type UserCredentials struct {

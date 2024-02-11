@@ -1,7 +1,5 @@
 <script lang="ts">
   import SocietyPeopleInformation from "./society-people-information.svelte"
-  import Writer from "$lib/components/writer.svelte"
-  import Post from "$lib/components/post.svelte"
 
   import CakeIconRaw from "$lib/assets/cake.svg?raw"
   import LocationIconRaw from "$lib/assets/location.svg?raw"
@@ -62,15 +60,6 @@
         </li>
       </ul>
     </section>
-    <section class="card w-full">
-      <Writer placeholder="What's new?" button_text="Create" />
-    </section>
-    <section class="w-full flex flex-col gap-y-6">
-      <Post />
-      <Post />
-      <Post />
-    </section>
-  </section>
 </div>
 
 <style>

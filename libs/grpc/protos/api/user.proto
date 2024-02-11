@@ -44,17 +44,3 @@ message GetUserResponse {
   repeated string friends = 9;
   repeated string followers = 10;
 }
-
-message GetUserPostsResponse {
-  message Post {
-    string post_id = 2;
-    string author_id = 3;
-    string author_name = 4;
-    uint32 likes = 5;
-    uint32 comments = 6;
-    uint32 views = 7;
-    uint64 timestamp = 8;
-  }
-
-  repeated Post posts = 1;
-}

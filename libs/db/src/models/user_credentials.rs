@@ -9,7 +9,7 @@ pub struct Model {
     pub id: Uuid,
     #[sea_orm(column_type = "Text", nullable)]
     pub provider_id: Option<String>,
-    #[sea_orm(column_type = "Text", unique)]
+    #[sea_orm(column_type = "Text")]
     pub username: String,
     #[sea_orm(column_type = "Text", nullable, unique)]
     pub email: Option<String>,
@@ -24,7 +24,7 @@ pub enum Relation {
     UserIntegrations,
     #[sea_orm(has_many = "super::user_tokens::Entity")]
     UserTokens,
-    #[sea_orm(has_one = "super::users::Entity")]
+    #[sea_orm(has_many = "super::users::Entity")]
     Users,
 }
 
