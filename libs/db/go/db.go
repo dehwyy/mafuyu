@@ -69,6 +69,7 @@ func New(database_url string) *gorm.DB {
 			panic(err)
 		}
 
+		fmt.Println("insert default languages... done!")
 	}
 
 	if err != nil {

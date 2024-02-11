@@ -83,10 +83,22 @@ impl Others {
             .arg("-d")
             .output().await.unwrap();
     }
+
+    pub async fn migrate_db() {
+        info!("Migrating db...!");
+
+        std::env::set_var("DATABASE_DSN", "host=localhost user=postgres password=postgres dbname=postgres port=54321 sslmode=disable");
+        Command::new("go")
+            .args(["run", "libs/db/main.go", "migrate"])
+            .output().await.unwrap();
+
+        info!("Migrating db succeed!");
+    }
 }
 
 pub async fn dev() {
     Others::docker_compose_up().await;
+    Others::migrate_db().await;
 
     let cargo_runtime = tokio::spawn(Cargo::new().run());
     let caddy_runtime = tokio::spawn(Others::caddy_run());
