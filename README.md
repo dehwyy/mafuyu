@@ -22,6 +22,8 @@
 ### Requirements:
 
 - [Node.js (20+)](https://nodejs.org/en)
+- [Taskfile (3+)](https://taskfile.dev)
+- [Rustc (1.76+)](https://www.rust-lang.org)
 - [Pnpm](https://pnpm.io/)
 - [Go (1.21+)](https://go.dev/)
 - [Docker](https://docs.docker.com/engine/)

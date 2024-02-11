@@ -1,0 +1,9 @@
+[package]
+name = "cli"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.5.0", features = ["derive"] }
+tokio = { version = "1.35.0", features = ["time", "macros", "rt-multi-thread", "process"] }
+makoto_logger = { path = "../libs/log" }

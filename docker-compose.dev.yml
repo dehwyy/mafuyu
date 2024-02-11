@@ -1,0 +1,59 @@
+version: "3"
+
+services:
+  nats:
+    container_name: nats
+    image: "nats:latest"
+    command: "-js -c /etc/nats/nats-server.conf"
+    volumes:
+      - ./config/:/etc/nats
+    ports:
+      - "4222:4222"
+
+  postgres:
+    container_name: postgres
+    restart: always
+    image: postgres:14-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/mafuyu
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+    ports:
+      - "54321:5432"
+
+  pgadmin:
+      container_name: pgadmin
+      image: dpage/pgadmin4:latest
+      environment:
+        PGADMIN_DEFAULT_EMAIL: "makoto.web3@gmail.com"
+        PGADMIN_DEFAULT_PASSWORD: "postgres"
+        PGADMIN_CONFIG_SERVER_MODE: "False"
+      volumes:
+        - pgadmin_data:/var/lib/pgadmin
+      ports:
+        - "5050:80"
+      restart: unless-stopped
+      logging:
+        driver: none
+
+  redis:
+    container_name: redis
+    restart: unless-stopped
+    image: redis/redis-stack:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+  redis_data:
