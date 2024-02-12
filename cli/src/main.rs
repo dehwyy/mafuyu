@@ -1,5 +1,7 @@
 mod dev;
 mod grpc;
+mod internal;
+mod init;
 
 use clap::{Parser, Subcommand, Args};
 
@@ -19,6 +21,10 @@ enum Command {
     /// Gen GRPC files
     #[command(name="grpc")]
     Grpc,
+
+    /// Init MaFuYu
+    #[command(name = "init")]
+    Init
 }
 
 
@@ -29,6 +35,7 @@ async fn main() {
     let cli = Cli::parse();
     match &cli.command {
             Command::Dev => dev::dev().await,
-            Command::Grpc => grpc::grpc().await
+            Command::Grpc => grpc::grpc().await,
+            Command::Init => init::init().await
     };
 }

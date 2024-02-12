@@ -13,5 +13,8 @@ node_modules
 next-env.d.ts
 frontend/main
 .idea
-.env
-.env.hosts
+.env.*
+!.env.example
+!.env.hosts.example
+.cdn
+db.cdn_filenames.redb

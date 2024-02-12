@@ -9,12 +9,11 @@ tasks:
       - cd libs/db && sea-orm-cli generate entity -u $DATABASE_URL -o src/models
 
   grpc:
-    dir: libs/grpc
     cmds:
-      - cargo run
-      - protoc -I=protos --ts_out=dist --ts_opt=generate_dependencies,eslint_disable,ts_nocheck,output_javascript protos/*.proto
-      - protoc -I protos --ts_out=dist --ts_opt=generate_dependencies,eslint_disable,ts_nocheck,output_javascript protos/api.proto
-      - pnpm ts
+      - cd libs/grpc && cargo run
+      - cd libs/grpc && pnpm exec protoc -I=protos --ts_out=dist --ts_opt=generate_dependencies,eslint_disable,ts_nocheck,output_javascript protos/*.proto
+      - cd libs/grpc && pnpm exec protoc -I protos --ts_out=dist --ts_opt=generate_dependencies,eslint_disable,ts_nocheck,output_javascript protos/api.proto
+      - cd libs/grpc && pnpm ts
 
   cli:
     cmds:
