@@ -18,7 +18,7 @@ pub struct Hosts {
     #[envconfig(from = "PASSPORT")]
     pub passport: String,
 
-    #[envconfig(from = "USER")]
+    #[envconfig(from = "USER_RPC")]
     pub user: String,
 
     #[envconfig(from = "INTEGRATIONS")]
