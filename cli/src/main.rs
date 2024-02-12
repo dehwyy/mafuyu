@@ -1,4 +1,5 @@
 mod dev;
+mod grpc;
 
 use clap::{Parser, Subcommand, Args};
 
@@ -13,7 +14,11 @@ struct Cli {
 enum Command {
     /// Run Mafuyu's apps in dev mode.
     #[command(name="dev")]
-    Dev
+    Dev,
+
+    /// Gen GRPC files
+    #[command(name="grpc")]
+    Grpc,
 }
 
 
@@ -23,6 +28,7 @@ async fn main() {
 
     let cli = Cli::parse();
     match &cli.command {
-            Command::Dev => dev::dev().await
+            Command::Dev => dev::dev().await,
+            Command::Grpc => grpc::grpc().await
     };
 }
