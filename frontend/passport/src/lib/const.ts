@@ -6,6 +6,12 @@ export const enum Routes {
   Logout = "/logout",
 }
 
+export class CreateNavigation {
+  static ToUser(username: string, dyn: string = ""): string {
+    return `${Routes.Account}@${username}${dyn}`
+  }
+}
+
 interface Language {
   language: string
   emoji_icon: string
@@ -30,3 +36,8 @@ export const MostPopularLanguage: Language[] = [
   { language: "Thai", emoji_icon: "🇹🇭" },
   { language: "Turkish", emoji_icon: "🇹🇷" },
 ]
+
+export const enum DevFallbackImages {
+  VerticalOriented = "/images/r.jpg",
+  HorizontalOriented = "/images/hana.png",
+}

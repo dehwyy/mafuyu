@@ -1,5 +1,5 @@
 <script lang="ts">
-  import SlideWindow from "$lib/components/slide-window.svelte"
+  import SlideWindow from "$lib/components/transitions/slide-window.svelte"
   import About from "./about.svelte"
 
   import GoogleIconRaw from "$lib/assets/google.svg?raw"
@@ -36,7 +36,13 @@
   <SlideWindow max_height="1200px">
     <svelte:fragment slot="heading">About</svelte:fragment>
     <svelte:fragment slot="content">
-      <About username={data?.username || ""} pseudonym={data.pseudonym} photo={data.picture} bio={data.bio} selected_languages={data.languages} location={data.location} />
+      <About
+        username={data?.username || ""}
+        pseudonym={data.pseudonym}
+        photo={data.picture}
+        bio={data.bio}
+        selected_languages={data.languages}
+        location={data.location} />
     </svelte:fragment>
   </SlideWindow>
 </div>

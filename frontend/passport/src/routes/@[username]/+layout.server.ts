@@ -1,11 +1,13 @@
 import type { LayoutServerLoad } from "./$types"
 import { GrpcClient, Interceptors } from "@makoto/grpc"
+import { redirect } from "@sveltejs/kit"
 
 export const load: LayoutServerLoad = async ({ url, cookies }) => {
   const username = url.pathname.split("/")[1].slice(1)
 
   if (!username) return {}
 
+  let error_occurred = false
   try {
     const { response } = await GrpcClient.getUser(
       {
@@ -31,5 +33,10 @@ export const load: LayoutServerLoad = async ({ url, cookies }) => {
     }
   } catch (e) {
     console.log(e)
+    error_occurred = true
+  }
+
+  if (error_occurred) {
+    redirect(307, "/")
   }
 }

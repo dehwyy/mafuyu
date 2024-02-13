@@ -8,12 +8,12 @@
   import CloseIconRaw from "$lib/assets/close.svg?raw"
   import { useMutation } from "@sveltestack/svelte-query"
   import { Routes } from "$lib/utils/typed-fetch"
-  import { user_store } from "$lib/stores/user"
+  import { authed_user_store, dyn_user_store } from "$lib/stores/user"
   import Datepicker from "$lib/components/form/datepicker.svelte"
 
   import InputWithLabel from "$lib/components/form/input.svelte"
   import { Toasts } from "$lib/utils/toast"
-  export let location= ""
+  export let location = ""
   let initialLocation = location
 
   export let photo =
@@ -36,21 +36,22 @@
 
   const SaveAll = useMutation(
     async () => {
-      const user_id = $user_store?.id
+      const user_id = $authed_user_store?.id
       if (user_id === undefined) {
         window.location.href = "/"
       }
 
-      console.log(username)
-
-      user_store.set({
+      authed_user_store.set({
         id: user_id!,
         username,
-        pseudonym,
-        picture: photo,
       })
 
-      const {response, ok, status} = await Routes["user/edit"].fetch({
+      dyn_user_store.set({
+        picture: photo,
+        pseudonym,
+      })
+
+      const { response, ok, status } = await Routes["user/edit"].fetch({
         userId: user_id!,
         username,
         pseudonym,
@@ -75,7 +76,7 @@
       initialLocation = location
       initialPhoto = photo
 
-      history.replaceState(null, "", "/@" + username);
+      history.replaceState(null, "", "/@" + username)
     },
     {
       mutationKey: ["edit.user"],
