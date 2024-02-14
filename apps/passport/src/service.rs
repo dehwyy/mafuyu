@@ -3,7 +3,7 @@ use tonic::{Request, Response, Status};
 use uuid::Uuid;
 use makoto_db::repo::credentials::GetCredentialsRecordBy;
 use makoto_grpc::pkg::passport as rpc;
-use makoto_grpc::pkg::passport::{CreateUserRequest, CreateUserResponse, GetPublicUserRequest, GetPublicUserResponse, UpdateUsernameRequest};
+use makoto_grpc::pkg::passport::{CreateUserPassportResponse, CreateUserPassportRequest, GetPublicUserRequest, GetPublicUserResponse, UpdateUsernameRequest};
 use makoto_lib::errors::prelude::*;
 
 use crate::repo as credentials_repo;
@@ -22,7 +22,7 @@ impl PassportRpcServiceImplementation {
 
 #[tonic::async_trait]
 impl rpc::passport_rpc_server::PassportRpc for PassportRpcServiceImplementation {
-    async fn create_user(&self, req: Request<CreateUserRequest>) -> Result<Response<CreateUserResponse>, Status> {
+    async fn create_user(&self, req: Request<CreateUserPassportRequest>) -> Result<Response<CreateUserPassportResponse>, Status> {
         let req = req.into_inner();
 
         let user = self.credentials_repo.create_user(credentials_repo::CreateUserPayload {
@@ -32,7 +32,7 @@ impl rpc::passport_rpc_server::PassportRpc for PassportRpcServiceImplementation 
             provider_id: req.provider_id,
         }).await.handle()?;
 
-        Ok(Response::new(CreateUserResponse {
+        Ok(Response::new(CreateUserPassportResponse {
             user_id: user.id.into()
         }))
     }

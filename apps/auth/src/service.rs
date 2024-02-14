@@ -67,7 +67,7 @@ impl rpc::auth_rpc_server::AuthRpc for AuthRpcServiceImplementation {
     let user_password = Hasher::hash(req.password).invalid_argument_error()?;
 
     // create
-    let created_user = self.passport_client.clone().borrow_mut().create_user(Request::new(passport::CreateUserRequest {
+    let created_user = self.passport_client.clone().borrow_mut().create_user(Request::new(passport::CreateUserPassportRequest {
       username: req.username.clone(),
       email: Some(req.email),
       password: Some(user_password),

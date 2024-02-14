@@ -60,7 +60,7 @@ impl OAuth2Rpc for OAuth2RpcServiceImplementation {
 
     }
 
-    async fn refresh_the_token(&self, request: Request<rpc::RefreshTheTokenRequest>) -> Result<Response<rpc::RefreshTheTokenResponse>, Status> {
+    async fn refresh_the_token(&self, request: Request<rpc::RefreshTheOAuth2TokenRequest>) -> Result<Response<rpc::RefreshTheOAuth2TokenResponse>, Status> {
         let req = request.into_inner();
 
         let provider = self.get_provider(&req.provider)?;
@@ -75,7 +75,7 @@ impl OAuth2Rpc for OAuth2RpcServiceImplementation {
 
         // TODO: maybe returns both refresh and access tokens
         Ok(Response::new(
-            rpc::RefreshTheTokenResponse {
+            rpc::RefreshTheOAuth2TokenResponse {
                 access_token: oauth2_token.access_token
             }
         ))

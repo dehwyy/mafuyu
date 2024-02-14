@@ -2,24 +2,24 @@ syntax = "proto3";
 
 package passport;
 
-option go_package = "github.com/dehwyy/makoto/libs/grpc/generated/passport";
+option go_package = "github.com/dehwyy/mafuyu/libs/grpc/gen/api";
 
 import "google/protobuf/empty.proto";
 
 service PassportRpc {
-  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+  rpc CreateUser(CreateUserPassportRequest) returns (CreateUserPassportResponse);
   rpc UpdateUsername(UpdateUsernameRequest) returns (google.protobuf.Empty);
   rpc GetPublicUser(GetPublicUserRequest) returns (GetPublicUserResponse);
 }
 
-message CreateUserRequest {
+message CreateUserPassportRequest {
   string username = 1;
   optional string email = 2;
   optional string password = 3;
   optional string provider_id = 4;
 }
 
-message CreateUserResponse {
+message CreateUserPassportResponse {
   string user_id = 1;
 }
 

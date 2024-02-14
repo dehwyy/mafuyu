@@ -7,14 +7,13 @@ use service::service::ApiRpcServiceImplementation;
 
 use makoto_grpc::pkg::api::api_rpc_server::ApiRpcServer;
 use makoto_logger::{Logger, info};
-use makoto_lib::Result as MakotoResult;
-use tonic_web::GrpcWebLayer;
+use tonic_web::{GrpcWebLayer};
 use tower_http::cors::{CorsLayer, AllowOrigin, AllowHeaders};
 use http::header::HeaderName;
 
 
 #[tokio::main]
-async fn main() -> MakotoResult<()> {
+async fn main() -> makoto_lib::Result<()> {
 
     Logger::init()?;
 

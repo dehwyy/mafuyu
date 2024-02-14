@@ -146,7 +146,7 @@ impl TokensRpc for TokensRpcServiceImplementation {
 
         let access_token = match record.provider {
             Some(oauth2_provider) => {
-                let response = self.oauth2_client.clone().borrow_mut().refresh_the_token(oauth2::RefreshTheTokenRequest {
+                let response = self.oauth2_client.clone().borrow_mut().refresh_the_token(oauth2::RefreshTheOAuth2TokenRequest {
                     refresh_token: req.refresh_token.clone(),
                     provider: oauth2_provider
                 }).await?.into_inner();

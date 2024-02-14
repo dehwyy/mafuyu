@@ -111,6 +111,10 @@ impl api_rpc_server::ApiRpc for ApiRpcServiceImplementation {
     self.auth_client.clone().borrow_mut().sign_out(req).await
   }
 
+  async fn update_username(&self, req: Request<UpdateUsernameRequest>) -> Result<Response<()>, Status> {
+    self.passport_client.clone().borrow_mut().update_username(req).await
+  }
+
   async fn refresh_the_token(&self, req: Request<RefreshTheTokenRequest>) -> Result<Response<IsOkResponse>, Status> {
     let response = self.tokens_client.clone().borrow_mut().refresh_the_token(req).await?.into_inner();
 
@@ -149,7 +153,7 @@ impl api_rpc_server::ApiRpc for ApiRpcServiceImplementation {
       Err(err) => {
         match err.code() {
           tonic::Code::NotFound => {
-            let created_user = self.passport_client.clone().borrow_mut().create_user(Request::new(passport::CreateUserRequest {
+            let created_user = self.passport_client.clone().borrow_mut().create_user(Request::new(passport::CreateUserPassportRequest {
               email: user.email,
               username: user.username.clone(),
               password: None,
@@ -188,10 +192,6 @@ impl api_rpc_server::ApiRpc for ApiRpcServiceImplementation {
     );
 
     Ok(response)
-  }
-
-  async fn update_username(&self, req: Request<UpdateUsernameRequest>) -> Result<Response<()>, Status> {
-    self.passport_client.clone().borrow_mut().update_username(req).await
   }
 
   async fn edit_user(&self, req: Request<EditUserRequest>) -> Result<Response<()>, Status> {

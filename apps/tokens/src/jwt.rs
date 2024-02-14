@@ -8,6 +8,7 @@ use makoto_logger::error;
 
 const ACCESS_TOKEN_EXPIRATION_TIME_SECS: i64 = 60 * 60; // 1 hour
 
+#[derive(Debug)]
 pub enum TokenError {
     Expired,
     Invalid(String), // Additional information

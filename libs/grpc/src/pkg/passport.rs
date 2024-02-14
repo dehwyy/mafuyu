@@ -1,6 +1,6 @@
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct CreateUserRequest {
+pub struct CreateUserPassportRequest {
     #[prost(string, tag = "1")]
     pub username: ::prost::alloc::string::String,
     #[prost(string, optional, tag = "2")]
@@ -12,7 +12,7 @@ pub struct CreateUserRequest {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct CreateUserResponse {
+pub struct CreateUserPassportResponse {
     #[prost(string, tag = "1")]
     pub user_id: ::prost::alloc::string::String,
 }
@@ -140,9 +140,9 @@ pub mod passport_rpc_client {
         }
         pub async fn create_user(
             &mut self,
-            request: impl tonic::IntoRequest<super::CreateUserRequest>,
+            request: impl tonic::IntoRequest<super::CreateUserPassportRequest>,
         ) -> std::result::Result<
-            tonic::Response<super::CreateUserResponse>,
+            tonic::Response<super::CreateUserPassportResponse>,
             tonic::Status,
         > {
             self.inner
@@ -221,9 +221,9 @@ pub mod passport_rpc_server {
     pub trait PassportRpc: Send + Sync + 'static {
         async fn create_user(
             &self,
-            request: tonic::Request<super::CreateUserRequest>,
+            request: tonic::Request<super::CreateUserPassportRequest>,
         ) -> std::result::Result<
-            tonic::Response<super::CreateUserResponse>,
+            tonic::Response<super::CreateUserPassportResponse>,
             tonic::Status,
         >;
         async fn update_username(
@@ -322,16 +322,16 @@ pub mod passport_rpc_server {
                     struct CreateUserSvc<T: PassportRpc>(pub Arc<T>);
                     impl<
                         T: PassportRpc,
-                    > tonic::server::UnaryService<super::CreateUserRequest>
+                    > tonic::server::UnaryService<super::CreateUserPassportRequest>
                     for CreateUserSvc<T> {
-                        type Response = super::CreateUserResponse;
+                        type Response = super::CreateUserPassportResponse;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,
                         >;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::CreateUserRequest>,
+                            request: tonic::Request<super::CreateUserPassportRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {

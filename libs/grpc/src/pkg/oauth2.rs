@@ -32,7 +32,7 @@ pub struct ExchangeCodeToTokenResponse {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct RefreshTheTokenRequest {
+pub struct RefreshTheOAuth2TokenRequest {
     #[prost(string, tag = "1")]
     pub provider: ::prost::alloc::string::String,
     #[prost(string, tag = "2")]
@@ -40,7 +40,7 @@ pub struct RefreshTheTokenRequest {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct RefreshTheTokenResponse {
+pub struct RefreshTheOAuth2TokenResponse {
     #[prost(string, tag = "1")]
     pub access_token: ::prost::alloc::string::String,
 }
@@ -181,9 +181,9 @@ pub mod o_auth2_rpc_client {
         }
         pub async fn refresh_the_token(
             &mut self,
-            request: impl tonic::IntoRequest<super::RefreshTheTokenRequest>,
+            request: impl tonic::IntoRequest<super::RefreshTheOAuth2TokenRequest>,
         ) -> std::result::Result<
-            tonic::Response<super::RefreshTheTokenResponse>,
+            tonic::Response<super::RefreshTheOAuth2TokenResponse>,
             tonic::Status,
         > {
             self.inner
@@ -229,9 +229,9 @@ pub mod o_auth2_rpc_server {
         >;
         async fn refresh_the_token(
             &self,
-            request: tonic::Request<super::RefreshTheTokenRequest>,
+            request: tonic::Request<super::RefreshTheOAuth2TokenRequest>,
         ) -> std::result::Result<
-            tonic::Response<super::RefreshTheTokenResponse>,
+            tonic::Response<super::RefreshTheOAuth2TokenResponse>,
             tonic::Status,
         >;
     }
@@ -412,16 +412,16 @@ pub mod o_auth2_rpc_server {
                     struct RefreshTheTokenSvc<T: OAuth2Rpc>(pub Arc<T>);
                     impl<
                         T: OAuth2Rpc,
-                    > tonic::server::UnaryService<super::RefreshTheTokenRequest>
+                    > tonic::server::UnaryService<super::RefreshTheOAuth2TokenRequest>
                     for RefreshTheTokenSvc<T> {
-                        type Response = super::RefreshTheTokenResponse;
+                        type Response = super::RefreshTheOAuth2TokenResponse;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,
                         >;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::RefreshTheTokenRequest>,
+                            request: tonic::Request<super::RefreshTheOAuth2TokenRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {

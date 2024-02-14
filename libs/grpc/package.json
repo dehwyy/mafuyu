@@ -8,6 +8,10 @@
       "types": "./dist/grpc-client.d.ts",
       "import": "./dist/grpc-client.js"
     },
+    "./web": {
+      "types": "./dist/grpcweb-client.d.ts",
+      "import": "./dist/grpcweb-client.js"
+    },
     "./const": {
       "types": "./dist/const.d.ts",
       "import": "./dist/const.js"
@@ -18,6 +22,9 @@
     "*": {
       "const": [
         "./dist/const.d.ts"
+      ],
+      "web": [
+        "./dist/grpcweb-client.d.ts"
       ]
     }
   },
@@ -26,6 +33,7 @@
     "@protobuf-ts/runtime": "^2.9.3",
     "@grpc/grpc-js": "^1.9.13",
     "@protobuf-ts/grpc-transport": "^2.9.3",
+    "@protobuf-ts/grpcweb-transport": "^2.9.3",
     "@sveltejs/kit": "^2.0.0"
   },
   "devDependencies": {

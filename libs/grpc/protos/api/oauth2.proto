@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package oauth2;
 
-option go_package = "github.com/dehwyy/makoto/libs/grpc/generated/oauth2";
+option go_package = "github.com/dehwyy/mafuyu/libs/grpc/gen/api";
 
 service OAuth2Rpc {
   rpc CreateRedirectUrl(CreateRedirectUrlRequest) returns (CreateRedirectUrlResponse);
   rpc ExchangeCodeToToken(ExchangeCodeToTokenRequest) returns (ExchangeCodeToTokenResponse);
-  rpc RefreshTheToken(RefreshTheTokenRequest) returns (RefreshTheTokenResponse);
+  rpc RefreshTheToken(RefreshTheOAuth2TokenRequest) returns (RefreshTheOAuth2TokenResponse);
 }
 
 message CreateRedirectUrlRequest {
@@ -30,12 +30,12 @@ message ExchangeCodeToTokenResponse {
   optional string refresh_token = 2;
 }
 
-message RefreshTheTokenRequest {
+message RefreshTheOAuth2TokenRequest {
   string provider = 1;
   string refresh_token = 2;
 }
 
-message RefreshTheTokenResponse {
+message RefreshTheOAuth2TokenResponse {
   string access_token = 1;
 }
 
