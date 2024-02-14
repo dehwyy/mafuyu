@@ -267,9 +267,21 @@ importers:
       '@sveltejs/enhanced-img':
         specifier: ^0.1.8
         version: 0.1.8(svelte@4.2.7)
+      '@sveltestack/svelte-query':
+        specifier: ^1.6.0
+        version: 1.6.0
+      '@zerodevx/svelte-toast':
+        specifier: ^0.9.5
+        version: 0.9.5(svelte@4.2.7)
       highlight.js:
         specifier: 11.9.0
         version: 11.9.0
+      optional:
+        specifier: ^0.1.4
+        version: 0.1.4
+      sharp:
+        specifier: ^0.33.2
+        version: 0.33.2
       svelte-calendar:
         specifier: ^3.1.6
         version: 3.1.6
@@ -382,16 +394,28 @@ importers:
       '@protobuf-ts/grpc-transport':
         specifier: ^2.9.3
         version: 2.9.3(@grpc/grpc-js@1.9.13)
+      '@protobuf-ts/grpcweb-transport':
+        specifier: ^2.9.3
+        version: 2.9.3
       '@protobuf-ts/runtime':
         specifier: ^2.9.3
         version: 2.9.3
       '@protobuf-ts/runtime-rpc':
         specifier: ^2.9.3
         version: 2.9.3
+      '@protobuf-ts/twirp-transport':
+        specifier: ^2.9.3
+        version: 2.9.3
       '@sveltejs/kit':
         specifier: ^2.0.0
         version: 2.0.0(@sveltejs/vite-plugin-svelte@3.0.0)(svelte@4.2.7)(vite@5.0.3)
     devDependencies:
+      '@protobuf-ts/plugin':
+        specifier: ^2.9.3
+        version: 2.9.3
+      '@protobuf-ts/protoc':
+        specifier: ^2.9.3
+        version: 2.9.3
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
@@ -1122,14 +1146,42 @@ packages:
       '@protobuf-ts/runtime-rpc': 2.9.3
     dev: false
 
+  /@protobuf-ts/plugin-framework@2.9.3:
+    resolution: {integrity: sha512-iqdkhAu7fGPvBCVOoAEEFJ1/oaGIBoNIMgSv2WonTNJVHxv5FvvAfWFn6nG/eta34fHRZT38ZXTaYcMUkv8AiQ==}
+    dependencies:
+      '@protobuf-ts/runtime': 2.9.3
+      typescript: 3.9.10
+    dev: true
+
+  /@protobuf-ts/plugin@2.9.3:
+    resolution: {integrity: sha512-tHYACv+nnIV2eoiMxeZhrgMqGiUktzUzrhfgnROg/rr8TecPLp9v5/yqNibN+bad5k7d57aqlTuQKhFl+J4W/g==}
+    hasBin: true
+    dependencies:
+      '@protobuf-ts/plugin-framework': 2.9.3
+      '@protobuf-ts/protoc': 2.9.3
+      '@protobuf-ts/runtime': 2.9.3
+      '@protobuf-ts/runtime-rpc': 2.9.3
+      typescript: 3.9.10
+    dev: true
+
+  /@protobuf-ts/protoc@2.9.3:
+    resolution: {integrity: sha512-TJ0Ycx/CIBqpB4wpKt6K05kjXj6zv36s/qpdCT/wdJBhpayOVBqLF5NpLp3WIiw1PmIxvqalB6QHKjvnLzGKLA==}
+    hasBin: true
+    dev: true
+
   /@protobuf-ts/runtime-rpc@2.9.3:
     resolution: {integrity: sha512-WelHpctvZeG8yhbb7tnsrLzotq9xjMCXuGuhJ8qMyEdNoBBEodbXseofAYFTebo2/PN2LzyEq3X6vwr5f8jqTA==}
     dependencies:
       '@protobuf-ts/runtime': 2.9.3
-    dev: false
 
   /@protobuf-ts/runtime@2.9.3:
     resolution: {integrity: sha512-nivzCpg/qYD0RX2OmHOahJALb8ndjGmUhNBcTJ0BbXoqKwCSM6vYA+vegzS3rhuaPgbyC7Ec8idlnizzUfIRuw==}
+
+  /@protobuf-ts/twirp-transport@2.9.3:
+    resolution: {integrity: sha512-GblMjxj0IJ6Q7ULMRS6Ad+AFQdRBN22LcX6OxSXEg+RiRdoLUvBcmJeBWnUZ6CS7EIGUOaGid5pJ2MmfccfEsQ==}
+    dependencies:
+      '@protobuf-ts/runtime': 2.9.3
+      '@protobuf-ts/runtime-rpc': 2.9.3
     dev: false
 
   /@protobufjs/aspromise@1.1.2:
@@ -2789,6 +2841,15 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
+  /@sveltestack/svelte-query@1.6.0:
+    resolution: {integrity: sha512-C0wWuh6av1zu3Pzwrg6EQmX3BhDZQ4gMAdYu6Tfv4bjbEZTB00uEDz52z92IZdONh+iUKuyo0xRZ2e16k2Xifg==}
+    peerDependencies:
+      broadcast-channel: ^4.5.0
+    peerDependenciesMeta:
+      broadcast-channel:
+        optional: true
+    dev: false
+
   /@swc/helpers@0.5.2:
     resolution: {integrity: sha512-E4KcWTpoLHqwPHLxidpOqQbcrZVgi0rsmmZXUle1jXmJfuIf/UWpczUJ7MZZ5tlxytgJXyp0w4PGkkeLiuIdZw==}
     dependencies:
@@ -3200,6 +3261,14 @@ packages:
       loupe: 2.3.7
       pretty-format: 29.7.0
     dev: true
+
+  /@zerodevx/svelte-toast@0.9.5(svelte@4.2.7):
+    resolution: {integrity: sha512-JLeB/oRdJfT+dz9A5bgd3Z7TuQnBQbeUtXrGIrNWMGqWbabpepBF2KxtWVhL2qtxpRqhae2f6NAOzH7xs4jUSw==}
+    peerDependencies:
+      svelte: ^3.57.0 || ^4.0.0
+    dependencies:
+      svelte: 4.2.7
+    dev: false
 
   /acorn-jsx@5.3.2(acorn@8.11.3):
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -4709,6 +4778,10 @@ packages:
       mimic-fn: 4.0.0
     dev: true
 
+  /optional@0.1.4:
+    resolution: {integrity: sha512-gtvrrCfkE08wKcgXaVwQVgwEQ8vel2dc5DDBn9RLQZ3YtmtkBss6A2HY6BnJH4N/4Ku97Ri/SF8sNWE2225WJw==}
+    dev: false
+
   /optionator@0.9.3:
     resolution: {integrity: sha512-JjCoypp+jKn1ttEFExxhetCKeJt9zhAgAve5FXHixTvFDW/5aEktX9bufBKLRRMdU7bNtpLfcGu94B3cdEJgjg==}
     engines: {node: '>= 0.8.0'}
@@ -5761,6 +5834,12 @@ packages:
   /type-fest@0.20.2:
     resolution: {integrity: sha512-Ne+eE4r0/iWnpAxD852z3A+N0Bt5RN//NjJwRd2VFHEmrywxf5vsZlh4R6lixl6B+wz/8d+maTSAkN1FIkI3LQ==}
     engines: {node: '>=10'}
+    dev: true
+
+  /typescript@3.9.10:
+    resolution: {integrity: sha512-w6fIxVE/H1PkLKcCPsFqKE7Kv7QUwhU8qQY2MueZXWx5cPZdwFupLgKK3vntcK98BtNHZtAF4LA/yl2a7k8R6Q==}
+    engines: {node: '>=4.2.0'}
+    hasBin: true
     dev: true
 
   /typescript@5.3.3:
