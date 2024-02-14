@@ -27,8 +27,19 @@ pub struct EditUserRequest {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GetUserRequest {
-    #[prost(string, tag = "1")]
-    pub username: ::prost::alloc::string::String,
+    #[prost(oneof = "get_user_request::Login", tags = "1, 2")]
+    pub login: ::core::option::Option<get_user_request::Login>,
+}
+/// Nested message and enum types in `GetUserRequest`.
+pub mod get_user_request {
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum Login {
+        #[prost(string, tag = "1")]
+        UserId(::prost::alloc::string::String),
+        #[prost(string, tag = "2")]
+        Username(::prost::alloc::string::String),
+    }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]

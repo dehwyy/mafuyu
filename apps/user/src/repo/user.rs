@@ -26,7 +26,8 @@ impl UserRepo {
         }
     }
 
-    pub async fn get_user(&self, get_by: GetUserRecordBy) -> Result<user::Model, RepositoryError> {
+    /// * (`get_by`) => (`user::model`, `username`)
+    pub async fn get_user(&self, get_by: GetUserRecordBy) -> Result<(user::Model, String), RepositoryError> {
         get_user(&self.db, get_by).await
     }
 
@@ -41,7 +42,7 @@ impl UserRepo {
     }
 
     pub async fn edit_primitive_user(&self, p: EditPrimitiveUserPayload) -> Result<user::Model, RepositoryError> {
-        let mut user: user::ActiveModel = self.get_user(GetUserRecordBy::UserId(p.user_id)).await?.into();
+        let mut user: user::ActiveModel = self.get_user(GetUserRecordBy::UserId(p.user_id)).await?.0.into();
 
         user.birthday = match p.birthday {
             Some(timestamp) => {

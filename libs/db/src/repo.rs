@@ -13,36 +13,27 @@ pub mod user {
         Username(String)
     }
 
-    pub async fn get_user(db_conn: &DatabaseConnection, get_by: GetUserRecordBy) -> Result<user::Model, RepositoryError> {
+    type Username = String;
+    pub async fn get_user(db_conn: &DatabaseConnection, get_by: GetUserRecordBy) -> Result<(user::Model, Username), RepositoryError> {
 
-        match get_by {
-            GetUserRecordBy::Username(username) => {
-                let joined_model =  User::find()
-                    .find_also_related(UserCredentials).filter(user_credentials::Column::Username.eq(username))
-                    .one(db_conn).await.handle()?;
+        let filter: SimpleExpr = match get_by {
+            GetUserRecordBy::UserId(user_id) => user::Column::UserId.eq(user_id),
+            GetUserRecordBy::Username(username) => user_credentials::Column::Username.eq(username)
+        };
 
-                let model = match joined_model {
-                    Some(v) => Ok(v),
+        let joined_model =  User::find()
+            .find_also_related(UserCredentials).filter(filter)
+            .one(db_conn).await.handle()?;
+
+        match joined_model {
+            Some(v) => {
+                // match `related model`
+                match v.1 {
+                    Some(user_credentials) => Ok((v.0, user_credentials.username)),
                     None => Err(RepositoryError::NotFound("user with user_credentials wasn't found".to_string()))
-                }?.0; // 1st element of the tuple
-
-                Ok(model)
-            },
-            get_by => {
-                let filter: Option<SimpleExpr> = match get_by {
-                    GetUserRecordBy::UserId(user_id) => Some(user::Column::UserId.eq(user_id)),
-                    _ => None
-                };
-
-                match filter {
-                    Some(filter) => {
-                        let user = User::find().filter(filter).one(db_conn).await.handle()?;
-
-                        user.unwrap_or_not_found("user(info) not found")
-                    },
-                    None => Err(RepositoryError::NotFound("invalid filter".to_string()))
                 }
-            }
+            },
+            None => Err(RepositoryError::NotFound("user with user_credentials wasn't found".to_string()))
         }
     }
 }
