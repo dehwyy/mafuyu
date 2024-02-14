@@ -1,12 +1,10 @@
 localhost:6996 {
 	root * ./.cdn
-	header           Cache-Control pubic,max-age=31536000,stale-while-revalidate=86400
+	header           Cache-Control pubic,max-age=31536000, must-revalidate
 
 	route /v1/* {
 		uri strip_prefix /v1
 	}
 
-	file_server {
-		precompressed gzip
-	}
+	file_server
 }
