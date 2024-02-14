@@ -1,8 +1,7 @@
 syntax = "proto3";
 
 package cdn;
-
-option go_package = "github.com/dehwyy/makoto/libs/grpc/generated/cdn";
+option go_package = "github.com/dehwyy/mafuyu/libs/grpc/gen/api";
 
 import "google/protobuf/empty.proto";
 

@@ -1,6 +1,7 @@
 import { ApiRpcClient } from '../dist/api.client'
 import { ChannelCredentials } from '@grpc/grpc-js'
 import { GrpcTransport } from '@protobuf-ts/grpc-transport'
+import { TwirpFetchTransport } from '@protobuf-ts/twirp-transport'
 import {
   Deferred, FinishedUnaryCall,
   MethodInfo,

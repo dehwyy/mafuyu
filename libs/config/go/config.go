@@ -10,11 +10,11 @@ import (
 )
 
 type Config struct {
-	DatabaseDsn string `required:"true"    envconfig:"DATABASE_DSN"`
+	DatabaseDsn string `required:"true"  envconfig:"DATABASE_DSN"`
 }
 
 func NewConfig() *Config {
-	InitEnv()
+	initEnv()
 
 	var cfg Config
 
@@ -25,7 +25,7 @@ func NewConfig() *Config {
 	return &cfg
 }
 
-func InitEnv() {
+func initEnv() {
 	wd, err := os.Getwd()
 	if err != nil {
 		fmt.Printf("failed to get current working directory: %v\n", err)
@@ -33,5 +33,5 @@ func InitEnv() {
 	}
 
 	// from root
-	_ = godotenv.Load(filepath.Join(wd, ".env"))
+	_ = godotenv.Load(filepath.Join(wd, ".env"), filepath.Join(wd, ".env.hosts"))
 }

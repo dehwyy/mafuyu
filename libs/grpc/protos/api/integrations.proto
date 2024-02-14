@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package integrations;
 
-option go_package = "github.com/dehwyy/makoto/libs/grpc/generated/integrations";
+option go_package = "github.com/dehwyy/mafuyu/libs/grpc/gen/api";
 
 service IntegrationsRpc {
   rpc GetBasicUser(GetBasicUserRequest) returns (GetBasicUserResponse);

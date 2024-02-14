@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package tokens;
 
-option go_package = "github.com/dehwyy/makoto/libs/grpc/generated/tokens";
+option go_package = "github.com/dehwyy/mafuyu/libs/grpc/gen/api";
 
 import "api/general.proto";
 

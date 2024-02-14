@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package user;
 
-option go_package = "github.com/dehwyy/makoto/libs/grpc/generated/user";
+option go_package = "github.com/dehwyy/mafuyu/libs/grpc/gen/api";
 
 import "google/protobuf/empty.proto";
 

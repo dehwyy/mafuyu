@@ -1,4 +1,4 @@
-module github.com/dehwyy/makoto/libs/config
+module github.com/dehwyy/mafuyu/libs/config
 
 go 1.21.2
 
