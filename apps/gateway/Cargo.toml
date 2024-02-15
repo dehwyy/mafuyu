@@ -9,9 +9,11 @@ tonic = "0.10.2"
 prost = "0.12.3"
 tonic-web = "0.10.2"
 tokio = { version = "1.35.0", features = ["macros", "rt-multi-thread"] }
+tower = { version = "0.4" }
 tower-http = { version = "0.4", features = ["cors"] }
 http = "0.2.11"
 async-nats = "0.33.0"
+hyper = "0.14"
 
 makoto_grpc = {path = "../../libs/grpc"}
 makoto_lib = {path = "../../libs/utils"}

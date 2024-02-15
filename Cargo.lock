@@ -1233,6 +1233,7 @@ version = "0.1.0"
 dependencies = [
  "async-nats",
  "http",
+ "hyper",
  "makoto_config",
  "makoto_grpc",
  "makoto_lib",
@@ -1241,6 +1242,7 @@ dependencies = [
  "tokio",
  "tonic",
  "tonic-web",
+ "tower",
  "tower-http",
 ]
 
