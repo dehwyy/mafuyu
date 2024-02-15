@@ -1,4 +1,6 @@
 mod service;
+mod interceptors;
+use interceptors::remove_keep_alive::RemoveKeepAliveHeaderInterceptor;
 
 use std::str::FromStr;
 
@@ -21,7 +23,7 @@ async fn main() -> makoto_lib::Result<()> {
     let addr = hosts.gateway.parse()?;
 
     let api = ApiRpcServiceImplementation::new().await;
-    let api_service = ApiRpcServer::new(api);
+    let api_service = ApiRpcServer::with_interceptor(api, RemoveKeepAliveHeaderInterceptor::intercept);
 
     info!("server start! host: {}", addr);
 
