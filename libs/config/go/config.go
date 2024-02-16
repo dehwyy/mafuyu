@@ -11,6 +11,10 @@ import (
 
 type Config struct {
 	DatabaseDsn string `required:"true"  envconfig:"DATABASE_DSN"`
+
+	GmailSenderName     string `required:"true"    envconfig:"GMAIL_SENDER_NAME"`
+	GmailSenderAddr     string `required:"true"    envconfig:"GMAIL_SENDER_ADDRESS"`
+	GmailSenderPassword string `required:"true"    envconfig:"GMAIL_SENDER_PASSWORD"`
 }
 
 func NewConfig() *Config {

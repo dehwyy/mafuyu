@@ -1,4 +1,4 @@
-module github.com/dehwyy/makoto/libs/logger
+module github.com/dehwyy/mafuyu/libs/logger
 
 go 1.21.2
 

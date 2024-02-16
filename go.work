@@ -1,8 +1,10 @@
 go 1.21.2
 
 use (
+	apps/mailer-async
   	libs/db
   	libs/log
   	libs/config
 	libs/grpc
+	libs/nats
 )

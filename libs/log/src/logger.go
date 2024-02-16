@@ -1,4 +1,4 @@
-package makoto_log
+package mafuyu_logger
 
 import (
 	"go.uber.org/zap"
