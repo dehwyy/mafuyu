@@ -14,14 +14,14 @@ const (
 type GmailEmailService struct {
 	fromName     string
 	fromAddr     string
-	fromPassport string
+	fromPassword string
 }
 
-func NewGmailEmailService(fromName string, fromAddr string, fromPassport string) *GmailEmailService {
+func NewGmailEmailService(fromName string, fromAddr string, fromPassword string) *GmailEmailService {
 	return &GmailEmailService{
 		fromName:     fromName,
 		fromAddr:     fromAddr,
-		fromPassport: fromPassport,
+		fromPassword: fromPassword,
 	}
 }
 
@@ -33,6 +33,6 @@ func (m *GmailEmailService) SendEmail(to []string, subject string, content []byt
 	mail.To = to
 	mail.HTML = content
 
-	smtpAuth := smtp.PlainAuth("", m.fromAddr, m.fromAddr, smtpAuthGmailAddr)
+	smtpAuth := smtp.PlainAuth("", m.fromAddr, m.fromPassword, smtpAuthGmailAddr)
 	return mail.Send(smtpServerGmailAddr, smtpAuth)
 }
