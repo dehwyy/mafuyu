@@ -17,8 +17,8 @@ tasks:
 
   grpc:go:
     cmds:
-      - cd libs/grpc && pnpm exec protoc --go_out=gen --go-grpc_out=gen --experimental_allow_proto3_optional --twirp_out=gen --go_opt=paths=source_relative --twirp_opt=paths=source_relative --go-grpc_opt=paths=source_relative --proto_path=protos protos/api/*.proto
-      - cd libs/grpc && pnpm exec protoc --go_out=gen --go-grpc_out=gen --experimental_allow_proto3_optional --twirp_out=gen --go_opt=paths=source_relative --twirp_opt=paths=source_relative --go-grpc_opt=paths=source_relative --proto_path=protos protos/api.proto
+      - cd libs/grpc && pnpm exec protoc --go_out=gen --go-grpc_out=gen --experimental_allow_proto3_optional --go_opt=paths=source_relative  --go-grpc_opt=paths=source_relative --proto_path=protos protos/api/mailer.proto
+#      - cd libs/grpc && pnpm exec protoc --go_out=gen --go-grpc_out=gen --experimental_allow_proto3_optional --twirp_out=gen --go_opt=paths=source_relative --twirp_opt=paths=source_relative --go-grpc_opt=paths=source_relative --proto_path=protos protos/api.proto
 
   # go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 

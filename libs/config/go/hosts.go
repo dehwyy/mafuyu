@@ -15,6 +15,7 @@ type Hosts struct {
 	User         string `required:"true"    envconfig:"USER_RPC"`
 	Integrations string `required:"true"    envconfig:"INTEGRATIONS"`
 	CdnRpc       string `required:"true"    envconfig:"CDN_RPC"`
+	MailerRpc    string `required:"true"    envconfig:"MAILER_RPC"`
 }
 
 func NewHosts() *Hosts {

@@ -7,3 +7,4 @@ pub mod integrations;
 pub mod passport;
 pub mod user;
 pub mod cdn;
+pub mod mailer;
