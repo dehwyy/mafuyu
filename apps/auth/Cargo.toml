@@ -3,8 +3,6 @@ name = "auth"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 tonic = "0.10.2"
 prost = "0.12.3"
@@ -13,8 +11,9 @@ sea-orm = { version = "0.12.9", features = [ "sqlx-postgres", "runtime-tokio-rus
 bcrypt = "0.15.0"
 regex = "1.10.2"
 uuid = { version = "1.6.1", features = ["v4"] }
+rand = "0.8.5"
 oauth2 = "4.4.2"
-redis = "0.24.0"
+redis = { version = "0.24.0",  features = ["tokio-comp"] }
 reqwest = {version = "0.11.23", features = ["json"]}
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
@@ -25,6 +24,3 @@ makoto_lib = {path = "../../libs/utils"}
 makoto_config = {path = "../../libs/config"}
 makoto_logger = {path = "../../libs/log"}
 makoto_db = {path = "../../libs/db"}
-
-[dev-dependencies]
-lazy_static = "1.4.0"

@@ -5,8 +5,9 @@ mod service;
 use tonic::transport::Server;
 use service::AuthRpcServiceImplementation;
 
+
 use makoto_grpc::pkg::auth::auth_rpc_server::AuthRpcServer;
-use makoto_logger::{Logger, info};
+use makoto_logger::{info, Logger};
 use makoto_lib::Result as AnyResult;
 
 #[tokio::main]
@@ -22,9 +23,9 @@ async fn main() -> AnyResult<()> {
     let credentials_repo = repository::credentials::Credentials::new(db.clone());
     let token_repo  =repository::tokens::Tokens::new(db.clone());
 
-    let _redis = redis::Client::open(makoto_config::constants::redis::AUTH_URL).expect("cannot open redis connection");
+    let redis = redis::Client::open(makoto_config::constants::redis::AUTH_URL).expect("cannot open redis connection");
 
-    let auth_service= AuthRpcServiceImplementation::new(credentials_repo, token_repo).await;
+    let auth_service= AuthRpcServiceImplementation::new(credentials_repo, token_repo, redis).await;
     let auth_service = AuthRpcServer::new(auth_service);
 
     info!("server start! host: {}", addr);
