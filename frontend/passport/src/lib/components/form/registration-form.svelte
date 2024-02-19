@@ -20,7 +20,7 @@
   const toastStore = getToastStore()
   const f = form(username, email, password)
 
-  export let onFormSubmit: () => void
+  export let onFormSubmit: (email: string, username: string, password: string) => void
 
   onMount(() => {
     f.validate()
@@ -29,12 +29,10 @@
   const create_button_click = (e: MouseEvent) => {
     // if form is valid
     if ($f.valid) {
-      onFormSubmit()
+      onFormSubmit($email.value, $username.value, $password.value)
       // invoke form submit
       return
     }
-
-    e.preventDefault()
 
     const current_errors: Record<string, null | string> = {
       username: null,
@@ -67,12 +65,19 @@
   }
 </script>
 
-<form class="" action="?/create" method="POST">
-  <h3 class="h2 sm:h3 mb-10 text-center">New <span class="text-primary-400 underline">Mafuyu</span> Account</h3>
+<form action="?/create" method="POST" on:submit|preventDefault>
+  <h3 class="h2 sm:h3 mb-10 text-center">New <span class="text-primary-400 underline">MaFuYu</span> Account</h3>
   <div class="flex flex-col gap-y-5">
-    <input placeholder="Mafuyu Username" type="text" name="username" maxlength="30" autocomplete="off" bind:value={$username.value} class={`input`} />
-    <input placeholder="email@example.com" type="email" name="email" autocomplete="off" bind:value={$email.value} class={`input`} />
-    <input placeholder="password" type="password" minlength="8" name="password" bind:value={$password.value} class="input" />
+    <input
+      placeholder="Mafuyu Username"
+      type="text"
+      name="username"
+      maxlength="30"
+      autocomplete="off"
+      bind:value={$username.value}
+      class="inp input" />
+    <input placeholder="email@example.com" type="email" name="email" autocomplete="off" bind:value={$email.value} class={`input inp`} />
+    <input placeholder="password" type="password" minlength="8" name="password" bind:value={$password.value} class="input inp" />
   </div>
   <hr class="my-3" />
   <div class="w-full mx-auto">
@@ -85,3 +90,9 @@
     </p>
   </div>
 </form>
+
+<style lang="scss">
+  .inp {
+    @apply px-5 border-4;
+  }
+</style>

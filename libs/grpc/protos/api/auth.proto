@@ -4,12 +4,15 @@ package auth;
 option go_package = "github.com/dehwyy/mafuyu/libs/grpc/gen/api";
 
 import "api/general.proto";
+import "google/protobuf/empty.proto";
 
 service AuthRpc {
   rpc SignUp(SignUpRequest) returns (AuthenticationServiceResponse);
   rpc SignIn(SignInRequest) returns (AuthenticationServiceResponse);
   rpc SignInWithToken(SignInWithTokenRequest) returns (AuthenticationServiceResponse);
   rpc SignOut(SignOutRequest) returns (general.IsOkResponse);
+  rpc SendEmailVerificationCode(SendEmailVerificationCodeRequest) returns (google.protobuf.Empty);
+  rpc VerifyEmailCode(VerifyEmailCodeRequest) returns (general.IsOkResponse);
 }
 
 message SignUpRequest {
@@ -47,3 +50,11 @@ message AuthenticationResponse {
   string user_id = 2;
 }
 
+message SendEmailVerificationCodeRequest {
+  string email = 1;
+}
+
+message VerifyEmailCodeRequest {
+  string code = 1;
+  string email = 2;
+}

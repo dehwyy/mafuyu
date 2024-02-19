@@ -1,10 +1,9 @@
-use std::default;
-use http::{HeaderMap, HeaderValue};
+use http::HeaderMap;
 use tonic::body::BoxBody;
 use super::middleware_func::{MiddlewareFunc, MiddlewareFuncResponse};
 use super::header_tools::Cookie;
 
-use makoto_grpc::{METADATA_ACCESS_TOKEN_KEY, METADATA_REFRESH_TOKEN_KEY};
+use makoto_grpc::{COOKIE_ACCESS_TOKEN_KEY, COOKIE_REFRESH_TOKEN_KEY, METADATA_ACCESS_TOKEN_KEY, METADATA_REFRESH_TOKEN_KEY};
 
 #[derive(Clone)]
 pub struct SetTokensCookies;
@@ -40,7 +39,7 @@ impl MiddlewareFunc for SetTokensCookies {
             let mut headers = req.headers_mut();
             if let Some(access_token) = Self::extract_header(&mut headers, METADATA_ACCESS_TOKEN_KEY) {
                 headers.append(Cookie::header_key(), Cookie{
-                    key: METADATA_ACCESS_TOKEN_KEY.to_string(),
+                    key: COOKIE_ACCESS_TOKEN_KEY.to_string(),
                     value: access_token,
                     ..Default::default()
                 }.new());
@@ -48,7 +47,7 @@ impl MiddlewareFunc for SetTokensCookies {
 
             if let Some(refresh_token) = Self::extract_header(&mut headers, METADATA_REFRESH_TOKEN_KEY) {
                 headers.append(Cookie::header_key(), Cookie{
-                    key: METADATA_REFRESH_TOKEN_KEY.to_string(),
+                    key: COOKIE_REFRESH_TOKEN_KEY.to_string(),
                     value: refresh_token,
                     ..Default::default()
                 }.new());

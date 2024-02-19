@@ -18,6 +18,7 @@ use grpc::tokens::RefreshTheTokenRequest;
 use makoto_grpc::pkg::general::IsOkResponse;
 use makoto_logger::{info, warn};
 use tonic::{Request, Response, Status};
+use makoto_grpc::pkg::auth::{SendEmailVerificationCodeRequest, VerifyEmailCodeRequest};
 use makoto_grpc::pkg::passport::{GetPublicUserResponse, UpdateUsernameRequest};
 use makoto_grpc::pkg::user::{EditUserRequest, GetUserRequest, GetUserResponse};
 
@@ -107,8 +108,16 @@ impl api_rpc_server::ApiRpc for ApiRpcServiceImplementation {
     Ok(response)
   }
 
-  async fn sign_out(&self, req: Request<grpc::auth::SignOutRequest>) -> Result<Response<IsOkResponse>, Status> {
+  async fn sign_out(&self, req: Request<auth::SignOutRequest>) -> Result<Response<IsOkResponse>, Status> {
     self.auth_client.clone().borrow_mut().sign_out(req).await
+  }
+
+  async fn send_email_verification_code(&self, req: Request<SendEmailVerificationCodeRequest>) -> Result<Response<()>, Status> {
+    self.auth_client.clone().borrow_mut().send_email_verification_code(req).await
+  }
+
+  async fn verify_email_code(&self, req: Request<VerifyEmailCodeRequest>) -> Result<Response<IsOkResponse>, Status> {
+    self.auth_client.clone().borrow_mut().verify_email_code(req).await
   }
 
   async fn update_username(&self, req: Request<UpdateUsernameRequest>) -> Result<Response<()>, Status> {

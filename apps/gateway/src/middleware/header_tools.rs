@@ -23,7 +23,7 @@ impl Cookie {
         http::HeaderName::from_str("Set-Cookie").expect("cannot create `Set-Cookie` key from `str`")
     }
     pub fn new(&self) -> http::HeaderValue {
-        let mut s = format!("{}={}", self.key, self.value);
+        let mut s = format!("{}={}; path=/; Secure; SameSite=None", self.key, self.value);
         if self.http_only {
             s = format!("{}; HttpOnly", s);
         }

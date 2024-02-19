@@ -1,16 +1,27 @@
 <script lang="ts">
   import { fade, fly } from "svelte/transition"
   import Input from "$lib/components/form/input.svelte"
+  import { useConfirmEmailByCode, useSendConfirmationEmail } from "$lib/query/auth"
 
+  export let email: string
+
+  const sendConfirmationEmail = useSendConfirmationEmail()
+  const confirmEmailByCode = useConfirmEmailByCode()
   const email_sender = "makoto.web3@gmail.com"
 
   let email_send_times = 0
   let code = ""
 
   const SendEmail = () => {
+    $sendConfirmationEmail.mutate(email)
+
     setTimeout(() => {
       email_send_times += 1
     }, 1000)
+  }
+
+  const ConfirmEmail = () => {
+    $confirmEmailByCode.mutate({ code, email })
   }
 
   $: send_at_least_once = email_send_times != 0
@@ -29,5 +40,5 @@
   </div>
   <hr class="mb-3" />
   <Input label_text="Enter activation code" bind:value={code} disabled={!send_at_least_once} />
-  <button disabled={!send_at_least_once} class="btn variant-filled-primary">Confirm</button>
+  <button disabled={!send_at_least_once} on:click={ConfirmEmail} class="btn variant-filled-primary">Confirm</button>
 </section>

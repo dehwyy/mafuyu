@@ -60,15 +60,13 @@ impl<S> Service<hyper::Request<Body>> for BaseMiddleware<S>
         let clone = self.inner.clone();
         let mut inner = std::mem::replace(&mut self.inner, clone);
 
-        let func = self.func.clone();
+        let func = self.func;
 
         Box::pin(async move {
             // Do extra async work here...
             let mut response: Self::Response = inner.call(req).await?;
             
             let response = func.call(response).await;
-
-            info!("{:?}", response);
 
             Ok(response)
         })

@@ -11,7 +11,10 @@ export const load: LayoutServerLoad = async ({ url, cookies }) => {
   try {
     const { response } = await GrpcClient.getUser(
       {
-        username,
+        login: {
+          oneofKind: "username",
+          username,
+        },
       },
       {
         interceptors: [Interceptors.WithTokens(Interceptors.WithTokensPayload.CreateForSvelteKit(cookies))],

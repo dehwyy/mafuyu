@@ -13,8 +13,9 @@ use service::service::ApiRpcServiceImplementation;
 use makoto_grpc::pkg::api::api_rpc_server::ApiRpcServer;
 use makoto_logger::{Logger, info};
 use tonic_web::{GrpcWebLayer};
-use tower_http::cors::{CorsLayer, AllowOrigin, AllowHeaders};
+use tower_http::cors::{CorsLayer, AllowOrigin, AllowHeaders, AllowCredentials, ExposeHeaders};
 use http::header::HeaderName;
+use http::HeaderValue;
 
 
 #[tokio::main]
@@ -26,21 +27,25 @@ async fn main() -> makoto_lib::Result<()> {
     let addr = hosts.gateway.parse()?;
 
     let api = ApiRpcServiceImplementation::new().await;
-    let api_service = ApiRpcServer::with_interceptor(api, RemoveKeepAliveHeaderInterceptor::intercept);
+    let api_service = ApiRpcServer::new(api);
 
     info!("server start! host: {}", addr);
 
-    let exposed_headers = vec!("grpc-status", "grpc-message", "grpc-status-details-bin", "x-access-token", "x-refresh-token", "set-cookie")
-        .iter()
-        .map(|s| HeaderName::from_str(s).expect("invalid header name"))
-        .collect::<Vec<HeaderName>>();
+    let exposed_headers = vec!("grpc-status", "grpc-message", "grpc-status-details-bin", "x-access-token", "x-refresh-token", "set-cookie");
+    let allow_origin = vec!("http://localhost:5173", "https://localhost:5173");
+    let allow_headers = vec!("access_token", "refresh_token", "Content-Type", "x-grpc-web");
 
-    // todo
     let cors = CorsLayer::new()
-        .allow_origin(AllowOrigin::any())
-        .max_age(std::time::Duration::from_secs(1))
-        .expose_headers(exposed_headers)
-        .allow_headers(AllowHeaders::any());
+        .expose_headers(
+            ExposeHeaders::list(exposed_headers.iter().map(|s| HeaderName::from_str(s).unwrap()).collect::<Vec<_>>())
+        )
+        .allow_origin(
+            AllowOrigin::list(allow_origin.iter().map(|s| HeaderValue::from_str(s).unwrap()).collect::<Vec<_>>())
+        )
+        .allow_headers(
+            AllowHeaders::list(allow_headers.iter().map(|s| HeaderName::from_str(s).unwrap()).collect::<Vec<_>>()))
+        .max_age(Duration::from_secs(5))
+        .allow_credentials(AllowCredentials::yes());
 
     let set_tokens_cookies = middleware::set_tokens_cookies::SetTokensCookies::new();
 

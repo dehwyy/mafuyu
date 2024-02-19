@@ -11,7 +11,7 @@
   import { QueryClient, QueryClientProvider } from "@sveltestack/svelte-query"
   import type { AfterNavigate } from "@sveltejs/kit"
   import { afterNavigate, onNavigate } from "$app/navigation"
-  import { SvelteToast } from '@zerodevx/svelte-toast'
+  import { SvelteToast } from "@zerodevx/svelte-toast"
 
   // skeleton stores
   initializeStores()

@@ -2,14 +2,14 @@ import type { LayoutServerLoad } from "./$types"
 import { GrpcClient, Interceptors } from "@makoto/grpc"
 import { GrpcCookiesKeys } from "@makoto/grpc/const"
 
-export const load: LayoutServerLoad = async ({ cookies, url }) => {
+export const load: LayoutServerLoad = async ({ cookies, url, setHeaders }) => {
   if (!cookies.get(GrpcCookiesKeys.AccessToken) && !cookies.get(GrpcCookiesKeys.RefreshToken))
     return {
       url: url.pathname,
     }
 
   try {
-    const { response } = await GrpcClient.signInWithToken(
+    const { response, headers } = await GrpcClient.signInWithToken(
       {
         token: "", // will be set in interceptor
       },
@@ -19,6 +19,7 @@ export const load: LayoutServerLoad = async ({ cookies, url }) => {
       },
     )
 
+    console.log(headers["x-access-token"]!)
     return {
       userId: response.userId,
       username: response.username,

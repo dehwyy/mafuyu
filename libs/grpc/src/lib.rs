@@ -9,9 +9,11 @@ use pkg::passport::passport_rpc_client::{PassportRpcClient, self};
 use pkg::tokens::tokens_rpc_client::{TokensRpcClient, self};
 use pkg::user::user_rpc_client::{UserRpcClient, self};
 use pkg::cdn::cdn_rpc_client::{CdnRpcClient, self};
-
+use pkg::mailer::mailer_rpc_client;
 pub const METADATA_ACCESS_TOKEN_KEY: &str = "x-access-token";
+pub const COOKIE_ACCESS_TOKEN_KEY: &str = "access_token";
 pub const METADATA_REFRESH_TOKEN_KEY: &str = "x-refresh-token";
+pub const COOKIE_REFRESH_TOKEN_KEY: &str = "refresh_token";
 
 pub struct Tools;
 
@@ -41,6 +43,7 @@ pub struct RpcClients<T = Channel, E = tonic::transport::Error>  {
     pub tokens_client: Result<TokensRpcClient<T>, E>,
     pub user_client: Result<UserRpcClient<T>, E>,
     pub cdn_client: Result<CdnRpcClient<T>, E>,
+    pub mailer_client: Result<mailer_rpc_client::MailerRpcClient<T>, E>,
 }
 
 impl RpcClients {
@@ -56,6 +59,7 @@ impl RpcClients {
         let tokens_client =  tokens_rpc_client::TokensRpcClient::connect(with_http(&hosts.tokens)).await;
         let user_client  = user_rpc_client::UserRpcClient::connect(with_http(&hosts.user)).await;
         let cdn_client = cdn_rpc_client::CdnRpcClient::connect(with_http(&hosts.cdn_rpc)).await;
+        let mailer_client = mailer_rpc_client::MailerRpcClient::connect(with_http(&hosts.mailer_rpc)).await;
 
         Self {
             auth_client,
@@ -64,7 +68,8 @@ impl RpcClients {
             passport_client,
             tokens_client,
             user_client,
-            cdn_client
+            cdn_client,
+            mailer_client
         }
     }
 

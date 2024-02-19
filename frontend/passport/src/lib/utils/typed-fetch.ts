@@ -40,19 +40,6 @@ class TypedFetch<Req, Res> {
 }
 
 export const Routes = {
-  "user/edit": new TypedFetch<
-    {
-      userId: string
-      username?: string
-      location?: string
-      birthday?: bigint
-      pseudonym?: string
-      bio?: string
-      picture?: string
-      languages: string[]
-    },
-    {}
-  >("user/edit", "POST"),
   oauth: new TypedFetch<
     {
       provider: string

@@ -12,7 +12,7 @@ import "api/integrations.proto";
 import "api/tokens.proto";
 import "api/passport.proto";
 import "api/user.proto";
-
+import "api/mailer.proto";
 
 service ApiRpc {
   // Auth
@@ -20,6 +20,8 @@ service ApiRpc {
   rpc SignIn(auth.SignInRequest) returns (auth.AuthenticationResponse);
   rpc SignInWithToken(auth.SignInWithTokenRequest) returns (auth.AuthenticationResponse);
   rpc SignOut(auth.SignOutRequest) returns (general.IsOkResponse);
+  rpc SendEmailVerificationCode(auth.SendEmailVerificationCodeRequest) returns (google.protobuf.Empty);
+  rpc VerifyEmailCode(auth.VerifyEmailCodeRequest) returns (general.IsOkResponse);
 
   // Passport
   rpc UpdateUsername(passport.UpdateUsernameRequest) returns (google.protobuf.Empty);

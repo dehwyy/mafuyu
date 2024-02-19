@@ -175,6 +175,55 @@ pub mod api_rpc_client {
             req.extensions_mut().insert(GrpcMethod::new("api.ApiRpc", "SignOut"));
             self.inner.unary(req, path, codec).await
         }
+        pub async fn send_email_verification_code(
+            &mut self,
+            request: impl tonic::IntoRequest<
+                super::super::auth::SendEmailVerificationCodeRequest,
+            >,
+        ) -> std::result::Result<tonic::Response<()>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/api.ApiRpc/SendEmailVerificationCode",
+            );
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("api.ApiRpc", "SendEmailVerificationCode"));
+            self.inner.unary(req, path, codec).await
+        }
+        pub async fn verify_email_code(
+            &mut self,
+            request: impl tonic::IntoRequest<super::super::auth::VerifyEmailCodeRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::super::general::IsOkResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/api.ApiRpc/VerifyEmailCode",
+            );
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("api.ApiRpc", "VerifyEmailCode"));
+            self.inner.unary(req, path, codec).await
+        }
         /// Passport
         pub async fn update_username(
             &mut self,
@@ -355,6 +404,17 @@ pub mod api_rpc_server {
         async fn sign_out(
             &self,
             request: tonic::Request<super::super::auth::SignOutRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::super::general::IsOkResponse>,
+            tonic::Status,
+        >;
+        async fn send_email_verification_code(
+            &self,
+            request: tonic::Request<super::super::auth::SendEmailVerificationCodeRequest>,
+        ) -> std::result::Result<tonic::Response<()>, tonic::Status>;
+        async fn verify_email_code(
+            &self,
+            request: tonic::Request<super::super::auth::VerifyEmailCodeRequest>,
         ) -> std::result::Result<
             tonic::Response<super::super::general::IsOkResponse>,
             tonic::Status,
@@ -651,6 +711,105 @@ pub mod api_rpc_server {
                     let fut = async move {
                         let inner = inner.0;
                         let method = SignOutSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/api.ApiRpc/SendEmailVerificationCode" => {
+                    #[allow(non_camel_case_types)]
+                    struct SendEmailVerificationCodeSvc<T: ApiRpc>(pub Arc<T>);
+                    impl<
+                        T: ApiRpc,
+                    > tonic::server::UnaryService<
+                        super::super::auth::SendEmailVerificationCodeRequest,
+                    > for SendEmailVerificationCodeSvc<T> {
+                        type Response = ();
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<
+                                super::super::auth::SendEmailVerificationCodeRequest,
+                            >,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as ApiRpc>::send_email_verification_code(&inner, request)
+                                    .await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = SendEmailVerificationCodeSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/api.ApiRpc/VerifyEmailCode" => {
+                    #[allow(non_camel_case_types)]
+                    struct VerifyEmailCodeSvc<T: ApiRpc>(pub Arc<T>);
+                    impl<
+                        T: ApiRpc,
+                    > tonic::server::UnaryService<
+                        super::super::auth::VerifyEmailCodeRequest,
+                    > for VerifyEmailCodeSvc<T> {
+                        type Response = super::super::general::IsOkResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<
+                                super::super::auth::VerifyEmailCodeRequest,
+                            >,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as ApiRpc>::verify_email_code(&inner, request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = VerifyEmailCodeSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(

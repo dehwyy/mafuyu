@@ -25,13 +25,13 @@
   </div>
 </article>
 
-<style>
+<style lang="scss">
   .wrapper {
     @apply w-32 h-32 object-cover rounded-full relative overflow-hidden flex;
     @apply after:bg-black after:opacity-40 after:w-full after:h-full after:absolute;
   }
   .profile-image {
-    @apply w-full h-full absolute top-0 left-0;
+    @apply w-full h-full absolute top-0 left-0 object-cover;
     -webkit-user-drag: none;
   }
 </style>

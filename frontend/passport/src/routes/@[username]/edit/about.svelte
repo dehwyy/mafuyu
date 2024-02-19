@@ -12,12 +12,13 @@
   import Datepicker from "$lib/components/form/datepicker.svelte"
 
   import InputWithLabel from "$lib/components/form/input.svelte"
-  import { Toasts } from "$lib/utils/toast"
+  import { useEditUser } from "$lib/query/user"
+  import { DevFallbackImages } from "$lib/const"
+
   export let location = ""
   let initialLocation = location
 
-  export let photo =
-    "https://sun9-28.userapi.com/impg/nfm26MjdU4tRW3N-OwRaiLh996CjCTLh0vu8Dg/ENC1jP7-KJw.jpg?size=1347x1346&quality=95&sign=ed76ada3e9318d6d216d6b845421f402&type=album"
+  export let photo = DevFallbackImages.HorizontalOriented as string
   let initialPhoto = photo
 
   export let username: string
@@ -34,54 +35,44 @@
 
   let is_datepicker_open = false
 
-  const SaveAll = useMutation(
-    async () => {
-      const user_id = $authed_user_store?.id
-      if (user_id === undefined) {
-        window.location.href = "/"
-      }
+  const editUserMutation = useEditUser()
 
-      authed_user_store.set({
-        id: user_id!,
-        username,
-      })
+  const Save = async () => {
+    const user_id = $authed_user_store?.id
+    if (user_id === undefined) {
+      window.location.href = "/"
+    }
 
-      dyn_user_store.set({
-        picture: photo,
-        pseudonym,
-      })
+    authed_user_store.set({
+      id: user_id!,
+      username,
+    })
 
-      const { response, ok, status } = await Routes["user/edit"].fetch({
-        userId: user_id!,
-        username,
-        pseudonym,
-        bio,
-        location,
-        birthday: undefined,
-        picture: photo,
-        languages: selected_languages,
-      })
+    await $editUserMutation.mutateAsync({
+      userId: user_id!,
+      username,
+      location,
+      picture: photo,
+      pseudonym,
+      bio,
+      birthday: undefined,
+      languages: selected_languages,
+    })
 
-      if (!ok) {
-        Toasts.error(`Failed to save changes. ${status} ${(response as any).message || ""}`)
-        return
-      }
+    if ($editUserMutation.isError) {
+      return
+    }
 
-      Toasts.success("Saved ")
+    initialUsername = username
+    initialPseudonym = pseudonym
+    initialSelectedLanguages = [...selected_languages]
+    initialBio = bio
+    initialLocation = location
+    initialPhoto = photo
 
-      initialUsername = username
-      initialPseudonym = pseudonym
-      initialSelectedLanguages = [...selected_languages]
-      initialBio = bio
-      initialLocation = location
-      initialPhoto = photo
+    history.replaceState(null, "", "/@" + username)
+  }
 
-      history.replaceState(null, "", "/@" + username)
-    },
-    {
-      mutationKey: ["edit.user"],
-    },
-  )
   const DiscardAll = () => {
     console.log(selected_languages, initialSelectedLanguages)
     pseudonym = initialPseudonym
@@ -94,7 +85,7 @@
   $: has_changes =
     username !== initialUsername ||
     pseudonym !== initialPseudonym ||
-    initialPhoto !== photo ||
+    photo !== initialPhoto ||
     location !== initialLocation ||
     bio !== initialBio ||
     JSON.stringify(selected_languages) !== JSON.stringify(initialSelectedLanguages)
@@ -102,7 +93,7 @@
 
 <section class="col-span-2 flex flex-col gap-y-5 settings px-5">
   <div class={`${has_changes ? "bottom-5" : "-bottom-20"} fixed self-end  z-10 -mr-6 transition-all duration-200`}>
-    <button on:click={() => $SaveAll.mutate()} class="w-[50px] h-[50px] variant-glass-success btn rounded-full px-3 border border-success-500">
+    <button on:click={() => Save()} class="w-[50px] h-[50px] variant-glass-success btn rounded-full px-3 border border-success-500">
       {@html CheckIconRaw}
     </button>
   </div>
