@@ -21,6 +21,16 @@ impl Grpc {
 
         Command::new(pnpm).arg("ts").output().await.unwrap();
     }
+
+    async fn go() {
+        let pnpm = Executable::get_pnpm();
+        let cmd = |file: &str| {
+            Command::new(&pnpm).arg("exec")
+                .args(["protoc", "--go_out=gen", "--go-grpc_out=gen", "--experimental_allow_proto3_optional", "--go_opt=paths=source_relative",  "--go-grpc_opt=paths=source_relative", "--proto_path=protos", file]).spawn().unwrap().wait_with_output()
+        };
+
+        cmd("protos/api/mailer.proto").await.unwrap();
+    }
 }
 
 pub async fn grpc() {
@@ -31,4 +41,5 @@ pub async fn grpc() {
 
     Grpc::rust().await;
     Grpc::ts().await;
+    Grpc::go().await;
 }

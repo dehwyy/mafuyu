@@ -5,10 +5,9 @@ fn is_windows() -> bool {
 pub struct Executable;
 impl Executable {
     pub fn get_pnpm() -> String {
-        if is_windows() {
-            "pnpm.cmd".to_string()
-        } else {
-            "pnpm".to_string()
+        match is_windows() {
+            true => "pnpm.cmd".to_string(),
+            false => "pnpm".to_string(),
         }
     }
 }
