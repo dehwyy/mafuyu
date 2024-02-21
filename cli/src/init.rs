@@ -31,23 +31,26 @@ impl Init {
         {
             let mut env_f = File::options().read(true).open(".env.example").await.expect("cannot open .env.example");
             let mut buf: Vec<u8> = vec!();
-            env_f.read(&mut buf).await.expect("cannot read from .env.example");;
+            env_f.read_to_end(&mut buf).await.expect("cannot read from .env.example");
+            info!("env example: {}", String::from_utf8_lossy(&buf));
             let mut f = Self::create_rw_file(".env").await;
             f.write(&buf).await.expect("cannot write to .env file");
+            f.flush().await.expect("cannot flush .env file");
         }
         {
             let mut env_hosts_f = File::options().read(true).open(".env.hosts.example").await.expect("cannot open .env.hosts.example");
             let mut buf: Vec<u8> = vec!();
-            env_hosts_f.read(&mut buf).await.expect("cannot read from .env.hosts.example");;
+            env_hosts_f.read_to_end(&mut buf).await.expect("cannot read from .env.hosts.example");
             let mut f = Self::create_rw_file(".env.hosts").await;
             f.write(&buf).await.expect("cannot write to .env.hosts file");
+            f.flush().await.expect("cannot flush .env.hosts file");
         }
 
     }
 }
 
 pub async fn init() {
-    Init::pnpm_install().await;
+    // Init::pnpm_install().await;
     Init::create_necessary_dirs().await;
     Init::create_necessary_files().await;
 }
