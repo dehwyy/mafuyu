@@ -1,7 +1,7 @@
 use http::HeaderMap;
 use tonic::body::BoxBody;
-use super::middleware_func::{MiddlewareFunc, MiddlewareFuncResponse};
-use super::header_tools::Cookie;
+use super::{MiddlewareFunc, MiddlewareFuncResponse};
+use crate::middleware::tools::Cookie;
 
 use makoto_grpc::{COOKIE_ACCESS_TOKEN_KEY, COOKIE_REFRESH_TOKEN_KEY, METADATA_ACCESS_TOKEN_KEY, METADATA_REFRESH_TOKEN_KEY};
 

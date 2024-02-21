@@ -3,6 +3,7 @@ mod interceptors;
 mod middleware;
 
 use interceptors::remove_keep_alive::RemoveKeepAliveHeaderInterceptor;
+use middleware::func::set_auth_cookies::SetTokensCookies;
 
 use std::str::FromStr;
 use std::time::Duration;
@@ -47,7 +48,7 @@ async fn main() -> makoto_lib::Result<()> {
         .max_age(Duration::from_secs(5))
         .allow_credentials(AllowCredentials::yes());
 
-    let set_tokens_cookies = middleware::set_tokens_cookies::SetTokensCookies::new();
+    let set_tokens_cookies = SetTokensCookies::new();
 
     let app_layer = tower::ServiceBuilder::new()
         .timeout(Duration::from_secs(15))

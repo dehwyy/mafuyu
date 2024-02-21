@@ -12,7 +12,7 @@ impl Default for Cookie {
         Self {
             key: "".to_string(),
             value: "".to_string(),
-            http_only: true,
+            http_only: false,
             max_age: None
         }
     }

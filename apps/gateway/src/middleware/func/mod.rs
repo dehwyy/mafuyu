@@ -1,3 +1,5 @@
+pub mod set_auth_cookies;
+
 use std::future::Future;
 use std::pin::Pin;
 use tonic::body::BoxBody;

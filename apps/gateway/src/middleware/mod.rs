@@ -5,12 +5,10 @@ use std::future::Future;
 use std::ops::Deref;
 use tonic::body::BoxBody;
 
-pub mod set_tokens_cookies;
-pub mod header_tools;
-mod middleware_func;
-use middleware_func::MiddlewareFunctionStatic;
+pub mod tools;
+pub mod func;
 
-use makoto_logger::info;
+use func::{MiddlewareFunc, MiddlewareFunctionStatic};
 
 #[derive(Clone)]
 pub struct BaseMiddlewareLayer {
@@ -63,7 +61,6 @@ impl<S> Service<hyper::Request<Body>> for BaseMiddleware<S>
         let func = self.func;
 
         Box::pin(async move {
-            // Do extra async work here...
             let mut response: Self::Response = inner.call(req).await?;
             
             let response = func.call(response).await;
