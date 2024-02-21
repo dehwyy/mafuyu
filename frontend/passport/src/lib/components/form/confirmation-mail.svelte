@@ -14,10 +14,7 @@
 
   const SendEmail = () => {
     $sendConfirmationEmail.mutate(email)
-
-    setTimeout(() => {
-      email_send_times += 1
-    }, 1000)
+    email_send_times += 1
   }
 
   const ConfirmEmail = () => {

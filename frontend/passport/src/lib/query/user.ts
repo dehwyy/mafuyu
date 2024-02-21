@@ -21,8 +21,6 @@ export const useCurrentUserInfo = (userId: string | undefined) => {
         },
       })
 
-      console.log(r)
-
       return r.response
     },
   })

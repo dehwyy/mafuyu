@@ -8,10 +8,11 @@
   import css from "highlight.js/lib/languages/css"
   import javascript from "highlight.js/lib/languages/javascript"
   import typescript from "highlight.js/lib/languages/typescript"
-  import { QueryClient, QueryClientProvider } from "@sveltestack/svelte-query"
+  import { QueryClientProvider } from "@sveltestack/svelte-query"
   import type { AfterNavigate } from "@sveltejs/kit"
   import { afterNavigate, onNavigate } from "$app/navigation"
   import { SvelteToast } from "@zerodevx/svelte-toast"
+  import { createQueryClient } from "$lib/query-client"
 
   // skeleton stores
   initializeStores()
@@ -56,8 +57,7 @@
     body!.style.overflow = v.length ? "hidden" : "auto"
   })
 
-  // Create a client
-  const queryClient = new QueryClient()
+  const queryClient = createQueryClient()
 
   // Before this line, everything is INIT
   import Header from "$lib/components/header/header.svelte"

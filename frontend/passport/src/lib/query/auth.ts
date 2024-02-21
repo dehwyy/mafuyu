@@ -46,7 +46,10 @@ export const useConfirmEmailByCode = () => {
       onSuccess: is_ok => {
         if (is_ok) {
           Toasts.success("Email was confirmed.")
-          window.location.href = "/"
+          // for smoother transition
+          setTimeout(() => {
+            window.location.href = "/"
+          }, 1000)
         } else {
           Toasts.error("Failed to confirm email. Wrong code.")
         }

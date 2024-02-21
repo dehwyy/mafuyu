@@ -19,7 +19,6 @@ export const load: LayoutServerLoad = async ({ cookies, url, setHeaders }) => {
       },
     )
 
-    console.log(headers["x-access-token"]!)
     return {
       userId: response.userId,
       username: response.username,
