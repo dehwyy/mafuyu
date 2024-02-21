@@ -1,7 +1,6 @@
 import { ApiRpcClient } from '../dist/api.client'
 import { ChannelCredentials } from '@grpc/grpc-js'
 import { GrpcTransport } from '@protobuf-ts/grpc-transport'
-import { TwirpFetchTransport } from '@protobuf-ts/twirp-transport'
 import {
   Deferred, FinishedUnaryCall,
   MethodInfo,
@@ -13,6 +12,7 @@ import {
 } from '@protobuf-ts/runtime-rpc'
 import { MetadataKeys, GrpcErrors, GrpcCookiesKeys } from './const'
 import { Cookies } from '@sveltejs/kit/src/exports/public';
+
 
 
 const gateway_host = process.env?.GATEWAY_HOST ?? "localhost:3100"
@@ -40,8 +40,8 @@ export namespace Interceptors {
       return new WithTokensPayload(
         async () => cookies.get(GrpcCookiesKeys.AccessToken),
         async () => cookies.get(GrpcCookiesKeys.RefreshToken),
-        (token) => cookies.set(GrpcCookiesKeys.AccessToken, token, {path: '/', httpOnly: true}),
-        (token) => cookies.set(GrpcCookiesKeys.RefreshToken, token, {path: '/', httpOnly: true})
+        (token) => cookies.set(GrpcCookiesKeys.AccessToken, token, {path: '/', httpOnly: false}),
+        (token) => cookies.set(GrpcCookiesKeys.RefreshToken, token, {path: '/', httpOnly: false})
       )
     }
 
@@ -124,13 +124,11 @@ export namespace Interceptors {
             }
             deferred_req.resolveAll(response)
           } catch (e) {
-            if (! (e instanceof RpcError)) {
+            if (!(e instanceof RpcError)) {
               deferred_req.resolveAll(null)
-              console.log("[NOT RPC_ERROR]: ", e)
             }
-            const err = e as RpcError
 
-            if (err.code === GrpcErrors.UNAUTHENTICATED) {
+            if ((e as RpcError).code === GrpcErrors.UNAUTHENTICATED) {
               // try to refresh
               const refresh_token = await payload.get_refresh_token()
               if (!refresh_token)  {
@@ -184,3 +182,4 @@ export namespace Interceptors {
 }
 
 
+export {RpcError, FinishedUnaryCall, RpcMetadata}

@@ -1,6 +1,7 @@
 import { GrpcWebFetchTransport } from "@protobuf-ts/grpcweb-transport"
 import { ApiRpcClient } from "../dist/api.client"
 
+
 const grpc_web_transport = new GrpcWebFetchTransport({
   baseUrl: "http://localhost:3100",
   fetchInit: {
@@ -9,3 +10,6 @@ const grpc_web_transport = new GrpcWebFetchTransport({
 })
 
 export const GrpcWebClient = new ApiRpcClient(grpc_web_transport)
+
+import { type RpcMetadata, type FinishedUnaryCall, RpcError } from "@protobuf-ts/runtime-rpc"
+export {RpcMetadata, FinishedUnaryCall, RpcError}
