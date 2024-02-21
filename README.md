@@ -1,23 +1,41 @@
 # <p style="text-align: center;">MaFuYu ❄️</p>
 
-## Techonlogies
+## Technologies
 
 - Rust
 - Typescript
-- Sveltekit
-- gRPC
+- Go
+- SvelteKit
+- gRPC (+web)
 - NATS
 - Docker
 - Caddy
 - Postgres
 - [Redb](https://github.com/cberner/redb)
-- Redis (not yet)
+- Redis
 - GORM
 - SeaORM
 
 ## Development
+ 
+There are features that work only with appropriate `env secrets`. They should be set, if you want to have these features enabled.
+### Features: 
+- OAuth2 (`Github`)
+- Email confirmation via `Gmail`
 
-### Not ready yet.
+### CLI Usage
+
+```sh
+    # init necessary files + folders 
+    task cli -- init
+    
+    # generate grpc
+    task cli -- grpc
+    
+    # run dev mode
+    task cli -- dev
+```
+
 
 ### Requirements:
 
@@ -25,5 +43,5 @@
 - [Taskfile (3+)](https://taskfile.dev)
 - [Rustc (1.76+)](https://www.rust-lang.org)
 - [Pnpm](https://pnpm.io/)
-- [Go (1.21+)](https://go.dev/)
+- [Go (1.21.2+)](https://go.dev/)
 - [Docker](https://docs.docker.com/engine/)
