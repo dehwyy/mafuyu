@@ -12,6 +12,7 @@ use makoto_grpc::errors::GrpcHandleError;
 use makoto_grpc::pkg::auth::{AuthenticationServiceResponse, SendEmailVerificationCodeRequest, VerifyEmailCodeRequest};
 use makoto_lib::errors::prelude::*;
 use makoto_lib::errors::RepositoryError;
+use makoto_logger::info;
 
 use crate::repository::credentials::{Credentials, GetCredentialsRecordBy as GetUserRecordBy};
 use crate::repository::tokens::{Tokens, GetTokenRecordBy};
@@ -125,10 +126,10 @@ impl rpc::auth_rpc_server::AuthRpc for AuthRpcServiceImplementation {
       },
     }.handle()?;
 
-     let password = user.password.unwrap_or_not_found("no password on user_model")?;
+    let password = user.password.unwrap_or_not_found("no password on user_model")?;
 
     // check password
-    if Hasher::verify(&req.password, &password).invalid_argument_error()? {
+    if !Hasher::verify(&req.password, &password).invalid_argument_error()? {
       return Err(Status::unauthenticated("invalid credentials"));
     }
 
