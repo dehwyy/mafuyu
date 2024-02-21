@@ -18,7 +18,6 @@ impl LanguagesRepo {
         let languages  = UserLanguages::find()
             .find_with_related::<Languages>(Languages).filter(user_languages::Column::UserUserId.eq(user_id.clone())).all(&self.db).await.handle()?;
 
-
         let languages: Vec<String> = languages.iter().map(|language_entity| {
             language_entity.1.iter().map(|language| language.clone().name).collect::<Vec<String>>()
         }).flatten().collect();
@@ -43,7 +42,9 @@ impl LanguagesRepo {
 
         }).collect();
 
-        user_languages::Entity::insert_many(models).exec(&self.db).await.handle()?;
+        if models.len() != 0 {
+            user_languages::Entity::insert_many(models).exec(&self.db).await.handle()?;
+        }
 
         Ok(())
     }
