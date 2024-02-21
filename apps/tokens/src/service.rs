@@ -144,7 +144,7 @@ impl TokensRpc for TokensRpcServiceImplementation {
 
         let record = self.token_repo.get_token_record(GetTokenRecordBy::RefreshToken(req.refresh_token.clone())).await.handle()?;
 
-        let access_token = match record.provider {
+        let access_token = match record.provider.clone() {
             Some(oauth2_provider) => {
                 let response = self.oauth2_client.clone().borrow_mut().refresh_the_token(oauth2::RefreshTheOAuth2TokenRequest {
                     refresh_token: req.refresh_token.clone(),
@@ -159,6 +159,8 @@ impl TokensRpc for TokensRpcServiceImplementation {
                 }).internal_error()
             }
         }?;
+
+        self.token_repo.insert_tokens(record.user_id, access_token.clone(), Some(req.refresh_token.clone()), record.provider).await.handle()?;
 
         Ok(Response::new(rpc::RefreshTheTokenResponse {
             refresh_token: req.refresh_token,
