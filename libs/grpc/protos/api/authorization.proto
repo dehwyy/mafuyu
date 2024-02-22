@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package authorization;
+option go_package = "github.com/dehwyy/mafuyu/libs/grpc/gen/api";
+
+import "api/general.proto";
+import "google/protobuf/empty.proto";
+
+service AuthorizationRpc {
+  rpc GetUserProfileScopes(GetUserProfileScopesRequest) returns (GetUserProfileScopesResponse);
+}
+
+message GetUserProfileScopesRequest {
+  string user_id = 1;
+}
+
+message GetUserProfileScopesResponse {
+  bool view_info = 1;
+  bool view_statistics = 2;
+  bool edit = 3;
+}

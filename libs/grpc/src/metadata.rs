@@ -1,6 +1,21 @@
 pub const METADATA_USER_ID_KEY: &str = "x-user-id";
 pub const METADATA_USER_ROLE_KEY: &str = "x-user-role";
 
+pub struct Metadata;
+
+impl Metadata {
+    pub fn get_user_role_and_id_from_metadata(metadata: &tonic::metadata::MetadataMap) -> Option<(UserRole, String)> {
+        let user_id = metadata.get(METADATA_USER_ID_KEY)
+            .map(|v| v.to_str().map(|s| s.to_string()));
+        let user_role = metadata.get(METADATA_USER_ROLE_KEY)
+            .map(|v| v.to_str().map(|s| s.to_string()));
+
+        match (user_id, user_role) {
+            (Some(Ok(user_id)), Some(Ok(user_role))) => Some((UserRole::from(user_role), user_id)),
+            _ => None
+        }
+    }
+}
 
 #[derive(Ord, PartialOrd, Eq, PartialEq)]
 pub enum UserRole {

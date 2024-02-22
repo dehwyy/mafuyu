@@ -2,6 +2,7 @@
 members = [
   "apps/gateway",
   "apps/auth",
+  "apps/authorization",
   "apps/tokens-async",
   "apps/tokens",
   "apps/oauth2",

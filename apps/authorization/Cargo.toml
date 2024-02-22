@@ -1,0 +1,18 @@
+[package]
+name = "authorization"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tonic = "0.10.2"
+prost = "0.12.3"
+tokio = { version = "1.35.0", features = ["macros", "rt-multi-thread"] }
+sea-orm = { version = "0.12.9", features = [ "sqlx-postgres", "runtime-tokio-rustls", "with-uuid", "with-time", "macros" ] }
+uuid = { version = "1.6.1", features = ["v4"] }
+redis = { version = "0.24.0",  features = ["tokio-comp"] }
+
+makoto_grpc = {path = "../../libs/grpc"}
+makoto_lib = {path = "../../libs/utils"}
+makoto_config = {path = "../../libs/config"}
+makoto_logger = {path = "../../libs/log"}
+makoto_db = {path = "../../libs/db"}

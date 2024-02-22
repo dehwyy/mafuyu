@@ -3,12 +3,13 @@ use tonic::{Request, Response, Status};
 
 use makoto_grpc::{pkg as grpc, Tools};
 use grpc::api::api_rpc_server;
-use grpc::{auth, tokens, oauth2, passport, integrations, user, cdn, general};
+use grpc::{auth, tokens, oauth2, passport, integrations, user, cdn, general, authorization};
 use makoto_logger::info;
 
 
 pub struct ApiRpcServiceImplementation<T = tonic::transport::Channel> {
   auth_client: auth::auth_rpc_client::AuthRpcClient<T>,
+  authorization_client: authorization::authorization_rpc_client::AuthorizationRpcClient<T>,
   tokens_client: tokens::tokens_rpc_client::TokensRpcClient<T>,
   oauth2_client: oauth2::o_auth2_rpc_client::OAuth2RpcClient<T>,
   passport_client: passport::passport_rpc_client::PassportRpcClient<T>,
@@ -25,6 +26,7 @@ impl ApiRpcServiceImplementation {
 
     Self {
       auth_client: clients.auth_client.unwrap(),
+      authorization_client: clients.authorization_client.unwrap(),
       tokens_client: clients.tokens_client.unwrap(),
       oauth2_client: clients.oauth2_client.unwrap(),
       passport_client: clients.passport_client.unwrap(),
@@ -195,5 +197,9 @@ impl api_rpc_server::ApiRpc for ApiRpcServiceImplementation {
   async fn get_user(&self, req: Request<user::GetUserRequest>) -> Result<Response<user::GetUserResponse>, Status> {
     info!("get_user: {:?}", req.metadata());
     self.user_client.clone().borrow_mut().get_user(req).await
+  }
+
+  async fn get_user_profile_scopes(&self, req: Request<authorization::GetUserProfileScopesRequest>) -> Result<Response<authorization::GetUserProfileScopesResponse>, Status> {
+    self.authorization_client.clone().borrow_mut().get_user_profile_scopes(req).await
   }
 }

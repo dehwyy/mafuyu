@@ -8,6 +8,7 @@ import "google/protobuf/empty.proto";
 import "api/general.proto";
 import "api/oauth2.proto";
 import "api/auth.proto";
+import "api/authorization.proto";
 import "api/integrations.proto";
 import "api/tokens.proto";
 import "api/passport.proto";
@@ -36,4 +37,7 @@ service ApiRpc {
   // User
   rpc EditUser(user.EditUserRequest) returns (google.protobuf.Empty);
   rpc GetUser(user.GetUserRequest) returns (user.GetUserResponse);
+
+  // Authorization
+  rpc GetUserProfileScopes(authorization.GetUserProfileScopesRequest) returns (authorization.GetUserProfileScopesResponse);
 }
