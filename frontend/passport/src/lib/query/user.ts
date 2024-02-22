@@ -1,29 +1,37 @@
-import { useMutation, useQuery, useQueryClient } from "@sveltestack/svelte-query"
+import { useMutation, useQuery, useQueryClient, type UseQueryOptions } from "@sveltestack/svelte-query"
 import { GrpcWebClient } from "@makoto/grpc/web"
 import { Toasts } from "$lib/utils/toast"
-
+import { USER_PROFILE_KEY } from "$lib/query/profile"
+import { type GrpcClient, GrpcWeb } from "$lib/query/grpc"
+import { navigating } from "$app/stores"
 export const CURRENT_USER_KEY = "current_user_info"
 
-export const useCurrentUserInfo = (userId: string | undefined) => {
-  return useQuery({
+export const getCurrentUserInfoQuery = (userId: string | undefined, grpc: GrpcClient = GrpcWeb(Infinity)) => {
+  return {
     queryKey: [CURRENT_USER_KEY, userId],
     retry: 1,
-    staleTime: 1000 * 10,
+    staleTime: grpc.staleTime,
     refetchOnWindowFocus: false,
     enabled: !!userId,
     queryFn: async () => {
       if (!userId) return null
 
-      const r = await GrpcWebClient.getUser({
-        login: {
-          oneofKind: "userId",
-          userId,
+      const r = await grpc.client.getUser(
+        {
+          login: {
+            oneofKind: "userId",
+            userId,
+          },
         },
-      })
+        { interceptors: grpc.interceptors },
+      )
 
       return r.response
     },
-  })
+  } satisfies UseQueryOptions
+}
+export const useCurrentUserInfo = (userId: string | undefined) => {
+  return useQuery(getCurrentUserInfoQuery(userId))
 }
 
 interface EditUserPayload {
@@ -60,9 +68,12 @@ export const useEditUser = () => {
       await r
     },
     {
-      onSuccess: (_, payload) => {
+      onSuccess: async (_, payload) => {
         Toasts.success("Saved ")
-        return query_client.invalidateQueries([CURRENT_USER_KEY, payload.userId])
+        if (!payload.username) {
+          query_client.invalidateQueries([CURRENT_USER_KEY, payload.userId])
+          query_client.invalidateQueries(USER_PROFILE_KEY)
+        }
       },
       onError: error => {
         Toasts.error(`Failed to save changes. ${error}`)

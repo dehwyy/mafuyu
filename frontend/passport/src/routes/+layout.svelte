@@ -8,11 +8,11 @@
   import css from "highlight.js/lib/languages/css"
   import javascript from "highlight.js/lib/languages/javascript"
   import typescript from "highlight.js/lib/languages/typescript"
-  import { QueryClientProvider } from "@sveltestack/svelte-query"
+  import { hydrate, QueryClientProvider } from "@sveltestack/svelte-query"
   import type { AfterNavigate } from "@sveltejs/kit"
   import { afterNavigate, onNavigate } from "$app/navigation"
   import { SvelteToast } from "@zerodevx/svelte-toast"
-  import { createQueryClient } from "$lib/query-client"
+  import { queryClient } from "$lib/query-client"
 
   // skeleton stores
   initializeStores()
@@ -57,14 +57,13 @@
     body!.style.overflow = v.length ? "hidden" : "auto"
   })
 
-  const queryClient = createQueryClient()
-
   // Before this line, everything is INIT
   import Header from "$lib/components/header/header.svelte"
-  import type { LayoutData } from "./$types"
   import { authed_user_store } from "$lib/stores/user"
 
-  export let data: LayoutData
+  export let data: import("./$types").LayoutData
+
+  hydrate(queryClient, data.dehydrateState)
 
   authed_user_store.set(
     data.username

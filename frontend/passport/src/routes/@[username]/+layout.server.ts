@@ -1,45 +1,19 @@
 import type { LayoutServerLoad } from "./$types"
-import { GrpcClient, Interceptors } from "@makoto/grpc"
-import { redirect } from "@sveltejs/kit"
+import GrpcServerClient from "$lib/query/grpc/server"
+import { queryClient } from "$lib/query-client"
+import { getUserProfileQuery } from "$lib/query/profile"
+import { dehydrate } from "@sveltestack/svelte-query"
 
-export const load: LayoutServerLoad = async ({ url, cookies }) => {
-  const username = url.pathname.split("/")[1].slice(1)
+export const load: LayoutServerLoad = async ({ cookies, params }) => {
+  const username = params.username
 
-  if (!username) return {}
+  await queryClient.prefetchQuery({
+    ...getUserProfileQuery(username, GrpcServerClient(0, cookies)),
+  })
 
-  let error_occurred = false
-  try {
-    const { response } = await GrpcClient.getUser(
-      {
-        login: {
-          oneofKind: "username",
-          username,
-        },
-      },
-      {
-        interceptors: [Interceptors.WithTokens(Interceptors.WithTokensPayload.CreateForSvelteKit(cookies))],
-        timeout: 5000, // secs
-      },
-    )
-
-    return {
-      userId: response.userId,
-      username: response.username,
-      location: response.location,
-      birthday: response.birthday,
-      pseudonym: response.pseudonym,
-      bio: response.bio,
-      picture: response.picture,
-      languages: response.languages,
-      friends: response.friends,
-      followers: response.followers,
-    }
-  } catch (e) {
-    console.log(e)
-    error_occurred = true
-  }
-
-  if (error_occurred) {
-    redirect(307, "/")
-  }
+  return structuredClone({
+    dehydrateState: dehydrate(queryClient, {
+      dehydrateQueries: true,
+    }),
+  })
 }

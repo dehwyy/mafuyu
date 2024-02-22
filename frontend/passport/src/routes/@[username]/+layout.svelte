@@ -1,11 +1,18 @@
 <script lang="ts">
-  import { authed_user_store, dyn_user_store } from "$lib/stores/user"
+  import { authed_user_store } from "$lib/stores/user"
   import { page } from "$app/stores"
   import { ListBox, ListBoxItem } from "@skeletonlabs/skeleton"
   import UserPreview from "$lib/components/user-preview.svelte"
   import { CreateNavigation, DevFallbackImages } from "$lib/const"
   import useSyncedNavigation from "$lib/hooks/use-synced-navigation"
   import { useCurrentUserInfo } from "$lib/query/user"
+  import { useUserProfile } from "$lib/query/profile"
+  import { useHydrate } from "@sveltestack/svelte-query"
+
+  export let data: import("./$types").LayoutData
+  useHydrate(data.dehydrateState)
+
+  $: user = useUserProfile($page.params.username!)
 
   $: navigation = useSyncedNavigation({
     base_route: "/@[username]",
@@ -13,24 +20,25 @@
     navigations: {
       "/": {
         placeholder: "Overview",
+        isActive: $user.data?.scopes.viewInfo ?? false,
       },
       "/statistics": {
         placeholder: "Statistics",
+        isActive: $user.data?.scopes.viewStatistics ?? false,
       },
       "/edit": {
         placeholder: "Settings",
+        isActive: $user.data?.scopes.edit ?? false,
       },
     },
   })
 
-  export let data: import("./$types").LayoutData
-  $: is_current_user = data.userId === $authed_user_store?.id
+  $: is_current_user = $user.data?.userId === $authed_user_store?.id
 
   $: current_user = useCurrentUserInfo(is_current_user ? $authed_user_store?.id : undefined)
-
-  $: username = (is_current_user && $authed_user_store?.username) || (data.username as string)
-  $: user_preview_image = (is_current_user && $current_user?.data?.picture) || data.picture
-  $: user_preview_pseudonym = (is_current_user && $current_user?.data?.pseudonym) || data.pseudonym
+  $: username = (is_current_user && $authed_user_store?.username) || ($user.data?.username as string)
+  $: user_preview_image = (is_current_user && $current_user?.data?.picture) || $user.data?.picture
+  $: user_preview_pseudonym = (is_current_user && $current_user?.data?.pseudonym) || $user.data?.pseudonym
 </script>
 
 <div class="page-layout-wrapper">

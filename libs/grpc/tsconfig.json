@@ -6,9 +6,9 @@
     "sourceMap": false,
     "outDir": "./dist",
     "target": "ESNext",
-    "lib": ["ES2015.Reflect", "ES2015.Proxy"],
+    "lib": ["ES2015.Reflect", "ES2015.Proxy", "DOM"],
     "moduleResolution": "node",
     "skipLibCheck": true,
-    "declaration": true,
+    "declaration": true
   }
 }

@@ -10,10 +10,13 @@
   import { Routes } from "$lib/utils/typed-fetch"
   import { authed_user_store, dyn_user_store } from "$lib/stores/user"
   import Datepicker from "$lib/components/form/datepicker.svelte"
-
+  import { replaceState, invalidateAll, pushState } from "$app/navigation"
   import InputWithLabel from "$lib/components/form/input.svelte"
   import { useEditUser } from "$lib/query/user"
   import { DevFallbackImages } from "$lib/const"
+  import { useUserProfile } from "$lib/query/profile"
+  import { page } from "$app/stores"
+  import { Toasts } from "$lib/utils/toast"
 
   export let location = ""
   let initialLocation = location
@@ -36,21 +39,25 @@
   let is_datepicker_open = false
 
   const editUserMutation = useEditUser()
+  const user = useUserProfile($page.params.username)
 
   const Save = async () => {
-    const user_id = $authed_user_store?.id
-    if (user_id === undefined) {
-      window.location.href = "/"
+    const userId = $user.data?.userId
+    if (!userId) {
+      Toasts.error("[INTERNAL]: <br/> User_id not found.")
+      return
     }
 
-    authed_user_store.set({
-      id: user_id!,
-      username,
-    })
+    if (userId === $authed_user_store?.id) {
+      authed_user_store.set({
+        id: userId,
+        username,
+      })
+    }
 
     await $editUserMutation.mutateAsync({
-      userId: user_id!,
-      username,
+      userId,
+      username: initialUsername !== username ? username : undefined,
       location,
       picture: photo,
       pseudonym,
@@ -58,6 +65,11 @@
       birthday: undefined,
       languages: selected_languages,
     })
+
+    pushState("/@" + username + "/edit", "")
+    if (username !== initialUsername) {
+      window.location.reload()
+    }
 
     if ($editUserMutation.isError) {
       return
@@ -69,8 +81,6 @@
     initialBio = bio
     initialLocation = location
     initialPhoto = photo
-
-    history.replaceState(null, "", "/@" + username)
   }
 
   const DiscardAll = () => {

@@ -4,7 +4,8 @@
 
   import GoogleIconRaw from "$lib/assets/google.svg?raw"
   import GithubIconRaw from "$lib/assets/github.svg?raw"
-  import type { LayoutData } from "../$types"
+  import { useUserProfile } from "$lib/query/profile"
+  import { page } from "$app/stores"
 
   const Integrations = [
     { icon: GoogleIconRaw, text: "Connect", is_connected: false, data: "" },
@@ -12,7 +13,8 @@
     { icon: GithubIconRaw, text: "Connect", is_connected: false, data: "" },
   ]
 
-  export let data: LayoutData
+  const user = useUserProfile($page.params.username)
+  const clone = $user.data
 </script>
 
 <div class="flex flex-col gap-y-5">
@@ -37,12 +39,12 @@
     <svelte:fragment slot="heading">About</svelte:fragment>
     <svelte:fragment slot="content">
       <About
-        username={data?.username || ""}
-        pseudonym={data.pseudonym}
-        photo={data.picture}
-        bio={data.bio}
-        selected_languages={data.languages}
-        location={data.location} />
+        username={clone?.username || ""}
+        pseudonym={clone?.pseudonym}
+        photo={clone?.picture}
+        bio={clone?.bio}
+        selected_languages={clone?.languages}
+        location={clone?.location} />
     </svelte:fragment>
   </SlideWindow>
 </div>

@@ -1,6 +1,7 @@
 type Path = string
 interface PathValue {
   placeholder: string
+  isActive?: boolean | undefined
 }
 
 interface Args {
@@ -22,10 +23,13 @@ function UseSyncedNavigation({ base_route, current_route, navigations }: Args) {
   return {
     current_value: get_current_value(),
     iter: () => {
-      return Object.keys(navigations).map(key => ({
-        value: key,
-        placeholder: navigations[key].placeholder,
-      }))
+      return Object.keys(navigations)
+        .map(key => ({
+          value: key,
+          placeholder: navigations[key].placeholder,
+          _active: navigations[key].isActive ?? true,
+        }))
+        .filter(v => v._active)
     },
   }
 }
