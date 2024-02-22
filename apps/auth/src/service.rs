@@ -5,6 +5,7 @@ use rand::Rng;
 use tonic::{Status, Response, Request};
 use uuid::Uuid;
 
+use makoto_grpc::metadata::{UserRole,METADATA_USER_ROLE_KEY};
 use makoto_grpc::pkg::auth as rpc;
 use makoto_grpc::pkg::{tokens, passport, mailer, user};
 use makoto_grpc::pkg::general::IsOkResponse;
@@ -12,7 +13,6 @@ use makoto_grpc::errors::GrpcHandleError;
 use makoto_grpc::pkg::auth::{AuthenticationServiceResponse, SendEmailVerificationCodeRequest, VerifyEmailCodeRequest};
 use makoto_lib::errors::prelude::*;
 use makoto_lib::errors::RepositoryError;
-use makoto_logger::info;
 
 use crate::repository::credentials::{Credentials, GetCredentialsRecordBy as GetUserRecordBy};
 use crate::repository::tokens::{Tokens, GetTokenRecordBy};
@@ -169,15 +169,18 @@ impl rpc::auth_rpc_server::AuthRpc for AuthRpcServiceImplementation {
     let token_model = self.tokens_repo.get_token_record(GetTokenRecordBy::UserId(user_id.clone())).await.handle()?;
     let user = self.credentials_repo.get_user(GetUserRecordBy::UserId(user_id)).await.handle()?;
 
-    Ok(Response::new(
+    let mut r = Response::new(
       AuthenticationServiceResponse {
         access_token: req.token,
         refresh_token: token_model.refresh_token.unwrap_or_default(),
         user_id: user.id.into(),
         username: user.username
       }
-    ))
+    );
 
+    r.metadata_mut().insert(METADATA_USER_ROLE_KEY, UserRole::from(user.role).to_string().parse().invalid_argument_error()?);
+
+    Ok(r)
   }
 
   async fn sign_out(&self, req: Request<rpc::SignOutRequest>) -> Result<Response<IsOkResponse>, Status> {

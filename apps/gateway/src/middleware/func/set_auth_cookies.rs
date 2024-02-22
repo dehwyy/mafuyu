@@ -1,7 +1,6 @@
-use http::HeaderMap;
 use tonic::body::BoxBody;
 use super::{MiddlewareFunc, MiddlewareFuncResponse};
-use crate::middleware::tools::Cookie;
+use crate::middleware::tools::{Cookie, Headers};
 
 use makoto_grpc::{COOKIE_ACCESS_TOKEN_KEY, COOKIE_REFRESH_TOKEN_KEY, METADATA_ACCESS_TOKEN_KEY, METADATA_REFRESH_TOKEN_KEY};
 
@@ -12,32 +11,13 @@ impl SetTokensCookies {
     pub fn new() -> &'static Self {
         &Self
     }
-
-    fn extract_header(headers: &mut HeaderMap, key: &str) -> Option<String> {
-        if let Some(Some(v)) = headers.get(key).map(|v| {
-            let s = v.to_str();
-            match s {
-                Ok(s) => {
-                    match s.len() {
-                        0 => None,
-                        _ => Some(s.to_string())
-                    }
-                },
-                Err(_) => return None
-            }
-        }) {
-            return Some(v)
-        };
-
-        return None
-    }
 }
 
 impl MiddlewareFunc for SetTokensCookies {
-    fn call(&'static self, mut req: hyper::Response<BoxBody>) -> MiddlewareFuncResponse{
+    fn after_call(&'static self, mut req: hyper::Response<BoxBody>) -> MiddlewareFuncResponse{
         Box::pin(async move {
             let mut headers = req.headers_mut();
-            if let Some(access_token) = Self::extract_header(&mut headers, METADATA_ACCESS_TOKEN_KEY) {
+            if let Some(access_token) = Headers::extract_header(&mut headers, METADATA_ACCESS_TOKEN_KEY) {
                 headers.append(Cookie::header_key(), Cookie{
                     key: COOKIE_ACCESS_TOKEN_KEY.to_string(),
                     value: access_token,
@@ -45,7 +25,7 @@ impl MiddlewareFunc for SetTokensCookies {
                 }.new());
             }
 
-            if let Some(refresh_token) = Self::extract_header(&mut headers, METADATA_REFRESH_TOKEN_KEY) {
+            if let Some(refresh_token) = Headers::extract_header(&mut headers, METADATA_REFRESH_TOKEN_KEY) {
                 headers.append(Cookie::header_key(), Cookie{
                     key: COOKIE_REFRESH_TOKEN_KEY.to_string(),
                     value: refresh_token,

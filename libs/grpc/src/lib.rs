@@ -1,5 +1,6 @@
 pub mod pkg;
 pub mod errors;
+pub mod metadata;
 
 use tonic::transport::Channel;
 use pkg::auth::auth_rpc_client::{self, AuthRpcClient};
@@ -47,6 +48,11 @@ pub struct RpcClients<T = Channel, E = tonic::transport::Error>  {
 }
 
 impl RpcClients {
+    pub async fn get_auth_client() -> Result<AuthRpcClient<Channel>, tonic::transport::Error> {
+        let url = format!("http://{}", makoto_config::hosts::Hosts::new().auth);
+        auth_rpc_client::AuthRpcClient::connect(url).await
+    }
+
     pub async fn get_all_client() -> Self {
         let hosts = makoto_config::hosts::Hosts::new();
 
@@ -72,5 +78,4 @@ impl RpcClients {
             mailer_client
         }
     }
-
 }

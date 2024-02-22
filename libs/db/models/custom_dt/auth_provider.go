@@ -23,5 +23,5 @@ func (provider *AuthProvider) Scan(value interface{}) error {
 }
 
 func (provider *AuthProvider) Value() (driver.Value, error) {
-	return provider, nil
+	return *provider, nil
 }

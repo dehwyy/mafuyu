@@ -12,12 +12,12 @@ use func::{MiddlewareFunc, MiddlewareFunctionStatic};
 
 #[derive(Clone)]
 pub struct BaseMiddlewareLayer {
-    func: MiddlewareFunctionStatic
+    middleware_func: MiddlewareFunctionStatic,
 }
 
 impl BaseMiddlewareLayer {
-    pub fn new(func: MiddlewareFunctionStatic) -> Self {
-        Self { func }
+    pub fn new(middleware_func: MiddlewareFunctionStatic) -> Self {
+        Self { middleware_func }
     }
 }
 
@@ -29,7 +29,7 @@ where S: Service<hyper::Request<Body>>
     fn layer(&self, service: S) -> Self::Service {
         BaseMiddleware {
             inner: service ,
-            func: self.func
+            middleware_func: self.middleware_func
         }
     }
 }
@@ -38,7 +38,7 @@ where S: Service<hyper::Request<Body>>
 pub struct BaseMiddleware<S>
 where S: Service<hyper::Request<Body>> {
     inner: S,
-    func: MiddlewareFunctionStatic
+    middleware_func: MiddlewareFunctionStatic,
 }
 
 impl<S> Service<hyper::Request<Body>> for BaseMiddleware<S>
@@ -58,12 +58,14 @@ impl<S> Service<hyper::Request<Body>> for BaseMiddleware<S>
         let clone = self.inner.clone();
         let mut inner = std::mem::replace(&mut self.inner, clone);
 
-        let func = self.func;
+        let middleware_func = self.middleware_func;
 
         Box::pin(async move {
-            let mut response: Self::Response = inner.call(req).await?;
+            let req = middleware_func.before_call(req).await;
+
+            let response: Self::Response = inner.call(req).await?;
             
-            let response = func.call(response).await;
+            let response = middleware_func.after_call(response).await;
 
             Ok(response)
         })

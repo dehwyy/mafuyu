@@ -27,9 +27,10 @@ type User struct {
 type UserCredentials struct {
 	ID         uuid.UUID `gorm:"type:uuid;primary_key;default:gen_random_uuid()"` // @see https://www.postgresql.org/docs/current/functions-uuid
 	ProviderId string
-	Username   string `gorm:"not null;uniqueIndex"`
-	Email      string `gorm:"unique"`
-	Password   string // hashed password
+	Username   string             `gorm:"not null;uniqueIndex"`
+	Email      string             `gorm:"unique"`
+	Password   string             // hashed password
+	Role       custom_dt.UserRole `gorm:"default:2;not null"`
 	CreatedAt  time.Time
 
 	// relations
@@ -39,11 +40,11 @@ type UserCredentials struct {
 }
 
 type UserTokens struct {
-	ID           uuid.UUID `gorm:"type:uuid;primary_key;default:gen_random_uuid()"`
-	UserId       uuid.UUID `gorm:"not null;index"` // foreign key
-	Provider     custom_dt.AuthProvider
+	ID           uuid.UUID      `gorm:"type:uuid;primary_key;default:gen_random_uuid()"`
+	UserId       uuid.UUID      `gorm:"not null;index"` // foreign key
 	AccessTokens pq.StringArray `gorm:"type:text[]"`
-	RefreshToken string         // nullable (as some oauth2 apps doesn't provide refresh_token (for example, GitHub)
+	Provider     custom_dt.AuthProvider
+	RefreshToken string // nullable (as some oauth2 apps doesn't provide refresh_token (for example, GitHub)
 }
 
 type UserIntegrations struct {

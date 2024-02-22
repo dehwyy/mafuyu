@@ -36,3 +36,26 @@ impl Cookie {
         http::HeaderValue::from_str(&s).expect("cannot create `Set-Cookie` value from `str`")
     }
 }
+
+pub struct Headers;
+
+impl Headers {
+    pub fn extract_header(headers: &http::HeaderMap, key: &str) -> Option<String> {
+        if let Some(Some(v)) = headers.get(key).map(|v| {
+            let s = v.to_str();
+            match s {
+                Ok(s) => {
+                    match s.len() {
+                        0 => None,
+                        _ => Some(s.to_string())
+                    }
+                },
+                Err(_) => return None
+            }
+        }) {
+            return Some(v)
+        };
+
+        return None
+    }
+}

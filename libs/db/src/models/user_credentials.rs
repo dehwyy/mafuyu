@@ -16,6 +16,7 @@ pub struct Model {
     #[sea_orm(column_type = "Text", nullable)]
     pub password: Option<String>,
     pub created_at: Option<DateTimeWithTimeZone>,
+    pub role: i16,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

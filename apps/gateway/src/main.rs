@@ -1,15 +1,14 @@
 mod service;
 mod interceptors;
 mod middleware;
-
 use interceptors::remove_keep_alive::RemoveKeepAliveHeaderInterceptor;
-use middleware::func::set_auth_cookies::SetTokensCookies;
+use middleware::func::{set_auth_cookies::SetTokensCookies, with_authorization::WithAuthorizationMiddleware};
 
 use std::str::FromStr;
 use std::time::Duration;
 
 use tonic::transport::Server;
-use service::service::ApiRpcServiceImplementation;
+use service::ApiRpcServiceImplementation;
 
 use makoto_grpc::pkg::api::api_rpc_server::ApiRpcServer;
 use makoto_logger::{Logger, info};
@@ -34,7 +33,7 @@ async fn main() -> makoto_lib::Result<()> {
 
     let exposed_headers = vec!("grpc-status", "grpc-message", "grpc-status-details-bin", "x-access-token", "x-refresh-token", "set-cookie");
     let allow_origin = vec!("http://localhost:5173", "https://localhost:5173");
-    let allow_headers = vec!("access_token", "refresh_token", "Content-Type", "x-grpc-web");
+    let allow_headers = vec!("x-access-token", "x-refresh-token", "Content-Type", "x-grpc-web");
 
     let cors = CorsLayer::new()
         .expose_headers(
@@ -49,9 +48,11 @@ async fn main() -> makoto_lib::Result<()> {
         .allow_credentials(AllowCredentials::yes());
 
     let set_tokens_cookies = SetTokensCookies::new();
+    let with_authorization = WithAuthorizationMiddleware::new();
 
     let app_layer = tower::ServiceBuilder::new()
         .timeout(Duration::from_secs(15))
+        .layer(middleware::BaseMiddlewareLayer::new(with_authorization))
         .layer(middleware::BaseMiddlewareLayer::new(set_tokens_cookies))
         .layer(tonic::service::interceptor(RemoveKeepAliveHeaderInterceptor::intercept))
         .layer(cors)

@@ -1,26 +1,11 @@
 use std::borrow::BorrowMut;
+use tonic::{Request, Response, Status};
 
 use makoto_grpc::{pkg as grpc, Tools};
 use grpc::api::api_rpc_server;
-use grpc::auth::{AuthenticationResponse, SignInWithTokenRequest};
-use grpc::oauth2::{CreateRedirectUrlRequest, CreateRedirectUrlResponse, ExchangeCodeToTokenRequest} ;
+use grpc::{auth, tokens, oauth2, passport, integrations, user, cdn, general};
+use makoto_logger::info;
 
-use grpc::auth;
-use grpc::tokens;
-use grpc::oauth2;
-use grpc::passport;
-use grpc::integrations;
-use grpc::user;
-use grpc::cdn;
-
-use grpc::tokens::RefreshTheTokenRequest;
-
-use makoto_grpc::pkg::general::IsOkResponse;
-use makoto_logger::{info, warn};
-use tonic::{Request, Response, Status};
-use makoto_grpc::pkg::auth::{SendEmailVerificationCodeRequest, VerifyEmailCodeRequest};
-use makoto_grpc::pkg::passport::{GetPublicUserResponse, UpdateUsernameRequest};
-use makoto_grpc::pkg::user::{EditUserRequest, GetUserRequest, GetUserResponse};
 
 pub struct ApiRpcServiceImplementation<T = tonic::transport::Channel> {
   auth_client: auth::auth_rpc_client::AuthRpcClient<T>,
@@ -52,14 +37,14 @@ impl ApiRpcServiceImplementation {
 
 #[tonic::async_trait]
 impl api_rpc_server::ApiRpc for ApiRpcServiceImplementation {
-  async fn sign_up(&self, req: Request<grpc::auth::SignUpRequest>) -> Result<Response<AuthenticationResponse>, Status> {
+  async fn sign_up(&self, req: Request<auth::SignUpRequest>) -> Result<Response<auth::AuthenticationResponse>, Status> {
 
     // cloning client @see (https://docs.rs/tonic/latest/tonic/client/index.html#concurrent-usage)
     let service_response = self.auth_client.clone().borrow_mut().sign_up(req).await?.into_inner();
 
     let response = Tools::attach_tokens(
       service_response.access_token, Some(service_response.refresh_token),
-      AuthenticationResponse {
+      auth::AuthenticationResponse {
         username: service_response.username,
         user_id: service_response.user_id
     });
@@ -67,12 +52,12 @@ impl api_rpc_server::ApiRpc for ApiRpcServiceImplementation {
     Ok(response)
   }
 
-  async fn sign_in(&self, req: Request<grpc::auth::SignInRequest>) -> Result<Response<AuthenticationResponse>, Status> {
+  async fn sign_in(&self, req: Request<auth::SignInRequest>) -> Result<Response<auth::AuthenticationResponse>, Status> {
     let r = self.auth_client.clone().borrow_mut().sign_in(req).await?.into_inner();
 
     let response = Tools::attach_tokens(
       r.access_token, Some(r.refresh_token),
-      AuthenticationResponse {
+      auth::AuthenticationResponse {
         username: r.username,
         user_id: r.user_id
       }
@@ -81,7 +66,7 @@ impl api_rpc_server::ApiRpc for ApiRpcServiceImplementation {
     Ok(response)
   }
 
-  async fn sign_in_with_token(&self, req: Request<SignInWithTokenRequest>) -> Result<Response<AuthenticationResponse>, Status> {
+  async fn sign_in_with_token(&self, req: Request<auth::SignInWithTokenRequest>) -> Result<Response<auth::AuthenticationResponse>, Status> {
 
     let (metadata, _, req) = req.into_parts();
 
@@ -89,17 +74,17 @@ impl api_rpc_server::ApiRpc for ApiRpcServiceImplementation {
     let mut token = req.token;
 
     // But, if `x-access-token` header is present, it will be used instead
-    if  let Some(Ok(t)) = metadata.get("x-access-token").map(|t| t.to_str()) {
+    if  let Some(Ok(t)) = metadata.get(makoto_grpc::METADATA_ACCESS_TOKEN_KEY).map(|t| t.to_str()) {
        token = t.to_string();
     }
 
     let response = self.auth_client.clone().borrow_mut().sign_in_with_token(
-      Request::new( SignInWithTokenRequest { token })
+      Request::new( auth::SignInWithTokenRequest { token })
     ).await?.into_inner();
 
     let response = Tools::attach_tokens(
       response.access_token, Some(response.refresh_token),
-      AuthenticationResponse {
+      auth::AuthenticationResponse {
         username: response.username,
         user_id: response.user_id
       }
@@ -108,38 +93,38 @@ impl api_rpc_server::ApiRpc for ApiRpcServiceImplementation {
     Ok(response)
   }
 
-  async fn sign_out(&self, req: Request<auth::SignOutRequest>) -> Result<Response<IsOkResponse>, Status> {
+  async fn sign_out(&self, req: Request<auth::SignOutRequest>) -> Result<Response<general::IsOkResponse>, Status> {
     self.auth_client.clone().borrow_mut().sign_out(req).await
   }
 
-  async fn send_email_verification_code(&self, req: Request<SendEmailVerificationCodeRequest>) -> Result<Response<()>, Status> {
+  async fn send_email_verification_code(&self, req: Request<auth::SendEmailVerificationCodeRequest>) -> Result<Response<()>, Status> {
     self.auth_client.clone().borrow_mut().send_email_verification_code(req).await
   }
 
-  async fn verify_email_code(&self, req: Request<VerifyEmailCodeRequest>) -> Result<Response<IsOkResponse>, Status> {
+  async fn verify_email_code(&self, req: Request<auth::VerifyEmailCodeRequest>) -> Result<Response<general::IsOkResponse>, Status> {
     self.auth_client.clone().borrow_mut().verify_email_code(req).await
   }
 
-  async fn update_username(&self, req: Request<UpdateUsernameRequest>) -> Result<Response<()>, Status> {
+  async fn update_username(&self, req: Request<passport::UpdateUsernameRequest>) -> Result<Response<()>, Status> {
     self.passport_client.clone().borrow_mut().update_username(req).await
   }
 
-  async fn refresh_the_token(&self, req: Request<RefreshTheTokenRequest>) -> Result<Response<IsOkResponse>, Status> {
+  async fn refresh_the_token(&self, req: Request<tokens::RefreshTheTokenRequest>) -> Result<Response<general::IsOkResponse>, Status> {
     let response = self.tokens_client.clone().borrow_mut().refresh_the_token(req).await?.into_inner();
 
     let response = Tools::attach_tokens(
       response.access_token, Some(response.refresh_token),
-      IsOkResponse {is_ok: true }
+      general::IsOkResponse {is_ok: true }
     );
 
     Ok(response)
   }
 
-  async fn create_o_auth2_redirect_url(&self, req: Request<CreateRedirectUrlRequest>) -> Result<Response<CreateRedirectUrlResponse>, Status> {
+  async fn create_o_auth2_redirect_url(&self, req: Request<oauth2::CreateRedirectUrlRequest>) -> Result<Response<oauth2::CreateRedirectUrlResponse>, Status> {
     self.oauth2_client.clone().borrow_mut().create_redirect_url(req).await
   }
 
-  async fn sign_in_o_auth2(&self, request: Request<ExchangeCodeToTokenRequest>) -> Result<Response<AuthenticationResponse>, Status> {
+  async fn sign_in_o_auth2(&self, request: Request<oauth2::ExchangeCodeToTokenRequest>) -> Result<Response<auth::AuthenticationResponse>, Status> {
     let req = request.into_inner();
 
     let tokens = self.oauth2_client.clone().borrow_mut().exchange_code_to_token(Request::new(oauth2::ExchangeCodeToTokenRequest {
@@ -174,7 +159,7 @@ impl api_rpc_server::ApiRpc for ApiRpcServiceImplementation {
               picture: user.picture
             })).await?;
 
-            Ok(GetPublicUserResponse {
+            Ok(passport::GetPublicUserResponse {
               username: user.username,
               user_id: created_user.user_id,
               provider_id: Some(user.provider_id)
@@ -194,7 +179,7 @@ impl api_rpc_server::ApiRpc for ApiRpcServiceImplementation {
 
     let response = Tools::attach_tokens(
       tokens.access_token, tokens.refresh_token,
-      AuthenticationResponse {
+      auth::AuthenticationResponse {
         username: user.username,
         user_id: user.user_id
       }
@@ -203,11 +188,12 @@ impl api_rpc_server::ApiRpc for ApiRpcServiceImplementation {
     Ok(response)
   }
 
-  async fn edit_user(&self, req: Request<EditUserRequest>) -> Result<Response<()>, Status> {
+  async fn edit_user(&self, req: Request<user::EditUserRequest>) -> Result<Response<()>, Status> {
     self.user_client.clone().borrow_mut().edit_user(req).await
   }
 
-  async fn get_user(&self, req: Request<GetUserRequest>) -> Result<Response<GetUserResponse>, Status> {
+  async fn get_user(&self, req: Request<user::GetUserRequest>) -> Result<Response<user::GetUserResponse>, Status> {
+    info!("get_user: {:?}", req.metadata());
     self.user_client.clone().borrow_mut().get_user(req).await
   }
 }

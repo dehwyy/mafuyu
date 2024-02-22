@@ -229,7 +229,6 @@ version = "0.1.0"
 dependencies = [
  "async-nats",
  "bcrypt",
- "lazy_static",
  "makoto_config",
  "makoto_db",
  "makoto_grpc",
@@ -237,6 +236,7 @@ dependencies = [
  "makoto_logger",
  "oauth2",
  "prost",
+ "rand",
  "redis",
  "regex",
  "reqwest",
@@ -636,7 +636,11 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "35ed6e9d84f0b51a7f52daf1c7d71dd136fd7a3f41a8462b8cdb8c78d920fad4"
 dependencies = [
  "bytes",
+ "futures-core",
  "memchr",
+ "pin-project-lite",
+ "tokio",
+ "tokio-util",
 ]
 
 [[package]]
@@ -2605,12 +2609,18 @@ version = "0.24.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c580d9cbbe1d1b479e8d67cf9daf6a62c957e6846048408b80b43ac3f6af84cd"
 dependencies = [
+ "async-trait",
+ "bytes",
  "combine",
+ "futures-util",
  "itoa",
  "percent-encoding",
+ "pin-project-lite",
  "ryu",
  "sha1_smol",
  "socket2 0.4.10",
+ "tokio",
+ "tokio-util",
  "url",
 ]
 
