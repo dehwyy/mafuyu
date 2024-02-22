@@ -41,6 +41,7 @@ impl Apps {
             App { service: "tokens".to_string(), lang: Lang::RUST },
             App { service: "tokens_async".to_string(), lang: Lang::RUST },
             App { service: "auth".to_string(), lang: Lang::RUST },
+            App { service: "authorization".to_string(), lang: Lang::RUST },
             App { service: "grpc_gateway".to_string(), lang: Lang::RUST },
         );
 
