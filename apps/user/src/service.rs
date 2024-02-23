@@ -6,7 +6,6 @@ use makoto_grpc::errors::GrpcHandleError;
 use makoto_grpc::pkg::user as rpc;
 use makoto_grpc::pkg::cdn;
 use makoto_grpc::pkg::user::UserId;
-use makoto_grpc::metadata::Metadata as MetadataTools;
 use makoto_lib::errors::prelude::*;
 
 use crate::repo::user::EditPrimitiveUserPayload;

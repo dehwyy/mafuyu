@@ -4,7 +4,7 @@ use std::collections::BTreeMap;
 use std::ops::Add;
 use hmac::{Hmac, Mac};
 
-use makoto_logger::error;
+use logger::error;
 
 const ACCESS_TOKEN_EXPIRATION_TIME_SECS: i64 = 60 * 60; // 1 hour
 

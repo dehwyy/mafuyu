@@ -1,5 +1,5 @@
 use redb::ReadableTable;
-use makoto_logger::{info, warn};
+use logger::{info, warn};
 
 pub struct Repo {
     db: crate::db::Database

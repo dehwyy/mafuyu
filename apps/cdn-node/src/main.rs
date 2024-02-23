@@ -6,7 +6,7 @@ use futures::TryStreamExt;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    makoto_logger::Logger::init()?;
+    logger::Logger::new();
 
     let client = async_nats::connect(makoto_config::constants::nats::CDN_SERVER).await?;
     let js = async_nats::jetstream::new(client.clone());

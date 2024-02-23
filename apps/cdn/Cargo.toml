@@ -19,6 +19,6 @@ redb = "1.5.0"
 
 makoto_lib = {path = "../../libs/utils"}
 makoto_config = {path = "../../libs/config"}
-makoto_logger = {path = "../../libs/log"}
+logger = {path = "../../libs/logger"}
 mafuyu_nats = {path = "../../libs/nats"}
 makoto_grpc = {path = "../../libs/grpc"}

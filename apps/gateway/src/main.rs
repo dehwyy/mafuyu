@@ -11,8 +11,8 @@ use tonic::transport::Server;
 use service::ApiRpcServiceImplementation;
 
 use makoto_grpc::pkg::api::api_rpc_server::ApiRpcServer;
-use makoto_logger::{Logger, info};
-use tonic_web::{GrpcWebLayer};
+use logger::{Logger, info};
+use tonic_web::GrpcWebLayer;
 use tower_http::cors::{CorsLayer, AllowOrigin, AllowHeaders, AllowCredentials, ExposeHeaders};
 use http::header::HeaderName;
 use http::HeaderValue;
@@ -21,7 +21,7 @@ use http::HeaderValue;
 #[tokio::main]
 async fn main() -> makoto_lib::Result<()> {
 
-    Logger::init()?;
+    Logger::new();
 
     let hosts = makoto_config::hosts::Hosts::new();
     let addr = hosts.gateway.parse()?;

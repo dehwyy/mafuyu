@@ -1,7 +1,7 @@
 use tokio::fs::{create_dir_all, File};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::process::Command;
-use makoto_logger::info;
+use logger::info;
 
 struct Init;
 

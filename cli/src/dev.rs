@@ -1,6 +1,6 @@
 use tokio::process::Command;
 use tokio::time::{sleep, Duration};
-use makoto_logger::info;
+use logger::info;
 
 use crate::internal::cmd::Cmd;
 

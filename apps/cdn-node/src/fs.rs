@@ -1,7 +1,7 @@
 use base64::prelude::*;
 use base64::engine::general_purpose::STANDARD;
 use std::{fs::File, io::{self, Write}, path::Path};
-use makoto_logger::info;
+use logger::info;
 
 
 pub struct CDNFs {

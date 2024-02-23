@@ -2,7 +2,7 @@ use tonic::{Request, Response, Status};
 
 use makoto_grpc::metadata::{UserRole, Metadata};
 use makoto_grpc::pkg::authorization::{authorization_rpc_server::AuthorizationRpc, *};
-use makoto_logger::info;
+use logger::info;
 
 pub struct AuthorizationRpcServiceImplementation {
   redis_client: redis::Client

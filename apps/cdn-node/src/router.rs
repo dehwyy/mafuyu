@@ -1,5 +1,5 @@
 use async_nats::jetstream::Message;
-use makoto_logger::error;
+use logger::error;
 
 use mafuyu_nats::{tools::Tools, route::RouteResult, payload::cdn::{subject, PublishImageRequest}};
 use mafuyu_nats::errors::NatsHandleError;

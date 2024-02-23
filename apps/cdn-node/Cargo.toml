@@ -15,5 +15,5 @@ uuid = { version = "1.6.1", features = ["v4"] }
 
 makoto_lib = {path = "../../libs/utils"}
 makoto_config = {path = "../../libs/config"}
-makoto_logger = {path = "../../libs/log"}
+logger = {path = "../../libs/logger"}
 mafuyu_nats = {path = "../../libs/nats"}

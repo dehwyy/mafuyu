@@ -3,12 +3,12 @@ mod oauth2;
 
 
 use makoto_grpc::pkg::oauth2::o_auth2_rpc_server::OAuth2RpcServer;
-use makoto_logger::*;
+use logger::*;
 use makoto_lib::Result as AnyResult;
 
 #[tokio::main]
 async fn main() -> AnyResult<()> {
-    Logger::init()?;
+    Logger::new();
 
     let hosts = makoto_config::hosts::Hosts::new();
     let addr = hosts.oauth2.parse()?;

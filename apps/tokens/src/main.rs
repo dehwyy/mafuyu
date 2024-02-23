@@ -3,12 +3,12 @@ mod jwt;
 mod repo;
 
 use makoto_grpc::pkg::tokens::tokens_rpc_server::TokensRpcServer;
-use makoto_logger::*;
+use logger::*;
 use makoto_lib::Result as AnyResult;
 
 #[tokio::main]
 async fn main() -> AnyResult<()> {
-    Logger::init()?;
+    Logger::new();
 
     let hosts = makoto_config::hosts::Hosts::new();
     let addr = hosts.tokens.parse()?;

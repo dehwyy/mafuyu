@@ -30,7 +30,7 @@ enum Command {
 
 #[tokio::main]
 async fn main() {
-    makoto_logger::Logger::init().unwrap();
+    logger::Logger::new();
 
     let cli = Cli::parse();
     match &cli.command {

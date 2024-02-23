@@ -1,6 +1,6 @@
 use tonic::transport::Server;
 use makoto_grpc::pkg::integrations::integrations_rpc_server::IntegrationsRpcServer;
-use makoto_logger::{info, Logger};
+use logger::{info, Logger};
 
 mod service;
 mod provider;
@@ -11,7 +11,7 @@ use makoto_lib::Result as AnyResult;
 #[tokio::main]
 async fn main() -> AnyResult<()> {
 
-    Logger::init()?;
+    Logger::new();
 
     let hosts = makoto_config::hosts::Hosts::new();
     let addr = hosts.integrations.parse()?;

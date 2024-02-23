@@ -5,7 +5,7 @@ use makoto_grpc::{pkg as grpc, Tools};
 use grpc::api::api_rpc_server;
 use grpc::{auth, tokens, oauth2, passport, integrations, user, cdn, general, authorization};
 use makoto_grpc::pkg::user::UserId;
-use makoto_logger::info;
+use logger::info;
 
 
 pub struct ApiRpcServiceImplementation<T = tonic::transport::Channel> {

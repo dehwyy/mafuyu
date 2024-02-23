@@ -6,4 +6,4 @@ edition = "2021"
 [dependencies]
 clap = { version = "4.5.0", features = ["derive"] }
 tokio = { version = "1.35.0", features = ["time", "macros", "rt-multi-thread", "process", "io-util", "fs"] }
-makoto_logger = { path = "../libs/log" }
+logger = { path = "../libs/logger" }

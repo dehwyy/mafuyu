@@ -1,7 +1,7 @@
 use std::borrow::BorrowMut;
 use async_nats::jetstream::Message;
 use uuid::Uuid;
-use makoto_logger::error;
+use logger::error;
 use crate::repo::{GetTokenRecordBy, Repo as TokenRepo};
 
 use makoto_grpc::pkg::tokens::{tokens_rpc_client::TokensRpcClient, ValidateTokenRequest};

@@ -1,6 +1,6 @@
 use tonic::transport::Server;
 use makoto_grpc::pkg::passport::passport_rpc_server::PassportRpcServer;
-use makoto_logger::{info, Logger};
+use logger::{info, Logger};
 use makoto_lib::Result as AnyResult;
 
 mod service;
@@ -9,7 +9,7 @@ mod repo;
 #[tokio::main]
 async fn main() -> AnyResult<()> {
 
-    Logger::init()?;
+    Logger::new();
 
     let hosts = makoto_config::hosts::Hosts::new();
     let addr = hosts.passport.parse()?;

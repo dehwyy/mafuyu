@@ -17,4 +17,4 @@ makoto_db = {path = "../../libs/db"}
 makoto_grpc = {path = "../../libs/grpc"}
 makoto_lib = {path = "../../libs/utils"}
 makoto_config = {path = "../../libs/config"}
-makoto_logger = {path = "../../libs/log"}
+logger = {path = "../../libs/logger"}

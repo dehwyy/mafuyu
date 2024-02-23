@@ -4,7 +4,7 @@ use crate::middleware::tools::Headers;
 
 use makoto_grpc::METADATA_ACCESS_TOKEN_KEY;
 use makoto_grpc::metadata::{UserRole, METADATA_USER_ID_KEY, METADATA_USER_ROLE_KEY};
-use makoto_logger::{error, info};
+use logger::{error, info};
 
 #[derive(Clone)]
 pub struct WithAuthorizationMiddleware;

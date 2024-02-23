@@ -5,13 +5,13 @@ use service::AuthorizationRpcServiceImplementation;
 
 
 use makoto_grpc::pkg::authorization::authorization_rpc_server::AuthorizationRpcServer;
-use makoto_logger::{info, Logger};
+use logger::{info, Logger};
 use makoto_lib::Result as AnyResult;
 
 #[tokio::main]
 async fn main() -> AnyResult<()> {
 
-    Logger::init()?;
+    Logger::new();
 
     let hosts = makoto_config::hosts::Hosts::new();
     let addr = hosts.authorization.parse()?;

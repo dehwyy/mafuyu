@@ -1,4 +1,4 @@
-use makoto_logger::info;
+use logger::info;
 
 pub struct RemoveKeepAliveHeaderInterceptor;
 
