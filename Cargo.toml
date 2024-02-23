@@ -16,7 +16,7 @@ members = [
   "libs/db",
   "libs/grpc",
   "libs/nats",
-  "libs/log",
+  "libs/logger",
   "libs/utils",
 
   "cli"
