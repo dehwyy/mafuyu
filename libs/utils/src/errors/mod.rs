@@ -6,6 +6,7 @@ mod repo {
     pub enum RepositoryError {
         DbError(String),
         NotFound(String),
+        AlreadyExists(String),
         WrongPayload(String),
         InternalError(String)
     }
@@ -14,6 +15,7 @@ mod repo {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
             let s = match self {
                 Self::NotFound(v) => v,
+                Self::AlreadyExists(v) => v,
                 Self::DbError(v) => v,
                 Self::WrongPayload(v) => v,
                 Self::InternalError(v) => v
@@ -35,6 +37,7 @@ mod repo {
                 match err {
                     RepositoryError::DbError(err) => tonic::Status::internal(err),
                     RepositoryError::NotFound(err) => tonic::Status::not_found(err),
+                    RepositoryError::AlreadyExists(err) => tonic::Status::already_exists(err),
                     RepositoryError::WrongPayload(err) => tonic::Status::invalid_argument(err),
                     RepositoryError::InternalError(err) => tonic::Status::internal(err)
                 }
@@ -55,6 +58,14 @@ mod repo {
             match self {
                 Some(v) => Ok(v),
                 None => Err(RepositoryError::NotFound(msg.to_string()))
+            }
+        }
+
+        /// Shouldn't be called, I guess (only for tonic)
+        fn unwrap_or_unauthorized(self, msg: &str) -> Result<T, RepositoryError> {
+            match self {
+                Some(v) => Ok(v),
+                None => Err(RepositoryError::InternalError(msg.to_string()))
             }
         }
     }

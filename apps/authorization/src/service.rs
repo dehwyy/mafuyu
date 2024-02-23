@@ -22,7 +22,6 @@ impl AuthorizationRpcServiceImplementation {
 impl AuthorizationRpc for AuthorizationRpcServiceImplementation {
   async fn get_user_profile_scopes(&self, req: Request<GetUserProfileScopesRequest>) -> Result<Response<GetUserProfileScopesResponse>, Status> {
     let (metadata, _, r) = req.into_parts();
-    info!("<meta> {:?}", metadata);
     let res = match Metadata::get_user_role_and_id_from_metadata(&metadata) {
       Some((user_role, user_id)) => {
           GetUserProfileScopesResponse {

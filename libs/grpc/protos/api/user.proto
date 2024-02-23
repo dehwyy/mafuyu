@@ -10,6 +10,16 @@ service UserRpc {
   rpc CreateUser(CreateUserRequest) returns (google.protobuf.Empty);
   rpc EditUser(EditUserRequest) returns (google.protobuf.Empty);
   rpc GetUser(GetUserRequest) returns (GetUserResponse);
+
+  rpc FollowUser(UserId) returns (google.protobuf.Empty);
+  rpc UnfollowUser(UserId) returns (google.protobuf.Empty);
+
+  rpc BlockUser(UserId) returns (google.protobuf.Empty);
+  rpc UnblockUser(UserId) returns (google.protobuf.Empty);
+}
+
+message UserId {
+  string user_id = 1;
 }
 
 message CreateUserRequest {

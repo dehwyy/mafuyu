@@ -19,9 +19,9 @@ type User struct {
 	Bio             string
 	Picture         string
 	Languages       []*Language `gorm:"many2many:user_languages;foreignKey:user_id"`
-	Friends         []*User     `gorm:"many2many:user_friends;foreignKey:user_id"`
-	Blocked         []*User     `gorm:"many2many:user_blocked;foreignKey:user_id"`
-	Followers       []*User     `gorm:"many2many:user_followers;foreignKey:user_id"`
+	Friends         []*User     `gorm:"many2many:user_friends;foreignKey:user_id;joinForeignKey:user_id;references:user_id;joinReferences:friend_user_id"`
+	Blocked         []*User     `gorm:"many2many:user_blocked;foreignKey:user_id;joinForeignKey:user_id;references:user_id;joinReferences:blocked_user_id"`
+	Followers       []*User     `gorm:"many2many:user_followers;foreignKey:user_id;joinForeignKey:user_id;references:user_id;joinReferences:followed_to_user_id"`
 }
 
 type UserCredentials struct {

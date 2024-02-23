@@ -1,5 +1,11 @@
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UserId {
+    #[prost(string, tag = "1")]
+    pub user_id: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CreateUserRequest {
     #[prost(string, tag = "1")]
     pub user_id: ::prost::alloc::string::String,
@@ -210,6 +216,84 @@ pub mod user_rpc_client {
             req.extensions_mut().insert(GrpcMethod::new("user.UserRpc", "GetUser"));
             self.inner.unary(req, path, codec).await
         }
+        pub async fn follow_user(
+            &mut self,
+            request: impl tonic::IntoRequest<super::UserId>,
+        ) -> std::result::Result<tonic::Response<()>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static("/user.UserRpc/FollowUser");
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new("user.UserRpc", "FollowUser"));
+            self.inner.unary(req, path, codec).await
+        }
+        pub async fn unfollow_user(
+            &mut self,
+            request: impl tonic::IntoRequest<super::UserId>,
+        ) -> std::result::Result<tonic::Response<()>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/user.UserRpc/UnfollowUser",
+            );
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new("user.UserRpc", "UnfollowUser"));
+            self.inner.unary(req, path, codec).await
+        }
+        pub async fn block_user(
+            &mut self,
+            request: impl tonic::IntoRequest<super::UserId>,
+        ) -> std::result::Result<tonic::Response<()>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static("/user.UserRpc/BlockUser");
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new("user.UserRpc", "BlockUser"));
+            self.inner.unary(req, path, codec).await
+        }
+        pub async fn unblock_user(
+            &mut self,
+            request: impl tonic::IntoRequest<super::UserId>,
+        ) -> std::result::Result<tonic::Response<()>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static("/user.UserRpc/UnblockUser");
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new("user.UserRpc", "UnblockUser"));
+            self.inner.unary(req, path, codec).await
+        }
     }
 }
 /// Generated server implementations.
@@ -231,6 +315,22 @@ pub mod user_rpc_server {
             &self,
             request: tonic::Request<super::GetUserRequest>,
         ) -> std::result::Result<tonic::Response<super::GetUserResponse>, tonic::Status>;
+        async fn follow_user(
+            &self,
+            request: tonic::Request<super::UserId>,
+        ) -> std::result::Result<tonic::Response<()>, tonic::Status>;
+        async fn unfollow_user(
+            &self,
+            request: tonic::Request<super::UserId>,
+        ) -> std::result::Result<tonic::Response<()>, tonic::Status>;
+        async fn block_user(
+            &self,
+            request: tonic::Request<super::UserId>,
+        ) -> std::result::Result<tonic::Response<()>, tonic::Status>;
+        async fn unblock_user(
+            &self,
+            request: tonic::Request<super::UserId>,
+        ) -> std::result::Result<tonic::Response<()>, tonic::Status>;
     }
     #[derive(Debug)]
     pub struct UserRpcServer<T: UserRpc> {
@@ -430,6 +530,182 @@ pub mod user_rpc_server {
                     let fut = async move {
                         let inner = inner.0;
                         let method = GetUserSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/user.UserRpc/FollowUser" => {
+                    #[allow(non_camel_case_types)]
+                    struct FollowUserSvc<T: UserRpc>(pub Arc<T>);
+                    impl<T: UserRpc> tonic::server::UnaryService<super::UserId>
+                    for FollowUserSvc<T> {
+                        type Response = ();
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::UserId>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as UserRpc>::follow_user(&inner, request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = FollowUserSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/user.UserRpc/UnfollowUser" => {
+                    #[allow(non_camel_case_types)]
+                    struct UnfollowUserSvc<T: UserRpc>(pub Arc<T>);
+                    impl<T: UserRpc> tonic::server::UnaryService<super::UserId>
+                    for UnfollowUserSvc<T> {
+                        type Response = ();
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::UserId>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as UserRpc>::unfollow_user(&inner, request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = UnfollowUserSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/user.UserRpc/BlockUser" => {
+                    #[allow(non_camel_case_types)]
+                    struct BlockUserSvc<T: UserRpc>(pub Arc<T>);
+                    impl<T: UserRpc> tonic::server::UnaryService<super::UserId>
+                    for BlockUserSvc<T> {
+                        type Response = ();
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::UserId>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as UserRpc>::block_user(&inner, request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = BlockUserSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/user.UserRpc/UnblockUser" => {
+                    #[allow(non_camel_case_types)]
+                    struct UnblockUserSvc<T: UserRpc>(pub Arc<T>);
+                    impl<T: UserRpc> tonic::server::UnaryService<super::UserId>
+                    for UnblockUserSvc<T> {
+                        type Response = ();
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::UserId>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as UserRpc>::unblock_user(&inner, request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = UnblockUserSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(

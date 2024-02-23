@@ -34,4 +34,11 @@ impl<T> ResultedOption<T, Status> for Option<T> {
             None => Err(Status::not_found(msg))
         }
     }
+
+    fn unwrap_or_unauthorized(self, msg: &str) -> Result<T, Status> {
+        match self {
+            Some(v) => Ok(v),
+            None => Err(Status::unauthenticated(msg))
+        }
+    }
 }

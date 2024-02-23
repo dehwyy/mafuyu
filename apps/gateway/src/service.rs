@@ -4,6 +4,7 @@ use tonic::{Request, Response, Status};
 use makoto_grpc::{pkg as grpc, Tools};
 use grpc::api::api_rpc_server;
 use grpc::{auth, tokens, oauth2, passport, integrations, user, cdn, general, authorization};
+use makoto_grpc::pkg::user::UserId;
 use makoto_logger::info;
 
 
@@ -195,8 +196,23 @@ impl api_rpc_server::ApiRpc for ApiRpcServiceImplementation {
   }
 
   async fn get_user(&self, req: Request<user::GetUserRequest>) -> Result<Response<user::GetUserResponse>, Status> {
-    info!("get_user: {:?}", req.metadata());
     self.user_client.clone().borrow_mut().get_user(req).await
+  }
+
+  async fn follow_user(&self, req: Request<UserId>) -> Result<Response<()>, Status> {
+    self.user_client.clone().borrow_mut().follow_user(req).await
+  }
+
+  async fn unfollow_user(&self, req: Request<UserId>) -> Result<Response<()>, Status> {
+    self.user_client.clone().borrow_mut().unfollow_user(req).await
+  }
+
+  async fn block_user(&self, req: Request<UserId>) -> Result<Response<()>, Status> {
+    self.user_client.clone().borrow_mut().block_user(req).await
+  }
+
+  async fn unblock_user(&self, req: Request<UserId>) -> Result<Response<()>, Status> {
+    self.user_client.clone().borrow_mut().unblock_user(req).await
   }
 
   async fn get_user_profile_scopes(&self, req: Request<authorization::GetUserProfileScopesRequest>) -> Result<Response<authorization::GetUserProfileScopesResponse>, Status> {

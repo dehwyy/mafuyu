@@ -5,20 +5,28 @@ use makoto_db::repo::user::GetUserRecordBy;
 use makoto_grpc::errors::GrpcHandleError;
 use makoto_grpc::pkg::user as rpc;
 use makoto_grpc::pkg::cdn;
+use makoto_grpc::pkg::user::UserId;
+use makoto_grpc::metadata::Metadata as MetadataTools;
 use makoto_lib::errors::prelude::*;
+
 use crate::repo::user::EditPrimitiveUserPayload;
 use crate::tools::image::{Image, ImageType};
+use crate::tools::request::RequestTools;
 
 pub struct UserRpcServiceImplementation<T = tonic::transport::Channel> {
     cdn_client: cdn::cdn_rpc_client::CdnRpcClient<T>,
     user_repo: crate::repo::user::UserRepo,
     languages_repo: crate::repo::languages::LanguagesRepo,
+    followers_friends_repo: crate::repo::followers_friends::FollowersFriendsRepo,
+    blocked_user_repo: crate::repo::blocked_users::BlockedUsersRepo
 }
 
 impl UserRpcServiceImplementation {
     pub async fn new(
         user_repo: crate::repo::user::UserRepo,
         languages_repo: crate::repo::languages::LanguagesRepo,
+        followers_friends_repo: crate::repo::followers_friends::FollowersFriendsRepo,
+        blocked_user_repo: crate::repo::blocked_users::BlockedUsersRepo
     ) -> Self {
 
         let clients = makoto_grpc::RpcClients::get_all_client().await;
@@ -27,6 +35,8 @@ impl UserRpcServiceImplementation {
             cdn_client: clients.cdn_client.unwrap(),
             user_repo,
             languages_repo,
+            followers_friends_repo,
+            blocked_user_repo
         }
     }
 }
@@ -91,9 +101,14 @@ impl rpc::user_rpc_server::UserRpc for UserRpcServiceImplementation {
 
         let (user , username) = self.user_repo.get_user(get_by).await.handle()?;
         let languages_future = self.languages_repo.get_languages(&user.user_id);
+        let followers_future = self.followers_friends_repo.get_followers(&user.user_id);
+        let friends_future = self.followers_friends_repo.get_friends(&user.user_id);
 
-        let (languages, ) = tokio::join!(languages_future);
+
+        let (languages, followers, friends) = tokio::join!(languages_future, followers_future, friends_future);
         let languages = languages.handle()?;
+        let followers = followers.handle()?.iter().map(|v| v.user_id.to_string()).collect();
+        let friends = friends.handle()?.iter().map(|v| v.friend_user_id.to_string()).collect();
 
 
         Ok(Response::new(rpc::GetUserResponse {
@@ -105,12 +120,43 @@ impl rpc::user_rpc_server::UserRpc for UserRpcServiceImplementation {
             bio: user.bio,
             picture: user.picture,
             languages,
-            followers: vec!(),
-            friends: vec!()
+            followers,
+            friends
         }))
 
     }
 
+    async fn follow_user(&self, req: Request<UserId>) -> Result<Response<()>, Status> {
+        let (user_id, user_to_add_id, _) = RequestTools::parse_user_id_request(req).await?;
+
+        let r = self.followers_friends_repo.follow(&user_id, &user_to_add_id).await.handle()?;
+
+        Ok(Response::new(r))
+    }
+
+    async fn unfollow_user(&self, req: Request<UserId>) -> Result<Response<()>, Status> {
+        let (user_id, user_to_add_id, _) = RequestTools::parse_user_id_request(req).await?;
+
+        let r = self.followers_friends_repo.unfollow(&user_id, &user_to_add_id).await.handle()?;
+
+        Ok(Response::new(r))
+    }
+
+    async fn block_user(&self, req: Request<UserId>) -> Result<Response<()>, Status> {
+        let (user_id, user_to_add_id, _) = RequestTools::parse_user_id_request(req).await?;
+
+        let r = self.blocked_user_repo.block(&user_id, &user_to_add_id).await.handle()?;
+
+        Ok(Response::new(r))
+    }
+
+    async fn unblock_user(&self, req: Request<UserId>) -> Result<Response<()>, Status> {
+        let (user_id, user_to_add_id, _) = RequestTools::parse_user_id_request(req).await?;
+
+        let r = self.blocked_user_repo.unblock(&user_id, &user_to_add_id).await.handle()?;
+
+        Ok(Response::new(r))
+    }
 }
 
 

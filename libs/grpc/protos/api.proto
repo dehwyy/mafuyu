@@ -37,6 +37,10 @@ service ApiRpc {
   // User
   rpc EditUser(user.EditUserRequest) returns (google.protobuf.Empty);
   rpc GetUser(user.GetUserRequest) returns (user.GetUserResponse);
+  rpc FollowUser(user.UserId) returns (google.protobuf.Empty);
+  rpc UnfollowUser(user.UserId) returns (google.protobuf.Empty);
+  rpc BlockUser(user.UserId) returns (google.protobuf.Empty);
+  rpc UnblockUser(user.UserId) returns (google.protobuf.Empty);
 
   // Authorization
   rpc GetUserProfileScopes(authorization.GetUserProfileScopesRequest) returns (authorization.GetUserProfileScopesResponse);

@@ -30,7 +30,6 @@ impl MiddlewareFunc for WithAuthorizationMiddleware {
                             if let Ok(user_id) = r.user_id.parse() {
                                 headers.insert(METADATA_USER_ID_KEY, user_id);
                             }
-                            info!("<Metadata> {:?}", metadata);
                             match metadata.get(METADATA_USER_ROLE_KEY).map(|v| v.to_str().unwrap_or_default().to_string().parse()) {
                                 Some(Ok(v)) => headers.insert(METADATA_USER_ROLE_KEY, v),
                                 _ => headers.insert(METADATA_USER_ROLE_KEY, UserRole::Unauthorized.to_string().parse().unwrap()),

@@ -19,8 +19,10 @@ async fn main() -> AnyResult<()> {
 
     let user_repo = repo::user::UserRepo::new(db.clone());
     let languages_repo  = repo::languages::LanguagesRepo::new(db.clone());
+    let followers_friends_repo = repo::followers_friends::FollowersFriendsRepo::new(db.clone());
+    let blocked_user_repo = repo::blocked_users::BlockedUsersRepo::new(db.clone());
 
-    let user_service = service::UserRpcServiceImplementation::new(user_repo, languages_repo).await;
+    let user_service = service::UserRpcServiceImplementation::new(user_repo, languages_repo, followers_friends_repo, blocked_user_repo).await;
     let user_service = UserRpcServer::new(user_service);
 
     info!("server start! host: {}", addr);
