@@ -4,36 +4,48 @@ import (
 	"github.com/dehwyy/mafuyu/apps/mailer/service"
 	mafuyuConfig "github.com/dehwyy/mafuyu/libs/config/go"
 	rpc "github.com/dehwyy/mafuyu/libs/grpc/gen/api"
-	mafuyuLogger "github.com/dehwyy/mafuyu/libs/logger/src"
+	"github.com/dehwyy/mafuyu/libs/logger"
+	mafuyuSentry "github.com/dehwyy/mafuyu/libs/sentry"
+	"github.com/getsentry/sentry-go"
 	"github.com/nats-io/nats.go"
 	"google.golang.org/grpc"
 	"net"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 func main() {
-	l := mafuyuLogger.New()
-	//cfg := mafuyuConfig.NewConfig()
+	config := mafuyuConfig.NewConfig()
 	hosts := mafuyuConfig.NewHosts()
 
-	lis, err := net.Listen("tcp", hosts.MailerRpc)
-	if err != nil {
-		panic(err)
-	}
+	sentryClient := mafuyuSentry.NewSentryClient(config)
+	l := logger.New(sentryClient, config.IsProduction)
 
+	lis, _ := net.Listen("tcp", hosts.MailerRpc)
 	conn, _ := nats.Connect(mafuyuConfig.NatsMailerServer)
 	encodedConn, err := nats.NewEncodedConn(conn, nats.JSON_ENCODER)
 	if err != nil {
 		panic(err)
 	}
+
+	defer conn.Close()
 	defer encodedConn.Close()
-
 	srv := service.NewMailerService(encodedConn)
+	grpcServer := grpc.NewServer()
+	rpc.RegisterMailerRpcServer(grpcServer, srv)
 
-	rpcServer := grpc.NewServer()
-	rpc.RegisterMailerRpcServer(rpcServer, srv)
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 
-	l.Infof("mailer server listening at %v", lis.Addr())
-	if err := rpcServer.Serve(lis); err != nil {
-		l.Fatalf("failed to serve: %v", err)
-	}
+	go func() {
+		defer sentry.Recover()
+
+		l.Info().Msgf("mailer server listening at %v", lis.Addr().String())
+		if err := grpcServer.Serve(lis); err != nil {
+			l.Fatal().Err(err).Msg("failed to serve")
+		}
+	}()
+
+	<-c
 }
