@@ -1,11 +1,12 @@
-go 1.21.2
+go 1.21.5
 
 use (
-	apps/mailer-async
 	apps/mailer
-  	libs/db
-  	libs/log
-  	libs/config
+	apps/mailer-async
+	libs/config
+	libs/db
 	libs/grpc
+	libs/logger
 	libs/nats
+	libs/sentry
 )

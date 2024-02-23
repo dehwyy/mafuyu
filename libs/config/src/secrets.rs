@@ -14,6 +14,12 @@ pub struct Secrets {
 
     #[envconfig(from = "GITHUB_REDIRECT_URL")]
     pub github_redirect_url: String,
+
+    #[envconfig(from = "SENTRY_DSN")]
+    pub sentry_dsn: String,
+
+    #[envconfig(from = "PRODUCTION", default = "false")]
+    pub production: bool,
 }
 
 impl Secrets {
