@@ -52,7 +52,7 @@
     "@floating-ui/dom": "1.5.4",
     "@formkit/auto-animate": "^0.8.1",
     "@sveltejs/enhanced-img": "^0.1.8",
-    "@sveltestack/svelte-query": "^1.6.0",
+    "@tanstack/svelte-query": "^5.22.2",
     "@zerodevx/svelte-toast": "^0.9.5",
     "highlight.js": "11.9.0",
     "optional": "^0.1.4",

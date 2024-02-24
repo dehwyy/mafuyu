@@ -1,24 +1,9 @@
 <script lang="ts">
   import GoogleIconRaw from "$lib/assets/google.svg?raw"
   import GithubIconRaw from "$lib/assets/github.svg?raw"
-  import { useMutation } from "@sveltestack/svelte-query"
-  import { Routes } from "$lib/utils/typed-fetch"
+  import { useCreateOAuth2RedirectUrl } from "$lib/query/auth"
 
-
-  const oauth_redirect = useMutation(
-    async (provider: string) => {
-      const {response} = await Routes["oauth"].fetch({
-        provider
-      })
-
-      window.location.href = response.redirect_url
-    },
-    {
-      onError: e => {
-        console.log(e)
-      },
-    },
-  )
+  const oauth2Redirect = useCreateOAuth2RedirectUrl()
 </script>
 
 <div class="relative my-7">
@@ -32,7 +17,7 @@
     </span>
     <span>Continue with Google</span>
   </button>
-  <button on:click={() => $oauth_redirect.mutate("github")} class="oauth-button">
+  <button on:click={() => $oauth2Redirect.mutate({provider: "github"})} class="oauth-button">
     <span class="oauth-icon">
       {@html GithubIconRaw}
     </span>

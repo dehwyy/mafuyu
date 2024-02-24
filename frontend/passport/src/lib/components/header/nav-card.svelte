@@ -1,10 +1,10 @@
 <script lang="ts">
   import { DevFallbackImages, Routes } from "$lib/const"
   import NavCardAuthed from "./nav-card-authed.svelte"
-  import NavCardUnauthed from "./nav-card-unauthed.svelte"
+  import NavCardUnAuthed from "./nav-card-unauthed.svelte"
 
   import { type PopupSettings, popup } from "@skeletonlabs/skeleton"
-  import { useCurrentUserInfo } from "$lib/query/user"
+  import { useUserInfo } from "$lib/query/user"
   import { authed_user_store, dyn_user_store } from "$lib/stores/user"
 
   const settingsClick: PopupSettings = {
@@ -13,7 +13,8 @@
     target: "header-account-popup",
   }
 
-  const user = useCurrentUserInfo($authed_user_store?.id)
+  const [user, userStore] = useUserInfo({ oneofKind: "userId", userId: $authed_user_store?.id })
+  $: userStore.set({ getBy: { oneofKind: "userId", userId: $authed_user_store?.id } })
 
   $: picture = ($authed_user_store?.id && ($dyn_user_store?.picture || $user?.data?.picture)) || DevFallbackImages.HorizontalOriented
 </script>
@@ -34,7 +35,7 @@
       {#if $authed_user_store?.id}
         <NavCardAuthed />
       {:else}
-        <NavCardUnauthed />
+        <NavCardUnAuthed />
       {/if}
     </div>
   </div>

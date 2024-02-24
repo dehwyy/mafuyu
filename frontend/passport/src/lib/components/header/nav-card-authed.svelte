@@ -9,10 +9,11 @@
 
   import { Routes } from "$lib/const"
   import ThemeSelector from "./theme-selector.svelte"
-  import { useCurrentUserInfo } from "$lib/query/user"
+  import { useUserInfo } from "$lib/query/user"
   import { authed_user_store, clear_user } from "$lib/stores/user"
 
-  const user = useCurrentUserInfo($authed_user_store?.id)
+  const [user, userStore] = useUserInfo({ oneofKind: "userId", userId: $authed_user_store?.id })
+  $: userStore.set({ getBy: { oneofKind: "userId", userId: $authed_user_store?.id } })
 
   $: username = $authed_user_store?.username || $user?.data?.username
   $: user_href = `/@${username}`

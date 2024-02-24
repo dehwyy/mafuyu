@@ -1,44 +1,32 @@
-import { useQuery, type UseQueryOptions } from "@sveltestack/svelte-query"
+import { createQuery, type CreateQueryOptions } from "@tanstack/svelte-query"
 import { type GrpcClient, GrpcWeb } from "$lib/query/grpc"
+import { createReactiveQuery } from "$lib/query-abstraction"
 
-export const USER_PROFILE_KEY = "current_profile_info"
+export const ProfileKeys = {
+  "query.userProfileScopes": "profile.getQueryProfileScopes",
+} as const
 
-export const getUserProfileQuery = (username: string, grpc: GrpcClient = GrpcWeb(Infinity)) => {
+export const getUserProfileScopesQuery = (userId: string | undefined, grpc: GrpcClient = GrpcWeb(Infinity)) => {
   return {
-    queryKey: [USER_PROFILE_KEY, username],
+    queryKey: [ProfileKeys["query.userProfileScopes"], userId],
     retry: 1,
     staleTime: grpc.staleTime,
     refetchOnWindowFocus: false,
     queryFn: async () => {
-      try {
-        const { response } = await grpc.client.getUser(
-          {
-            login: {
-              oneofKind: "username",
-              username,
-            },
-          },
-          { interceptors: grpc.interceptors },
-        )
+      if (!userId) return null
 
-        const scopes = await grpc.client.getUserProfileScopes(
-          {
-            userId: response.userId,
-          },
-          { interceptors: grpc.interceptors },
-        )
-        return {
-          ...response,
-          scopes: scopes.response,
-        }
-      } catch (e) {
-        console.log(e)
-        return null
-      }
+      const { response } = await grpc.client.getUserProfileScopes(
+        {
+          userId,
+        },
+        { interceptors: grpc.interceptors },
+      )
+
+      return response
     },
-  } satisfies UseQueryOptions
+  } satisfies CreateQueryOptions
 }
 
-export const useUserProfile = (username: string) => {
-  return useQuery(getUserProfileQuery(username))
+export const useUserProfileScopes = (userId: string | undefined) => {
+  return createReactiveQuery({ userId }, ({ userId }) => getUserProfileScopesQuery(userId))
 }

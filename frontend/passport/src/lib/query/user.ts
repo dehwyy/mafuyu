@@ -1,37 +1,63 @@
-import { useMutation, useQuery, useQueryClient, type UseQueryOptions } from "@sveltestack/svelte-query"
+import { createMutation, createQuery, type CreateQueryOptions, useQueryClient } from "@tanstack/svelte-query"
 import { GrpcWebClient } from "@makoto/grpc/web"
 import { Toasts } from "$lib/utils/toast"
-import { USER_PROFILE_KEY } from "$lib/query/profile"
 import { type GrpcClient, GrpcWeb } from "$lib/query/grpc"
-import { navigating } from "$app/stores"
-export const CURRENT_USER_KEY = "current_user_info"
+import { createReactiveQuery } from "$lib/query-abstraction"
 
-export const getCurrentUserInfoQuery = (userId: string | undefined, grpc: GrpcClient = GrpcWeb(Infinity)) => {
+export const UserKeys = {
+  "query.getUserInfo": "user.getUserInfo",
+  "query.getBaseUserInfo": "user.getBaseUserInfo",
+  "mutate.editUser": "user.editUser",
+} as const
+
+type GetUserBy = { oneofKind: "userId"; userId: string | undefined } | { oneofKind: "username"; username: string | undefined }
+
+export const getUserInfoQuery = (getBy: GetUserBy, grpc: GrpcClient = GrpcWeb(0)) => {
+  const value = getBy.oneofKind === "userId" ? getBy.userId : getBy.username
   return {
-    queryKey: [CURRENT_USER_KEY, userId],
+    queryKey: [UserKeys["query.getUserInfo"], value],
     retry: 1,
     staleTime: grpc.staleTime,
     refetchOnWindowFocus: false,
-    enabled: !!userId,
+    enabled: !!value,
     queryFn: async () => {
-      if (!userId) return null
+      if (!value) return null
+      const login =
+        getBy.oneofKind === "userId" ? ({ oneofKind: "userId", userId: value } as const) : ({ oneofKind: "username", username: value } as const)
 
-      const r = await grpc.client.getUser(
-        {
-          login: {
-            oneofKind: "userId",
-            userId,
-          },
-        },
-        { interceptors: grpc.interceptors },
-      )
+      const r = await grpc.client.getUser({ login }, { interceptors: grpc.interceptors })
 
       return r.response
     },
-  } satisfies UseQueryOptions
+  } satisfies CreateQueryOptions
 }
-export const useCurrentUserInfo = (userId: string | undefined) => {
-  return useQuery(getCurrentUserInfoQuery(userId))
+
+export const useUserInfo = (getBy: GetUserBy) => {
+  return createReactiveQuery({ getBy }, ({ getBy }) => getUserInfoQuery(getBy))
+}
+
+export const getBaseUserInfoQuery = (getBy: GetUserBy, grpc: GrpcClient = GrpcWeb(0)) => {
+  const value = getBy.oneofKind === "userId" ? getBy.userId : getBy.username
+  return {
+    queryKey: [UserKeys["query.getBaseUserInfo"], value],
+    retry: 1,
+    staleTime: grpc.staleTime,
+    refetchOnWindowFocus: false,
+    enabled: !!value,
+    queryFn: async () => {
+      if (!value) return null
+      const login =
+        getBy.oneofKind === "userId" ? ({ oneofKind: "userId", userId: value } as const) : ({ oneofKind: "username", username: value } as const)
+
+      const r = await grpc.client.getUser({ login }, { interceptors: grpc.interceptors })
+
+      return r.response
+    },
+  }
+}
+
+export const useBaseUserInfo = (getBy: GetUserBy) => {
+  return createReactiveQuery({ getBy }, ({ getBy }) => getBaseUserInfoQuery(getBy))
 }
 
 interface EditUserPayload {
@@ -47,8 +73,8 @@ interface EditUserPayload {
 export const useEditUser = () => {
   const query_client = useQueryClient()
 
-  return useMutation(
-    async (payload: EditUserPayload) => {
+  return createMutation({
+    mutationFn: async (payload: EditUserPayload) => {
       const r = GrpcWebClient.editUser({
         userId: payload.userId,
         pseudonym: payload.pseudonym,
@@ -67,17 +93,16 @@ export const useEditUser = () => {
 
       await r
     },
-    {
-      onSuccess: async (_, payload) => {
-        Toasts.success("Saved ")
-        if (!payload.username) {
-          query_client.invalidateQueries([CURRENT_USER_KEY, payload.userId])
-          query_client.invalidateQueries(USER_PROFILE_KEY)
-        }
-      },
-      onError: error => {
-        Toasts.error(`Failed to save changes. ${error}`)
-      },
+
+    onSuccess: async (_, payload) => {
+      Toasts.success("Saved ")
+      if (!payload.username) {
+        query_client.invalidateQueries({ queryKey: [UserKeys["query.getBaseUserInfo"], payload.userId] })
+        query_client.invalidateQueries({ queryKey: [UserKeys["query.getUserInfo"], payload.userId] })
+      }
     },
-  )
+    onError: error => {
+      Toasts.error(`Failed to save changes. ${error}`)
+    },
+  })
 }

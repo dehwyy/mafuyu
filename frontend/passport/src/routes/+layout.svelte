@@ -8,7 +8,7 @@
   import css from "highlight.js/lib/languages/css"
   import javascript from "highlight.js/lib/languages/javascript"
   import typescript from "highlight.js/lib/languages/typescript"
-  import { hydrate, QueryClientProvider } from "@sveltestack/svelte-query"
+  import { hydrate, QueryClientProvider } from "@tanstack/svelte-query"
   import type { AfterNavigate } from "@sveltejs/kit"
   import { afterNavigate, onNavigate } from "$app/navigation"
   import { SvelteToast } from "@zerodevx/svelte-toast"

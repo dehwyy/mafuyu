@@ -267,9 +267,9 @@ importers:
       '@sveltejs/enhanced-img':
         specifier: ^0.1.8
         version: 0.1.8(svelte@4.2.7)
-      '@sveltestack/svelte-query':
-        specifier: ^1.6.0
-        version: 1.6.0
+      '@tanstack/svelte-query':
+        specifier: ^5.22.2
+        version: 5.22.2(svelte@4.2.7)
       '@zerodevx/svelte-toast':
         specifier: ^0.9.5
         version: 0.9.5(svelte@4.2.7)
@@ -401,9 +401,6 @@ importers:
         specifier: ^2.9.3
         version: 2.9.3
       '@protobuf-ts/runtime-rpc':
-        specifier: ^2.9.3
-        version: 2.9.3
-      '@protobuf-ts/twirp-transport':
         specifier: ^2.9.3
         version: 2.9.3
       '@sveltejs/kit':
@@ -1176,13 +1173,6 @@ packages:
 
   /@protobuf-ts/runtime@2.9.3:
     resolution: {integrity: sha512-nivzCpg/qYD0RX2OmHOahJALb8ndjGmUhNBcTJ0BbXoqKwCSM6vYA+vegzS3rhuaPgbyC7Ec8idlnizzUfIRuw==}
-
-  /@protobuf-ts/twirp-transport@2.9.3:
-    resolution: {integrity: sha512-GblMjxj0IJ6Q7ULMRS6Ad+AFQdRBN22LcX6OxSXEg+RiRdoLUvBcmJeBWnUZ6CS7EIGUOaGid5pJ2MmfccfEsQ==}
-    dependencies:
-      '@protobuf-ts/runtime': 2.9.3
-      '@protobuf-ts/runtime-rpc': 2.9.3
-    dev: false
 
   /@protobufjs/aspromise@1.1.2:
     resolution: {integrity: sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ==}
@@ -2841,15 +2831,6 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /@sveltestack/svelte-query@1.6.0:
-    resolution: {integrity: sha512-C0wWuh6av1zu3Pzwrg6EQmX3BhDZQ4gMAdYu6Tfv4bjbEZTB00uEDz52z92IZdONh+iUKuyo0xRZ2e16k2Xifg==}
-    peerDependencies:
-      broadcast-channel: ^4.5.0
-    peerDependenciesMeta:
-      broadcast-channel:
-        optional: true
-    dev: false
-
   /@swc/helpers@0.5.2:
     resolution: {integrity: sha512-E4KcWTpoLHqwPHLxidpOqQbcrZVgi0rsmmZXUle1jXmJfuIf/UWpczUJ7MZZ5tlxytgJXyp0w4PGkkeLiuIdZw==}
     dependencies:
@@ -2881,6 +2862,10 @@ packages:
     resolution: {integrity: sha512-1J2vINgJ6OH1/qgN/ouDjnRZc67TnKQ2mlIODKQr36Aa2vjMdH6Fb3pIbCRh5N6u95q6z1olp90n22eTlp9Ykg==}
     dev: false
 
+  /@tanstack/query-core@5.22.2:
+    resolution: {integrity: sha512-z3PwKFUFACMUqe1eyesCIKg3Jv1mysSrYfrEW5ww5DCDUD4zlpTKBvUDaEjsfZzL3ULrFLDM9yVUxI/fega1Qg==}
+    dev: false
+
   /@tanstack/react-query@5.17.5(react@18.2.0):
     resolution: {integrity: sha512-TwVmK2YHW/aG6eM5Xre7akBSZHrWWa5frwQR5Kg9ERIttlVWzUHrRcsMOlB5QsMgHtlauzzr6Rm6M8a0T9Iwdg==}
     peerDependencies:
@@ -2888,6 +2873,15 @@ packages:
     dependencies:
       '@tanstack/query-core': 5.17.4
       react: 18.2.0
+    dev: false
+
+  /@tanstack/svelte-query@5.22.2(svelte@4.2.7):
+    resolution: {integrity: sha512-7ZK/EoAAIB6KIKiSC3NSTJPJYo2meOZjsyBXLtbEpLYr7U/mCJwgJ0dXKOUt9n3eKwUyX9N/stqwyD10F+KS8Q==}
+    peerDependencies:
+      svelte: ^3.54.0 || ^4.0.0 || ^5.0.0-next.0
+    dependencies:
+      '@tanstack/query-core': 5.22.2
+      svelte: 4.2.7
     dev: false
 
   /@types/cookie@0.6.0:

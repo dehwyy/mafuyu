@@ -6,7 +6,7 @@
   export let placement: "bottom" | "top" | "left" | "right" = "top"
   export let options: { icon: string; text: string; action?: () => void }[]
 
-  const options_popup_settings: PopupSettings = {
+  $: options_popup_settings = {
     target: unique_target_name,
     event,
     placement,

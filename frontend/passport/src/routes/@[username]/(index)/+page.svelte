@@ -1,9 +1,10 @@
 <script lang="ts">
   import { Birthday, Location, Friends, Followers, Languages } from "$lib/components/user/index"
-  import { useUserProfile } from "$lib/query/profile"
+  import { useUserInfo } from "$lib/query/user"
   import { page } from "$app/stores"
 
-  const user = useUserProfile($page.params.username)
+  const [user, userStore] = useUserInfo({ oneofKind: "username", username: $page.params.username })
+  $: userStore.set({ getBy: {oneofKind: "username", username: $page.params.username }})
 </script>
 
 <section class="flex flex-col gap-y-4 pt-6">

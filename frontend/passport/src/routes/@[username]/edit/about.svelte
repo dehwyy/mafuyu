@@ -6,15 +6,13 @@
   import Bio from "./settings/bio.svelte"
   import CheckIconRaw from "$lib/assets/check.svg?raw"
   import CloseIconRaw from "$lib/assets/close.svg?raw"
-  import { useMutation } from "@sveltestack/svelte-query"
-  import { Routes } from "$lib/utils/typed-fetch"
-  import { authed_user_store, dyn_user_store } from "$lib/stores/user"
+  import { authed_user_store } from "$lib/stores/user"
   import Datepicker from "$lib/components/form/datepicker.svelte"
-  import { replaceState, invalidateAll, pushState } from "$app/navigation"
+  import { pushState } from "$app/navigation"
   import InputWithLabel from "$lib/components/form/input.svelte"
   import { useEditUser } from "$lib/query/user"
   import { DevFallbackImages } from "$lib/const"
-  import { useUserProfile } from "$lib/query/profile"
+  import { useUserInfo } from "$lib/query/user"
   import { page } from "$app/stores"
   import { Toasts } from "$lib/utils/toast"
 
@@ -39,7 +37,8 @@
   let is_datepicker_open = false
 
   const editUserMutation = useEditUser()
-  const user = useUserProfile($page.params.username)
+  const [user, userStore] = useUserInfo({ oneofKind: "username", username: $page.params.username })
+  $: userStore.set({ getBy: { oneofKind: "username", username: $page.params.username } })
 
   const Save = async () => {
     const userId = $user.data?.userId

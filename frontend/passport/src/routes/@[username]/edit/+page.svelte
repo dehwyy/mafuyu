@@ -4,7 +4,7 @@
 
   import GoogleIconRaw from "$lib/assets/google.svg?raw"
   import GithubIconRaw from "$lib/assets/github.svg?raw"
-  import { useUserProfile } from "$lib/query/profile"
+  import { useUserInfo } from "$lib/query/user"
   import { page } from "$app/stores"
 
   const Integrations = [
@@ -13,7 +13,9 @@
     { icon: GithubIconRaw, text: "Connect", is_connected: false, data: "" },
   ]
 
-  const user = useUserProfile($page.params.username)
+  const [user, userStore] = useUserInfo({ oneofKind: "username", username: $page.params.username })
+  $: userStore.set({ getBy: { oneofKind: "username", username: $page.params.username } })
+
   const clone = $user.data
 </script>
 
