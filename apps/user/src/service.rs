@@ -5,7 +5,7 @@ use makoto_db::repo::user::GetUserRecordBy;
 use makoto_grpc::errors::GrpcHandleError;
 use makoto_grpc::pkg::user as rpc;
 use makoto_grpc::pkg::cdn;
-use makoto_grpc::pkg::user::UserId;
+use makoto_grpc::pkg::user::{GetBasicUserResponse, GetBlockedUsersRequest, GetBlockedUsersResponse, GetUserFollowersRequest, GetUserFollowersResponse, GetUserFriendsRequest, GetUserFriendsResponse, GetUserRequest, UserId};
 use makoto_lib::errors::prelude::*;
 
 use crate::repo::user::EditPrimitiveUserPayload;
@@ -100,14 +100,10 @@ impl rpc::user_rpc_server::UserRpc for UserRpcServiceImplementation {
 
         let (user , username) = self.user_repo.get_user(get_by).await.handle()?;
         let languages_future = self.languages_repo.get_languages(&user.user_id);
-        let followers_future = self.followers_friends_repo.get_followers(&user.user_id);
-        let friends_future = self.followers_friends_repo.get_friends(&user.user_id);
 
 
-        let (languages, followers, friends) = tokio::join!(languages_future, followers_future, friends_future);
+        let (languages,) = tokio::join!(languages_future);
         let languages = languages.handle()?;
-        let followers = followers.handle()?.iter().map(|v| v.user_id.to_string()).collect();
-        let friends = friends.handle()?.iter().map(|v| v.friend_user_id.to_string()).collect();
 
 
         Ok(Response::new(rpc::GetUserResponse {
@@ -119,10 +115,58 @@ impl rpc::user_rpc_server::UserRpc for UserRpcServiceImplementation {
             bio: user.bio,
             picture: user.picture,
             languages,
-            followers,
-            friends
         }))
 
+    }
+
+    async fn get_basic_user(&self, req: Request<GetUserRequest>) -> Result<Response<GetBasicUserResponse>, Status> {
+            let req = req.into_inner();
+
+            let get_by = match req.login.unwrap_or_internal("weirdo error")? {
+                rpc::get_user_request::Login::Username(username) => GetUserRecordBy::Username(username),
+                rpc::get_user_request::Login::UserId(user_id) => GetUserRecordBy::UserId(Uuid::try_parse(&user_id).invalid_argument_error()?),
+            };
+
+            let (user , username) = self.user_repo.get_user(get_by).await.handle()?;
+
+            Ok(Response::new(GetBasicUserResponse {
+                user_id: user.user_id.to_string(),
+                username,
+                picture: user.picture
+            }))
+    }
+
+    async fn get_user_friends(&self, req: Request<GetUserFriendsRequest>) -> Result<Response<GetUserFriendsResponse>, Status> {
+        let req = req.into_inner();
+
+        let user_id = Uuid::try_parse(&req.user_id).invalid_argument_error()?;
+
+        let friends = self.followers_friends_repo.get_friends(&user_id, req.limit).await.handle()?;
+        let friends = friends.iter().map(|v| v.friend_user_id.to_string()).collect::<Vec<_>>();
+
+        Ok(Response::new(GetUserFriendsResponse { friends }))
+    }
+
+    async fn get_user_followers(&self, req: Request<GetUserFollowersRequest>) -> Result<Response<GetUserFollowersResponse>, Status> {
+        let req = req.into_inner();
+
+        let user_id = Uuid::try_parse(&req.user_id).invalid_argument_error()?;
+
+        let followers = self.followers_friends_repo.get_followers(&user_id, req.limit).await.handle()?;
+        let followers = followers.iter().map(|v| v.user_id.to_string()).collect::<Vec<_>>();
+
+        Ok(Response::new(GetUserFollowersResponse { followers }))
+    }
+
+    async fn get_blocked_users(&self, req: Request<GetBlockedUsersRequest>) -> Result<Response<GetBlockedUsersResponse>, Status> {
+        let req = req.into_inner();
+
+        let user_id = Uuid::try_parse(&req.user_id).invalid_argument_error()?;
+
+        let blocked_users = self.blocked_user_repo.get_blocked_users(&user_id).await.handle()?;
+        let blocked_users = blocked_users.iter().map(|v| v.blocked_user_id.to_string()).collect::<Vec<_>>();
+
+        Ok(Response::new(GetBlockedUsersResponse { blocked_users }))
     }
 
     async fn follow_user(&self, req: Request<UserId>) -> Result<Response<()>, Status> {

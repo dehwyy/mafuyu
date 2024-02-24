@@ -66,10 +66,56 @@ pub struct GetUserResponse {
     pub picture: ::core::option::Option<::prost::alloc::string::String>,
     #[prost(string, repeated, tag = "8")]
     pub languages: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
-    #[prost(string, repeated, tag = "9")]
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GetBasicUserResponse {
+    #[prost(string, tag = "1")]
+    pub user_id: ::prost::alloc::string::String,
+    #[prost(string, tag = "2")]
+    pub username: ::prost::alloc::string::String,
+    #[prost(string, optional, tag = "3")]
+    pub picture: ::core::option::Option<::prost::alloc::string::String>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GetUserFriendsRequest {
+    #[prost(string, tag = "1")]
+    pub user_id: ::prost::alloc::string::String,
+    #[prost(uint32, optional, tag = "2")]
+    pub limit: ::core::option::Option<u32>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GetUserFriendsResponse {
+    #[prost(string, repeated, tag = "1")]
     pub friends: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
-    #[prost(string, repeated, tag = "10")]
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GetUserFollowersRequest {
+    #[prost(string, tag = "1")]
+    pub user_id: ::prost::alloc::string::String,
+    #[prost(uint32, optional, tag = "2")]
+    pub limit: ::core::option::Option<u32>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GetUserFollowersResponse {
+    #[prost(string, repeated, tag = "1")]
     pub followers: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GetBlockedUsersRequest {
+    #[prost(string, tag = "1")]
+    pub user_id: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GetBlockedUsersResponse {
+    #[prost(string, repeated, tag = "1")]
+    pub blocked_users: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
 /// Generated client implementations.
 pub mod user_rpc_client {
@@ -216,6 +262,105 @@ pub mod user_rpc_client {
             req.extensions_mut().insert(GrpcMethod::new("user.UserRpc", "GetUser"));
             self.inner.unary(req, path, codec).await
         }
+        pub async fn get_basic_user(
+            &mut self,
+            request: impl tonic::IntoRequest<super::GetUserRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::GetBasicUserResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/user.UserRpc/GetBasicUser",
+            );
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new("user.UserRpc", "GetBasicUser"));
+            self.inner.unary(req, path, codec).await
+        }
+        pub async fn get_user_friends(
+            &mut self,
+            request: impl tonic::IntoRequest<super::GetUserFriendsRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::GetUserFriendsResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/user.UserRpc/GetUserFriends",
+            );
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("user.UserRpc", "GetUserFriends"));
+            self.inner.unary(req, path, codec).await
+        }
+        pub async fn get_user_followers(
+            &mut self,
+            request: impl tonic::IntoRequest<super::GetUserFollowersRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::GetUserFollowersResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/user.UserRpc/GetUserFollowers",
+            );
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("user.UserRpc", "GetUserFollowers"));
+            self.inner.unary(req, path, codec).await
+        }
+        pub async fn get_blocked_users(
+            &mut self,
+            request: impl tonic::IntoRequest<super::GetBlockedUsersRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::GetBlockedUsersResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/user.UserRpc/GetBlockedUsers",
+            );
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("user.UserRpc", "GetBlockedUsers"));
+            self.inner.unary(req, path, codec).await
+        }
         pub async fn follow_user(
             &mut self,
             request: impl tonic::IntoRequest<super::UserId>,
@@ -315,6 +460,34 @@ pub mod user_rpc_server {
             &self,
             request: tonic::Request<super::GetUserRequest>,
         ) -> std::result::Result<tonic::Response<super::GetUserResponse>, tonic::Status>;
+        async fn get_basic_user(
+            &self,
+            request: tonic::Request<super::GetUserRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::GetBasicUserResponse>,
+            tonic::Status,
+        >;
+        async fn get_user_friends(
+            &self,
+            request: tonic::Request<super::GetUserFriendsRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::GetUserFriendsResponse>,
+            tonic::Status,
+        >;
+        async fn get_user_followers(
+            &self,
+            request: tonic::Request<super::GetUserFollowersRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::GetUserFollowersResponse>,
+            tonic::Status,
+        >;
+        async fn get_blocked_users(
+            &self,
+            request: tonic::Request<super::GetBlockedUsersRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::GetBlockedUsersResponse>,
+            tonic::Status,
+        >;
         async fn follow_user(
             &self,
             request: tonic::Request<super::UserId>,
@@ -530,6 +703,188 @@ pub mod user_rpc_server {
                     let fut = async move {
                         let inner = inner.0;
                         let method = GetUserSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/user.UserRpc/GetBasicUser" => {
+                    #[allow(non_camel_case_types)]
+                    struct GetBasicUserSvc<T: UserRpc>(pub Arc<T>);
+                    impl<T: UserRpc> tonic::server::UnaryService<super::GetUserRequest>
+                    for GetBasicUserSvc<T> {
+                        type Response = super::GetBasicUserResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::GetUserRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as UserRpc>::get_basic_user(&inner, request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = GetBasicUserSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/user.UserRpc/GetUserFriends" => {
+                    #[allow(non_camel_case_types)]
+                    struct GetUserFriendsSvc<T: UserRpc>(pub Arc<T>);
+                    impl<
+                        T: UserRpc,
+                    > tonic::server::UnaryService<super::GetUserFriendsRequest>
+                    for GetUserFriendsSvc<T> {
+                        type Response = super::GetUserFriendsResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::GetUserFriendsRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as UserRpc>::get_user_friends(&inner, request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = GetUserFriendsSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/user.UserRpc/GetUserFollowers" => {
+                    #[allow(non_camel_case_types)]
+                    struct GetUserFollowersSvc<T: UserRpc>(pub Arc<T>);
+                    impl<
+                        T: UserRpc,
+                    > tonic::server::UnaryService<super::GetUserFollowersRequest>
+                    for GetUserFollowersSvc<T> {
+                        type Response = super::GetUserFollowersResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::GetUserFollowersRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as UserRpc>::get_user_followers(&inner, request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = GetUserFollowersSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/user.UserRpc/GetBlockedUsers" => {
+                    #[allow(non_camel_case_types)]
+                    struct GetBlockedUsersSvc<T: UserRpc>(pub Arc<T>);
+                    impl<
+                        T: UserRpc,
+                    > tonic::server::UnaryService<super::GetBlockedUsersRequest>
+                    for GetBlockedUsersSvc<T> {
+                        type Response = super::GetBlockedUsersResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::GetBlockedUsersRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as UserRpc>::get_blocked_users(&inner, request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = GetBlockedUsersSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(

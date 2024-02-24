@@ -4,8 +4,7 @@ use tonic::{Request, Response, Status};
 use makoto_grpc::{pkg as grpc, Tools};
 use grpc::api::api_rpc_server;
 use grpc::{auth, tokens, oauth2, passport, integrations, user, cdn, general, authorization};
-use makoto_grpc::pkg::user::UserId;
-use logger::info;
+use logger::trace;
 
 
 pub struct ApiRpcServiceImplementation<T = tonic::transport::Channel> {
@@ -196,22 +195,44 @@ impl api_rpc_server::ApiRpc for ApiRpcServiceImplementation {
   }
 
   async fn get_user(&self, req: Request<user::GetUserRequest>) -> Result<Response<user::GetUserResponse>, Status> {
-    self.user_client.clone().borrow_mut().get_user(req).await
+    trace!("Get user request: {:?}", req);
+    let r =self.user_client.clone().borrow_mut().get_user(req).await?;
+    trace!("Get user response: {:?}", r);
+    Ok(r)
   }
 
-  async fn follow_user(&self, req: Request<UserId>) -> Result<Response<()>, Status> {
+  async fn get_basic_user(&self, req: Request<user::GetUserRequest>) -> Result<Response<user::GetBasicUserResponse>, Status> {
+    trace!("Get basic user request: {:?}", req);
+    let r = self.user_client.clone().borrow_mut().get_basic_user(req).await?;
+    trace!("Get basic user response: {:?}", r);
+    Ok(r)
+  }
+
+  async fn get_user_friends(&self, req: Request<user::GetUserFriendsRequest>) -> Result<Response<user::GetUserFriendsResponse>, Status> {
+    self.user_client.clone().borrow_mut().get_user_friends(req).await
+  }
+
+  async fn get_user_followers(&self, req: Request<user::GetUserFollowersRequest>) -> Result<Response<user::GetUserFollowersResponse>, Status> {
+    self.user_client.clone().borrow_mut().get_user_followers(req).await
+  }
+
+  async fn get_blocked_users(&self, req: Request<user::GetBlockedUsersRequest>) -> Result<Response<user::GetBlockedUsersResponse>, Status> {
+    self.user_client.clone().borrow_mut().get_blocked_users(req).await
+  }
+
+  async fn follow_user(&self, req: Request<user::UserId>) -> Result<Response<()>, Status> {
     self.user_client.clone().borrow_mut().follow_user(req).await
   }
 
-  async fn unfollow_user(&self, req: Request<UserId>) -> Result<Response<()>, Status> {
+  async fn unfollow_user(&self, req: Request<user::UserId>) -> Result<Response<()>, Status> {
     self.user_client.clone().borrow_mut().unfollow_user(req).await
   }
 
-  async fn block_user(&self, req: Request<UserId>) -> Result<Response<()>, Status> {
+  async fn block_user(&self, req: Request<user::UserId>) -> Result<Response<()>, Status> {
     self.user_client.clone().borrow_mut().block_user(req).await
   }
 
-  async fn unblock_user(&self, req: Request<UserId>) -> Result<Response<()>, Status> {
+  async fn unblock_user(&self, req: Request<user::UserId>) -> Result<Response<()>, Status> {
     self.user_client.clone().borrow_mut().unblock_user(req).await
   }
 

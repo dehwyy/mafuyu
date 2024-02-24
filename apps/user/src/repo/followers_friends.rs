@@ -1,4 +1,4 @@
-use sea_orm::{DatabaseConnection, prelude::*, IntoActiveValue, TransactionTrait, IntoActiveModel, Condition};
+use sea_orm::{DatabaseConnection, prelude::*, IntoActiveValue, TransactionTrait, IntoActiveModel, Condition, QuerySelect};
 use sea_orm::sea_query::OnConflict;
 use uuid::Uuid;
 use makoto_lib::errors::RepositoryError;
@@ -16,15 +16,17 @@ impl FollowersFriendsRepo {
         }
     }
 
-    pub async fn get_followers(&self, user_id: &Uuid) -> Result<Vec<user_followers::Model>, RepositoryError> {
+    pub async fn get_followers(&self, user_id: &Uuid, limit: Option<u32>) -> Result<Vec<user_followers::Model>, RepositoryError> {
         UserFollowers::find()
             .filter(user_followers::Column::FollowedToUserId.eq(*user_id))
+            .limit(limit.map(|v| v as u64))
             .all(&self.db).await.handle()
     }
 
-    pub async fn get_friends(&self, user_id: &Uuid) -> Result<Vec<user_friends::Model>, RepositoryError> {
+    pub async fn get_friends(&self, user_id: &Uuid, limit: Option<u32>) -> Result<Vec<user_friends::Model>, RepositoryError> {
         UserFriends::find()
             .filter(user_friends::Column::UserId.eq(*user_id))
+            .limit(limit.map(|v| v as u64))
             .all(&self.db).await.handle()
     }
 

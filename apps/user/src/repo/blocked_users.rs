@@ -16,6 +16,10 @@ impl BlockedUsersRepo {
         }
     }
 
+    pub async fn get_blocked_users(&self, user_id: &Uuid) -> Result<Vec<user_blocked::Model>, RepositoryError> {
+        UserBlocked::find().filter(user_blocked::Column::UserId.eq(*user_id)).all(&self.db).await.handle()
+    }
+
     pub async fn block(&self, user_id: &Uuid, user_id_to_block: &Uuid) -> Result<(), RepositoryError> {
         UserBlocked::insert(user_blocked::ActiveModel {
             user_id: user_id.into_active_value(),

@@ -10,6 +10,11 @@ service UserRpc {
   rpc CreateUser(CreateUserRequest) returns (google.protobuf.Empty);
   rpc EditUser(EditUserRequest) returns (google.protobuf.Empty);
   rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc GetBasicUser(GetUserRequest) returns (GetBasicUserResponse);
+
+  rpc GetUserFriends(GetUserFriendsRequest) returns (GetUserFriendsResponse);
+  rpc GetUserFollowers(GetUserFollowersRequest) returns (GetUserFollowersResponse);
+  rpc GetBlockedUsers(GetBlockedUsersRequest) returns (GetBlockedUsersResponse);
 
   rpc FollowUser(UserId) returns (google.protobuf.Empty);
   rpc UnfollowUser(UserId) returns (google.protobuf.Empty);
@@ -53,7 +58,36 @@ message GetUserResponse {
   optional string bio = 6;
   optional string picture = 7;
   repeated string languages = 8;
+}
 
-  repeated string friends = 9;
-  repeated string followers = 10;
+message GetBasicUserResponse {
+  string user_id = 1;
+  string username = 2;
+  optional string picture = 3;
+}
+
+message GetUserFriendsRequest {
+  string user_id = 1;
+  optional uint32 limit = 2;
+}
+
+message GetUserFriendsResponse {
+  repeated string friends = 1;
+}
+
+message GetUserFollowersRequest {
+  string user_id = 1;
+  optional uint32 limit = 2;
+}
+
+message GetUserFollowersResponse {
+  repeated string followers = 1;
+}
+
+message GetBlockedUsersRequest {
+  string user_id = 1;
+}
+
+message GetBlockedUsersResponse {
+  repeated string blocked_users = 1;
 }
