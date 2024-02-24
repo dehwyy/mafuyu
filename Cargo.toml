@@ -18,8 +18,9 @@ members = [
   "libs/nats",
   "libs/logger",
   "libs/utils",
+  "libs/sentry",
 
-  "cli"
+  "cli",
 ]
 
 resolver = "2"
