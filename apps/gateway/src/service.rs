@@ -3,7 +3,7 @@ use tonic::{Request, Response, Status};
 
 use makoto_grpc::{pkg as grpc, Tools};
 use grpc::api::api_rpc_server;
-use grpc::{auth, tokens, oauth2, passport, integrations, user, cdn, general, authorization};
+use grpc::{auth, tokens, oauth2, passport, integrations, user, general, authorization};
 use logger::trace;
 
 
@@ -15,7 +15,6 @@ pub struct ApiRpcServiceImplementation<T = tonic::transport::Channel> {
   passport_client: passport::passport_rpc_client::PassportRpcClient<T>,
   integrations_client: integrations::integrations_rpc_client::IntegrationsRpcClient<T>,
   user_client: user::user_rpc_client::UserRpcClient<T>,
-  cdn_client: cdn::cdn_rpc_client::CdnRpcClient<T>
 }
 
 impl ApiRpcServiceImplementation {
@@ -32,7 +31,6 @@ impl ApiRpcServiceImplementation {
       passport_client: clients.passport_client.unwrap(),
       integrations_client: clients.integrations_client.unwrap(),
       user_client: clients.user_client.unwrap(),
-      cdn_client: clients.cdn_client.unwrap(),
     }
   }
 }

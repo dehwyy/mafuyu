@@ -17,9 +17,23 @@ use tower_http::cors::{CorsLayer, AllowOrigin, AllowHeaders, AllowCredentials, E
 use http::header::HeaderName;
 use http::HeaderValue;
 
+fn main() {
+    let cfg = makoto_config::secrets::Secrets::new();
 
-#[tokio::main]
-async fn main() -> makoto_lib::Result<()> {
+
+    let _guard = mafuyu_sentry::Sentry::new(cfg.sentry_dsn);
+
+    // https://docs.sentry.io/platforms/rust/#configure
+    tokio::runtime::Builder::new_multi_thread()
+        .enable_all()
+        .build()
+        .unwrap()
+        .block_on(async {
+            runtime().await.unwrap();
+        });
+}
+
+async fn runtime() -> makoto_lib::Result<()> {
 
     Logger::new();
 

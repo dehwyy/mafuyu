@@ -2,13 +2,12 @@ use hyper::body::Body;
 use tower::{Layer, Service};
 use std::{pin::Pin,task::{Context, Poll}};
 use std::future::Future;
-use std::ops::Deref;
 use tonic::body::BoxBody;
 
 pub mod tools;
 pub mod func;
 
-use func::{MiddlewareFunc, MiddlewareFunctionStatic};
+use func::MiddlewareFunctionStatic;
 
 #[derive(Clone)]
 pub struct BaseMiddlewareLayer {

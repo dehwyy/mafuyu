@@ -1,5 +1,3 @@
-use logger::info;
-
 pub struct RemoveKeepAliveHeaderInterceptor;
 
 impl RemoveKeepAliveHeaderInterceptor {

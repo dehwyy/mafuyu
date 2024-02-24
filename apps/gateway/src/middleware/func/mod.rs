@@ -11,10 +11,10 @@ pub type MiddlewareFuncRequest = Pin<Box<dyn Future<Output=Request<Body>> + Send
 pub type MiddlewareFuncResponse = Pin<Box<dyn Future<Output=Response<BoxBody>> + Send>>;
 
 pub trait MiddlewareFunc {
-    fn before_call(&'static self, mut req: Request<Body>) -> MiddlewareFuncRequest {
+    fn before_call(&'static self, req: Request<Body>) -> MiddlewareFuncRequest {
         Box::pin(async move {req})
     }
-    fn after_call(&'static self, mut res: Response<BoxBody>) -> MiddlewareFuncResponse {
+    fn after_call(&'static self, res: Response<BoxBody>) -> MiddlewareFuncResponse {
         Box::pin(async move {res})
     }
 }

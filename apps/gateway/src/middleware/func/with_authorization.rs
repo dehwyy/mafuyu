@@ -4,7 +4,7 @@ use crate::middleware::tools::Headers;
 
 use makoto_grpc::METADATA_ACCESS_TOKEN_KEY;
 use makoto_grpc::metadata::{UserRole, METADATA_USER_ID_KEY, METADATA_USER_ROLE_KEY};
-use logger::{error, info};
+use logger::error;
 
 #[derive(Clone)]
 pub struct WithAuthorizationMiddleware;
@@ -18,7 +18,7 @@ impl WithAuthorizationMiddleware {
 impl MiddlewareFunc for WithAuthorizationMiddleware {
     fn before_call(&'static self, mut req: hyper::Request<hyper::Body>) -> MiddlewareFuncRequest {
         Box::pin(async move {
-            let mut headers = req.headers_mut();
+            let headers = req.headers_mut();
             if let Some(access_token) = Headers::extract_header(headers, METADATA_ACCESS_TOKEN_KEY) {
                 if let Ok(auth_client) = makoto_grpc::RpcClients::get_auth_client().await {
                     match auth_client.clone().borrow_mut().sign_in_with_token(makoto_grpc::pkg::auth::SignInWithTokenRequest {
