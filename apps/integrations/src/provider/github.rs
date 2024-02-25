@@ -6,11 +6,11 @@ mod url {
 }
 
 mod payload {
-    #[derive(serde::Deserialize)]
+    #[derive(serde::Deserialize, Debug)]
     pub struct GithubUserResponse {
         pub id: i32,
         pub email: Option<String>,
-        pub name: String,
+        pub login: String, // actually username
         pub avatar_url: Option<String>
     }
 }
@@ -27,17 +27,20 @@ impl crate::provider::ProviderTrait for Github {
             .header("Authorization", format!("Bearer {token}", token=access_token))
             .header("Accept", "application/json") // json response
             .header("User-Agent", "Mafuyu-App")
+            .header("X-GitHub-Api-Version", "2022-11-28")
             .send().await.map_err(|err| ProviderRequestError::RequestError(err.to_string()))?;
+
 
         let response = response
             .json::<payload::GithubUserResponse>() // response into struct
             .await.map_err(|err| ProviderRequestError::CannotDeserialize(err.to_string()))?;
 
         Ok(GetBasicUserResponse {
-            username: response.name,
+            username: response.login,
             email: response.email,
             picture: response.avatar_url,
             provider_id: response.id.to_string()
         })
     }
 }
+
