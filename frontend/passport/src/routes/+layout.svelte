@@ -62,7 +62,6 @@
   import { authed_user_store } from "$lib/stores/user"
 
   export let data: import("./$types").LayoutData
-
   hydrate(queryClient, data.dehydrateState)
 
   authed_user_store.set(

@@ -13,8 +13,8 @@
     target: "header-account-popup",
   }
 
-  const [user, userStore] = useUserInfo({ oneofKind: "userId", userId: $authed_user_store?.id })
-  $: userStore.set({ getBy: { oneofKind: "userId", userId: $authed_user_store?.id } })
+  const [user, userStore] = useUserInfo({ oneofKind: "username", username: $authed_user_store?.username })
+  $: userStore.set({ getBy: { oneofKind: "username", username: $authed_user_store?.username } })
 
   $: picture = ($authed_user_store?.id && ($dyn_user_store?.picture || $user?.data?.picture)) || DevFallbackImages.HorizontalOriented
 </script>

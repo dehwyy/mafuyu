@@ -19,6 +19,7 @@ const createReactiveQuery = <Args, T, E, D, QueryKey extends TQueryKey>(
   const store = writable<Args>(initialArguments)
   const query = createQuery<T, E, D, QueryKey>(derived(store, store_val => queryOptions(store_val))) as CreateQueryResult<T, Error>
 
+  // query.subscribe(v => v.error && console.log("ERROR Vbl DAUN!", v.error.message))
   return [query, store] as const
 }
 

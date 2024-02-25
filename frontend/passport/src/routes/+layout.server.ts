@@ -23,14 +23,12 @@ export const load: LayoutServerLoad = async ({ cookies, url, setHeaders }) => {
       },
     )
 
-    await queryClient.prefetchQuery(getUserInfoQuery({ oneofKind: "userId", userId: response.userId }, GrpcServerClient(5000, cookies)))
+    await queryClient.prefetchQuery(getUserInfoQuery({ oneofKind: "username", username: response.username }, GrpcServerClient(5000, cookies)))
 
     return {
       userId: response.userId,
       username: response.username,
-      dehydrateState: structuredClone(
-        dehydrate(queryClient),
-      ),
+      dehydrateState: structuredClone(dehydrate(queryClient)),
       url: url.pathname,
     }
   } catch (e) {

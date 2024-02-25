@@ -41,3 +41,9 @@ export const enum DevFallbackImages {
   VerticalOriented = "/images/r.jpg",
   HorizontalOriented = "/images/hana.png",
 }
+
+export const enum StaleTime {
+  SECOND = 1000,
+  MINUTE = 60 * StaleTime.SECOND,
+  HOUR = 60 * StaleTime.MINUTE,
+}

@@ -1,7 +1,10 @@
-import { createMutation, createQuery } from "@tanstack/svelte-query"
+import { QueryClient, createMutation, createQuery, useQueryClient } from "@tanstack/svelte-query"
 import { GrpcWebClient } from "@makoto/grpc/web"
 import { Toasts } from "$lib/utils/toast"
 import { createReactiveQuery } from "$lib/query-abstraction"
+import { queryClient as qc } from "$lib/query-client"
+import { browser } from "$app/environment"
+import { StaleTime } from "$lib/const"
 
 export const FriendsKeys = {
   "query.friends": "friends.getFriends",
@@ -10,10 +13,16 @@ export const FriendsKeys = {
   "mutate.unfollow": "friends.unfollowUser",
 } as const
 
+const invalidateUserFriends = (q: QueryClient, keys: unknown[]) => {
+  keys.forEach(key => {
+    q.invalidateQueries({ queryKey: [FriendsKeys["query.friends"], key] })
+  })
+}
+
 export const useUserFriends = (userId: string | undefined, limit?: number) => {
   return createReactiveQuery({ userId, limit }, ({ userId, limit }) => ({
     queryKey: [FriendsKeys["query.friends"], userId, limit],
-    enabled: !!userId,
+    staleTime: 5 * StaleTime.MINUTE,
     queryFn: async () => {
       if (!userId) return null
 
@@ -26,11 +35,18 @@ export const useUserFriends = (userId: string | undefined, limit?: number) => {
   }))
 }
 
+const invalidateUserFollowers = (q: QueryClient, keys: unknown[]) => {
+  keys.forEach(key => {
+    q.invalidateQueries({ queryKey: [FriendsKeys["query.followers"], key] })
+  })
+}
+
 export const useUserFollowers = (userId: string | undefined, limit?: number) => {
   return createReactiveQuery({ userId, limit }, ({ userId, limit }) => ({
     queryKey: [FriendsKeys["query.followers"], userId, limit],
-    enabled: !!userId,
+    staleTime: 5 * StaleTime.MINUTE,
     queryFn: async () => {
+      console.log("followers", userId, limit)
       if (!userId) return null
       const { response } = await GrpcWebClient.getUserFollowers({
         userId,
@@ -42,11 +58,13 @@ export const useUserFollowers = (userId: string | undefined, limit?: number) => 
 }
 
 interface FollowUserPayload {
+  reqUserId: string // only for query invalidation purposes
   userId: string
-  successText: () => string
+  getSuccessText: () => string
 }
 
 export const useFollowUser = () => {
+  const queryClient = useQueryClient(qc)
   return createMutation({
     mutationKey: [FriendsKeys["mutate.follow"]],
     mutationFn: async (p: FollowUserPayload) => {
@@ -58,12 +76,15 @@ export const useFollowUser = () => {
     },
 
     onSuccess: (_, p) => {
-      Toasts.success(p.successText())
+      Toasts.success(p.getSuccessText())
+      invalidateUserFollowers(queryClient, [p.userId, p.reqUserId])
+      invalidateUserFriends(queryClient, [p.userId, p.reqUserId])
     },
   })
 }
 
 export const useUnfollowUser = () => {
+  const queryClient = useQueryClient(qc)
   return createMutation({
     mutationKey: [FriendsKeys["mutate.unfollow"]],
     mutationFn: async (p: FollowUserPayload) => {
@@ -75,7 +96,9 @@ export const useUnfollowUser = () => {
     },
 
     onSuccess: (_, p) => {
-      Toasts.success(p.successText())
+      Toasts.success(p.getSuccessText())
+      invalidateUserFollowers(queryClient, [p.userId, p.reqUserId])
+      invalidateUserFriends(queryClient, [p.userId, p.reqUserId])
     },
   })
 }

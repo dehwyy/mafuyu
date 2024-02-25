@@ -4,20 +4,23 @@
   import { ListBox, ListBoxItem } from "@skeletonlabs/skeleton"
   import UserPreview from "$lib/components/user-preview.svelte"
   import UserActions from "$lib/components/user-actions.svelte"
-  import { CreateNavigation, DevFallbackImages } from "$lib/const"
+  import { CreateNavigation } from "$lib/const"
   import useSyncedNavigation from "$lib/hooks/use-synced-navigation"
-  import { useUserInfo } from "$lib/query/user"
+  import { useBlockedUsers, useUserInfo } from "$lib/query/user"
   import { useHydrate } from "@tanstack/svelte-query"
   import { useUserProfileScopes } from "$lib/query/profile"
 
   export let data: import("./$types").LayoutData
-  useHydrate(data.dehydrateState)
+  $: useHydrate(data.dehydrateState)
 
   const [user, userStore] = useUserInfo({ oneofKind: "username", username: $page.params.username })
-  $: userStore.set({ getBy: {oneofKind: "username", username: $page.params.username }})
+  $: userStore.set({ getBy: { oneofKind: "username", username: $page.params.username } })
 
   const [userScopes, userScopesStore] = useUserProfileScopes($user.data?.userId)
   $: userScopesStore.set({ userId: $user.data?.userId })
+
+  const [userBlockedUsers, userBlockedUsersStore] = useBlockedUsers($user.data?.userId)
+  $: userBlockedUsersStore.set({ userId: $user.data?.userId })
 
   $: navigation = useSyncedNavigation({
     base_route: "/@[username]",
@@ -38,22 +41,33 @@
     },
   })
 
-  $: is_current_user = $user.data?.userId === $authed_user_store?.id
-
-  const [current_user, currentUserStore] = useUserInfo({ oneofKind: "userId", userId: is_current_user ? $authed_user_store?.id : undefined })
-  $: currentUserStore.set({ getBy: { oneofKind: "userId", userId: is_current_user ? $authed_user_store?.id : undefined } })
-
-  $: username = (is_current_user && $authed_user_store?.username) || ($user.data?.username as string)
-  $: user_preview_image = (is_current_user && $current_user?.data?.picture) || $user.data?.picture
-  $: user_preview_pseudonym = (is_current_user && $current_user?.data?.pseudonym) || $user.data?.pseudonym
+  $: is_current_user = $page.params.username === $authed_user_store?.username
+  $: username = $user.data?.username as string
+  $: isAuthedUserBlocked = $userBlockedUsers.data?.blockedUsers.includes($authed_user_store?.id!) ?? false
 </script>
 
-<div class="page-layout-wrapper">
+{#if isAuthedUserBlocked}
+  <div class="absolute top-1/2 -translate-y-1/2 z-10 left-1/2 -translate-x-1/2">
+    <p class="[&>strong]:underline text-3xl">
+      <strong>@{username}</strong>
+      was blocked
+      <strong>You</strong>
+    </p>
+    <hr class="my-5 border-b-2 !border-b-primary-700"/>
+    <p class="text-center">
+      <button on:click={() => window.history.back()} class="variant-glass-secondary btn-xl rounded-token">Go back</button>
+    </p>
+  </div>
+{/if}
+
+<div class={`${isAuthedUserBlocked && "blur-md select-none pointer-events-none pb-5 relative"} page-layout-wrapper`}>
   <div class="page-layout">
     <nav>
-      <UserPreview image={user_preview_image || DevFallbackImages.HorizontalOriented} pseudonym={user_preview_pseudonym} {username} />
+      {#if $user.data}
+        <UserPreview {username} />
+      {/if}
       {#if !is_current_user && $user.data}
-        <UserActions userId={$user.data.userId} username={$user.data.username} />
+        <UserActions userId={$user.data.userId} {username} />
         <hr class="mt-4 mb-5" />
       {/if}
       <ListBox>
