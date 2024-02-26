@@ -59,6 +59,7 @@
 
   // Before this line, everything is INIT
   import Header from "$lib/components/header/header.svelte"
+  import { ProgressBar } from "@prgm/sveltekit-progress-bar"
   import { authed_user_store } from "$lib/stores/user"
 
   export let data: import("./$types").LayoutData
@@ -74,6 +75,7 @@
   )
 </script>
 
+<ProgressBar class="text-primary-600" zIndex={100} settleTime={100} />
 <QueryClientProvider client={queryClient}>
   <Modal />
   <AppShell>

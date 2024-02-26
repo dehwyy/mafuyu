@@ -12,6 +12,7 @@
   $: authedUserBlockedUsersStore.set({ userId: $authed_user_store?.id })
 
   $: userId = $user?.data?.userId as string
+  $: username = $user?.data?.username as string
   $: isProfileInBlock = $authedUserBlockedUsers?.data?.blockedUsers.includes(userId) ?? false
 </script>
 
@@ -21,8 +22,8 @@
       <Birthday />
       <Location location={$user.data?.location} />
       <hr />
-      <Friends {userId} />
-      <Followers {userId} />
+      <Friends {userId} {username}/>
+      <Followers {userId} {username} />
       <hr />
       <Languages languages={$user.data?.languages || []} />
     </section>

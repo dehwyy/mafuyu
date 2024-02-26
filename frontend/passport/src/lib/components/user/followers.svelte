@@ -5,8 +5,10 @@
   import People from "./people.svelte"
   import { getBaseUserInfoQuery} from "$lib/query/user"
   import { useUserFollowers } from "$lib/query/friends"
+  import { CreateNavigation } from "$lib/const"
 
   export let userId: string
+  export let username: string
 
   const [userFollowers, userFollowersStore] = useUserFollowers(userId)
   $: userFollowersStore.set({ userId, limit: undefined })
@@ -19,4 +21,4 @@
   })
 </script>
 
-<People raw_icon={PeopleGroupIconRaw} label="Followers" images={$followers.map(follower => follower.data?.picture)} />
+<People href={CreateNavigation.ToFollowers(username)} raw_icon={PeopleGroupIconRaw} label="Followers" images={$followers.map(follower => follower.data?.picture)} />

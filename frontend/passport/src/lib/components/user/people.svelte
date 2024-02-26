@@ -4,11 +4,12 @@
   export let label: string
   export let images: Array<string | undefined>
   export let raw_icon: string | undefined = undefined
-  export let see_all_href: string | undefined = undefined
+  export let href: string
 
   $: aligned_images = new Array(3).fill(undefined).map((_, i) => images[i])
 </script>
 
+<a {href}>
 <div class="flex gap-x-5 pointer-events-none h-[30px]">
   {#if raw_icon}<p class="icon-sm mt-0.5">{@html raw_icon}</p>{/if}
   <div class="flex w-full items-center">
@@ -32,6 +33,7 @@
         </div>
       {/each}
     </div>
-    {#if see_all_href}<a href={see_all_href} class="block ml-auto hover:underline transition-all">see all</a>{/if}
   </div>
 </div>
+
+</a>

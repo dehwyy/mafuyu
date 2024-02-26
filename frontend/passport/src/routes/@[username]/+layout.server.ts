@@ -10,7 +10,6 @@ import { StaleTime } from "$lib/const"
 export const load: LayoutServerLoad = async ({ cookies, params, parent }) => {
   const withUserPromise = new Promise(async r => {
     const username = params.username
-
     const response = await queryClient.fetchQuery({
       ...getUserInfoQuery({ oneofKind: "username", username }, GrpcServerClient(0, cookies)),
     })
@@ -38,7 +37,11 @@ export const load: LayoutServerLoad = async ({ cookies, params, parent }) => {
     r({})
   })
 
-  await Promise.all([withUserPromise, withAuthedUserPromise])
+  try {
+    await Promise.all([withUserPromise, withAuthedUserPromise])
+  } catch (e) {
+    console.log(e)
+  }
 
   return structuredClone({
     dehydrateState: dehydrate(queryClient),

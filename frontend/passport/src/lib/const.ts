@@ -1,14 +1,26 @@
 export const enum Routes {
-  Login = "/login",
-  Create = "/create",
-  RecoverPassword = "/recover/password",
+  Login = "/login/",
+  Create = "/create/",
+  RecoverPassword = "/recover/password/",
   Account = "/",
-  Logout = "/logout",
+  Logout = "/logout/",
 }
 
 export class CreateNavigation {
   static ToUser(username: string, dyn: string = ""): string {
     return `${Routes.Account}@${username}${dyn}`
+  }
+  static ToFriends(username: string): string {
+    return `${Routes.Account}@${username}/self?section=friends`
+  }
+  static ToFollowers(username: string): string {
+    return `${Routes.Account}@${username}/self?section=followers`
+  }
+  static ToGoogleIntegration(username: string): string {
+    return `${Routes.Account}@${username}/google`
+  }
+  static ToGithubIntegration(username: string): string {
+    return `${Routes.Account}@${username}/github`
   }
 }
 

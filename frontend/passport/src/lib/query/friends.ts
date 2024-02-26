@@ -46,7 +46,6 @@ export const useUserFollowers = (userId: string | undefined, limit?: number) => 
     queryKey: [FriendsKeys["query.followers"], userId, limit],
     staleTime: 5 * StaleTime.MINUTE,
     queryFn: async () => {
-      console.log("followers", userId, limit)
       if (!userId) return null
       const { response } = await GrpcWebClient.getUserFollowers({
         userId,

@@ -5,8 +5,10 @@
   import { getBaseUserInfoQuery } from "$lib/query/user"
   import { useUserFriends } from "$lib/query/friends"
   import { createQueries } from "@tanstack/svelte-query"
+  import { CreateNavigation } from "$lib/const"
 
   export let userId: string
+  export let username: string
 
   const [userFriends, userFriendsStore] = useUserFriends(userId, undefined)
   $: userFriendsStore.set({ userId, limit: undefined })
@@ -19,4 +21,4 @@
   })
 </script>
 
-<People raw_icon={FriendsIconRaw} label="Friends" images={$friends.map(friend => friend.data?.picture)} />
+<People href={CreateNavigation.ToFriends(username)} raw_icon={FriendsIconRaw} label="Friends" images={$friends.map(friend => friend.data?.picture)} />

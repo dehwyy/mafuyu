@@ -23,8 +23,8 @@
   $: userBlockedUsersStore.set({ userId: $user.data?.userId })
 
   $: navigation = useSyncedNavigation({
-    base_route: "/@[username]",
-    current_route: $page.route.id!,
+    base_route: `/@${$page.params.username}`,
+    current_route: $page.url.pathname,
     navigations: {
       "/": {
         placeholder: "Overview",
@@ -38,6 +38,10 @@
         placeholder: "Settings",
         isActive: $userScopes.data?.edit ?? false,
       },
+      "/self": {
+        placeholder: "Self",
+        isActive: $userScopes.data?.edit ?? false, // TODO
+      }
     },
   })
 
@@ -53,7 +57,7 @@
       was blocked
       <strong>You</strong>
     </p>
-    <hr class="my-5 border-b-2 !border-b-primary-700"/>
+    <hr class="my-5 border-b-2 !border-b-primary-700" />
     <p class="text-center">
       <button on:click={() => window.history.back()} class="variant-glass-secondary btn-xl rounded-token">Go back</button>
     </p>
