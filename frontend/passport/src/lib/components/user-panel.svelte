@@ -37,7 +37,7 @@
         </button>
       </a>
       <a href={CreateNavigation.ToGithubIntegration(username)}>
-        <button on:click|stopPropagation|preventDefault class="icon">
+        <button on:click|stopPropagation class="icon">
           {@html GithubIconRaw}
         </button>
       </a>

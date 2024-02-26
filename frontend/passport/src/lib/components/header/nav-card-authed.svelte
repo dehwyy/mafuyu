@@ -2,12 +2,13 @@
   import UserIconRaw from "$lib/assets/user.svg?raw"
   import GearIconRaw from "$lib/assets/gear.svg?raw"
   import FriendsIconRaw from "$lib/assets/people-group.svg?raw"
+  import CircleIconRaw from "$lib/assets/circle.svg?raw"
   import CollectionIconRaw from "$lib/assets/social.svg?raw"
   import NotesIconRaw from "$lib/assets/notes.svg?raw"
   import LogoutIconRaw from "$lib/assets/logout.svg?raw"
   import ThemeSelectIconRaw from "$lib/assets/theme-select.svg?raw"
 
-  import { Routes } from "$lib/const"
+  import { CreateNavigation, Routes } from "$lib/const"
   import ThemeSelector from "./theme-selector.svelte"
   import { useUserInfo } from "$lib/query/user"
   import { authed_user_store, clear_user } from "$lib/stores/user"
@@ -21,7 +22,7 @@
 
 <ul>
   <li>
-    <a href={user_href}>
+    <a href={CreateNavigation.ToUser(username)}>
       <button>
         <span>{@html UserIconRaw}</span>
         <span>{username}</span>
@@ -40,6 +41,14 @@
         <span class="icon-sm block">{@html ThemeSelectIconRaw}</span>
       </ThemeSelector>
     </div>
+  </li>
+  <li>
+    <a href={Routes.Circle}>
+      <button>
+        <span>{@html CircleIconRaw}</span>
+        <span>Circle</span>
+      </button>
+    </a>
   </li>
   <li>
     <button>

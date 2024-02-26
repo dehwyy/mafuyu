@@ -63,7 +63,8 @@ export const useBaseUserInfo = (getBy: GetUserBy) => {
 }
 
 interface EditUserPayload {
-  username?: string
+  username: string
+  updateUsername: boolean // will produce page reload (`window.location.reload()`)
   userId: string
   pseudonym?: string
   bio?: string
@@ -98,9 +99,11 @@ export const useEditUser = () => {
 
     onSuccess: async (_, payload) => {
       Toasts.success("Saved ")
-      if (!payload.username) {
+      if (!payload.updateUsername) {
         query_client.invalidateQueries({ queryKey: [UserKeys["query.getBaseUserInfo"], payload.userId] })
         query_client.invalidateQueries({ queryKey: [UserKeys["query.getUserInfo"], payload.userId] })
+        query_client.invalidateQueries({ queryKey: [UserKeys["query.getUserInfo"], payload.username] })
+        query_client.invalidateQueries({ queryKey: [UserKeys["query.getUserInfo"], payload.username] })
       }
     },
     onError: error => {

@@ -4,6 +4,7 @@ export const enum Routes {
   RecoverPassword = "/recover/password/",
   Account = "/",
   Logout = "/logout/",
+  Circle = "/circle/",
 }
 
 export class CreateNavigation {

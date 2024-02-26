@@ -56,7 +56,8 @@
 
     await $editUserMutation.mutateAsync({
       userId,
-      username: initialUsername !== username ? username : undefined,
+      updateUsername: initialUsername !== username,
+      username,
       location,
       picture: photo,
       pseudonym,
