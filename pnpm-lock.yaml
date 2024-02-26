@@ -6,6 +6,15 @@ settings:
 
 importers:
 
+  .:
+    devDependencies:
+      prettier:
+        specifier: ^3.1.1
+        version: 3.1.1
+      prettier-plugin-svelte:
+        specifier: ^3.1.2
+        version: 3.1.2(prettier@3.1.1)(svelte@4.2.7)
+
   frontend/main:
     dependencies:
       '@fontsource-variable/comfortaa':
@@ -298,6 +307,9 @@ importers:
       '@playwright/test':
         specifier: ^1.28.1
         version: 1.28.1
+      '@prgm/sveltekit-progress-bar':
+        specifier: ^2.0.0
+        version: 2.0.0(@sveltejs/kit@2.0.0)(svelte@4.2.7)
       '@skeletonlabs/skeleton':
         specifier: 2.7.0
         version: 2.7.0(svelte@4.2.7)
@@ -1125,6 +1137,17 @@ packages:
 
   /@polka/url@1.0.0-next.24:
     resolution: {integrity: sha512-2LuNTFBIO0m7kKIQvvPHN6UE63VjpmL9rnEEaOOaiSPbZK+zUOYIzBAWcED+3XYzhYsd/0mD57VdxAEqqV52CQ==}
+
+  /@prgm/sveltekit-progress-bar@2.0.0(@sveltejs/kit@2.0.0)(svelte@4.2.7):
+    resolution: {integrity: sha512-N9SlYDfpqaY9MyG85Wk38R9/BipIUdTJ4U7LVPY5cFn5cwGZrVA1lsXC3I2kmGtwz+DF6v/DvySkYOWCPmJV4A==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@sveltejs/kit': ^2.0.0
+      svelte: ^4.0.0
+    dependencies:
+      '@sveltejs/kit': 2.0.0(@sveltejs/vite-plugin-svelte@3.0.0)(svelte@4.2.7)(vite@5.0.3)
+      svelte: 4.2.7
+    dev: true
 
   /@protobuf-ts/grpc-transport@2.9.3(@grpc/grpc-js@1.9.13):
     resolution: {integrity: sha512-2TarJgLrvhHVBpxgJonPeZzEtqlbQJeSTpFZjkNI5Ye+18r8SUIcvZhl4LLS1q4zjIQl/O7lZt/x27PTNglLpg==}

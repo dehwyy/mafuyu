@@ -1,0 +1,13 @@
+{
+  "name": "mafuyyu",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">= 20"
+  },
+  "author": "dehwyy <makoto.web3@gmail.com>",
+  "devDependencies": {
+    "prettier": "^3.1.1",
+    "prettier-plugin-svelte": "^3.1.2"
+  }
+}
