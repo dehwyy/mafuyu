@@ -35,7 +35,8 @@ fn main() {
 
 async fn runtime() -> makoto_lib::Result<()> {
 
-    Logger::new();
+    let cfg = makoto_config::secrets::Secrets::new();
+    Logger::new(cfg.environment);
 
     let hosts = makoto_config::hosts::Hosts::new();
     let addr = hosts.gateway.parse()?;

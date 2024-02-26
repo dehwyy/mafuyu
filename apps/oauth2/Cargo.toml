@@ -14,3 +14,4 @@ makoto_grpc = {path = "../../libs/grpc"}
 makoto_lib = {path = "../../libs/utils"}
 makoto_config = {path = "../../libs/config"}
 logger = {path = "../../libs/logger"}
+mafuyu_sentry = {path = "../../libs/sentry"}

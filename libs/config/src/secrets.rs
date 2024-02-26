@@ -18,8 +18,8 @@ pub struct Secrets {
     #[envconfig(from = "SENTRY_DSN_RS")]
     pub sentry_dsn: String,
 
-    #[envconfig(from = "PRODUCTION", default = "false")]
-    pub production: bool,
+    #[envconfig(from = "ENVIRONMENT", default = "dev")]
+    pub environment: String,
 }
 
 impl Secrets {

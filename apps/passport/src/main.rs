@@ -9,7 +9,8 @@ mod repo;
 #[tokio::main]
 async fn main() -> AnyResult<()> {
 
-    Logger::new();
+    let cfg = makoto_config::secrets::Secrets::new();
+    Logger::new(cfg.environment);
 
     let hosts = makoto_config::hosts::Hosts::new();
     let addr = hosts.passport.parse()?;

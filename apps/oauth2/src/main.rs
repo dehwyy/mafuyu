@@ -6,9 +6,22 @@ use makoto_grpc::pkg::oauth2::o_auth2_rpc_server::OAuth2RpcServer;
 use logger::*;
 use makoto_lib::Result as AnyResult;
 
-#[tokio::main]
-async fn main() -> AnyResult<()> {
-    Logger::new();
+fn main() {
+    let cfg = makoto_config::secrets::Secrets::new();
+
+    let _guard = mafuyu_sentry::Sentry::new(cfg.sentry_dsn);
+
+    tokio::runtime::Builder::new_multi_thread()
+        .enable_all()
+        .build()
+        .unwrap()
+        .block_on(async {
+            runtime().await.unwrap();
+        })
+}
+async fn runtime() -> AnyResult<()> {
+    let cfg = makoto_config::secrets::Secrets::new();
+    Logger::new(cfg.environment);
 
     let hosts = makoto_config::hosts::Hosts::new();
     let addr = hosts.oauth2.parse()?;

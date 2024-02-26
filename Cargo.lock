@@ -1969,6 +1969,7 @@ name = "oauth"
 version = "0.1.0"
 dependencies = [
  "logger",
+ "mafuyu_sentry",
  "makoto_config",
  "makoto_grpc",
  "makoto_lib",

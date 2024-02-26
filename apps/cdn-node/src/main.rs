@@ -3,10 +3,12 @@ mod fs;
 
 use async_nats::jetstream::{consumer, stream::{Config, RetentionPolicy}};
 use futures::TryStreamExt;
+use logger::Logger;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    logger::Logger::new();
+    let cfg = makoto_config::secrets::Secrets::new();
+    Logger::new(cfg.environment);
 
     let client = async_nats::connect(makoto_config::constants::nats::CDN_SERVER).await?;
     let js = async_nats::jetstream::new(client.clone());

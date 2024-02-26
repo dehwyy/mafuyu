@@ -10,8 +10,9 @@ use makoto_lib::Result as AnyResult;
 
 #[tokio::main]
 async fn main() -> AnyResult<()> {
+    let cfg = makoto_config::secrets::Secrets::new();
+    Logger::new(cfg.environment);
 
-    Logger::new();
 
     let hosts = makoto_config::hosts::Hosts::new();
     let addr = hosts.authorization.parse()?;
