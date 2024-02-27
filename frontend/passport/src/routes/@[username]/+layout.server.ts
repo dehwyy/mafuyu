@@ -8,6 +8,8 @@ import { dehydrate } from "@tanstack/svelte-query"
 import { StaleTime } from "$lib/const"
 
 export const load: LayoutServerLoad = async ({ cookies, params, parent }) => {
+  const { userId: authedUserId } = await parent()
+
   const withUserPromise = new Promise(async r => {
     const username = params.username
     const response = await queryClient.fetchQuery({
@@ -28,8 +30,6 @@ export const load: LayoutServerLoad = async ({ cookies, params, parent }) => {
   })
 
   const withAuthedUserPromise = new Promise(async r => {
-    const { userId: authedUserId } = await parent()
-
     await queryClient.prefetchQuery({
       ...getBlockedUsersQuery(authedUserId, GrpcServerClient(StaleTime.MINUTE * 0, cookies)),
     })

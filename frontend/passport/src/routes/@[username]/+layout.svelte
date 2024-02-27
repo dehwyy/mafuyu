@@ -41,7 +41,7 @@
       "/self": {
         placeholder: "Self",
         isActive: $userScopes.data?.edit ?? false, // TODO
-      }
+      },
     },
   })
 
@@ -72,7 +72,7 @@
       {/if}
       {#if !is_current_user && $user.data}
         <UserActions userId={$user.data.userId} {username} />
-        <hr class="mt-4 mb-5" />
+        <hr class="mb-5" />
       {/if}
       <ListBox>
         {#each navigation.iter() as n}

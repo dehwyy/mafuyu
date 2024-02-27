@@ -17,7 +17,15 @@ interface Args {
   username: Readable<string>
 }
 
-function useUserProfileActions({ userId, username }: Args): Readable<Action[]> {
+export enum UserStatus {
+  Friend,
+  Followed,
+  FollowedToYou,
+  Blocked,
+  None,
+}
+
+function useUserProfileActions({ userId, username }: Args) {
   const [authedUserFriends, authedUserFriendsStore] = useUserFriends(get(authedUserStore)?.id)
   const [authedUserFollowers, authedUserFollowersStore] = useUserFollowers(get(authedUserStore)?.id)
   const [userFollowers, userFollowersStore] = useUserFollowers(get(userId))
@@ -36,13 +44,16 @@ function useUserProfileActions({ userId, username }: Args): Readable<Action[]> {
     }
   })
 
-  userId.subscribe(id => {
-    userFollowersStore.set({ userId: id, limit: undefined })
-  })
-
   const isFriends = writable(false)
   const isFollowedToUser = writable(false)
   const isUserFollowedToYou = writable(false)
+
+  userId.subscribe(id => {
+    userFollowersStore.set({ userId: id, limit: undefined })
+
+    const friends = get(authedUserFriends).data?.friends || []
+    isFriends.set(friends.includes(id))
+  })
 
   authedUserFriends.subscribe(r => {
     if (r?.data) {
@@ -143,7 +154,30 @@ function useUserProfileActions({ userId, username }: Args): Readable<Action[]> {
     ],
   )
 
-  return options
+  const status = derived(
+    [isFriends, isFollowedToUser, isUserFollowedToYou, isBlocked],
+    ([isFriendsV, isFollowedToUserV, isUserFollowedToYouV, isBlockedV]) => {
+      if (isBlockedV) {
+        return UserStatus.Blocked
+      }
+      if (isFriendsV) {
+        return UserStatus.Friend
+      }
+      if (isFollowedToUserV) {
+        return UserStatus.Followed
+      }
+      if (isUserFollowedToYouV) {
+        return UserStatus.FollowedToYou
+      }
+
+      return UserStatus.None
+    },
+  )
+
+  return {
+    options,
+    status,
+  }
 }
 
 export default useUserProfileActions
