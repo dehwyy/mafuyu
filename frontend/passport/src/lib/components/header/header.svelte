@@ -2,6 +2,7 @@
   import MafuyuIcon from "$lib/assets/mafuyu.svg?raw"
   import { AppBar } from "@skeletonlabs/skeleton"
 
+  import SearchBarTrigger from "$lib/components/search-bar/trigger.svelte"
   import Navigation from "$lib/components/header/nav-card.svelte"
 </script>
 
@@ -15,6 +16,7 @@
   </svelte:fragment>
   <svelte:fragment slot="trail">
     <div class="pr-5 flex gap-x-7 mt-1">
+      <SearchBarTrigger />
       <Navigation />
     </div>
   </svelte:fragment>

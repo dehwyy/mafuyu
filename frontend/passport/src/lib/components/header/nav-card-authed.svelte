@@ -16,7 +16,7 @@
   const [user, userStore] = useUserInfo({ oneofKind: "userId", userId: $authed_user_store?.id })
   $: userStore.set({ getBy: { oneofKind: "userId", userId: $authed_user_store?.id } })
 
-  $: username = $authed_user_store?.username || $user?.data?.username
+  $: username = $authed_user_store?.username || ($user?.data?.username as string)
   $: user_href = `/@${username}`
 </script>
 
@@ -36,7 +36,7 @@
     </button>
   </li>
   <li>
-    <div class="">
+    <div>
       <ThemeSelector>
         <span class="icon-sm block">{@html ThemeSelectIconRaw}</span>
       </ThemeSelector>

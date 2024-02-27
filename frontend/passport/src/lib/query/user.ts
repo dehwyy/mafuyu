@@ -9,6 +9,8 @@ export const UserKeys = {
   "query.getUserInfo": "user.getUserInfo",
   "query.getBaseUserInfo": "user.getBaseUserInfo",
   "query.getBlockedUsers": "user.getBlockedUsers",
+  "query.getUsers": "user.getUsers",
+  "query.getUsersIDs": "user.getUsers",
   "mutate.editUser": "user.editUser",
   "mutate.blockUser": "user.blockUser",
   "mutate.unblockUser": "user.unblockUser",
@@ -23,7 +25,7 @@ export const getUserInfoQuery = (getBy: GetUserBy, grpc: GrpcClient = GrpcWeb(5 
     retry: 1,
     staleTime: grpc.staleTime,
     refetchOnWindowFocus: false,
-    queryFn: async ({ queryKey }) => {
+    queryFn: async () => {
       if (!value) return null
       const login =
         getBy.oneofKind === "userId" ? ({ oneofKind: "userId", userId: value } as const) : ({ oneofKind: "username", username: value } as const)
@@ -37,6 +39,63 @@ export const getUserInfoQuery = (getBy: GetUserBy, grpc: GrpcClient = GrpcWeb(5 
 
 export const useUserInfo = (getBy: GetUserBy) => {
   return createReactiveQuery({ getBy }, ({ getBy }) => getUserInfoQuery(getBy))
+}
+
+type GetUsersPayload = {
+  userId?: string
+  pattern?: string
+  limit?: bigint
+  offset?: bigint
+  excludeLanguages?: boolean
+}
+export const getUsers = (payload: GetUsersPayload, grpc: GrpcClient = GrpcWeb(5 * StaleTime.MINUTE)) => {
+  return {
+    queryKey: [UserKeys["query.getUsers"], payload],
+    staleTime: grpc.staleTime,
+    queryFn: async () => {
+      const r = await grpc.client.getUsers(
+        {
+          userId: payload.userId,
+          limit: payload.limit,
+          offset: payload.offset,
+          pattern: payload.pattern,
+          excludeLanguages: payload.excludeLanguages,
+        },
+        { interceptors: grpc.interceptors },
+      )
+
+      return r.response
+    },
+  } satisfies CreateQueryOptions
+}
+
+export const useUsers = (payload: GetUsersPayload) => {
+  return createReactiveQuery({ payload }, ({ payload }) => getUsers(payload))
+}
+
+export const getUsersIDs = (payload: GetUsersPayload, grpc: GrpcClient = GrpcWeb(5 * StaleTime.MINUTE)) => {
+  return {
+    queryKey: [UserKeys["query.getUsersIDs"], payload],
+    staleTime: grpc.staleTime,
+    queryFn: async () => {
+      const r = await grpc.client.getUsersIDs(
+        {
+          userId: payload.userId,
+          limit: payload.limit,
+          offset: payload.offset,
+          pattern: payload.pattern,
+          excludeLanguages: payload.excludeLanguages,
+        },
+        { interceptors: grpc.interceptors },
+      )
+
+      return r.response
+    },
+  } satisfies CreateQueryOptions
+}
+
+export const useUsersIDs = (payload: GetUsersPayload) => {
+  return createReactiveQuery({ payload }, ({ payload }) => getUsersIDs(payload))
 }
 
 export const getBaseUserInfoQuery = (getBy: GetUserBy, grpc: GrpcClient = GrpcWeb(5 * StaleTime.MINUTE)) => {
