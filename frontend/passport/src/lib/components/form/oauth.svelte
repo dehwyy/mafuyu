@@ -11,13 +11,13 @@
   <hr />
 </div>
 <div class="flex flex-col gap-y-3">
-  <button class="oauth-button">
+  <button on:click={() => $oauth2Redirect.mutate({ provider: "google" })} class="oauth-button">
     <span class="oauth-icon">
       {@html GoogleIconRaw}
     </span>
     <span>Continue with Google</span>
   </button>
-  <button on:click={() => $oauth2Redirect.mutate({provider: "github"})} class="oauth-button">
+  <button on:click={() => $oauth2Redirect.mutate({ provider: "github" })} class="oauth-button">
     <span class="oauth-icon">
       {@html GithubIconRaw}
     </span>
