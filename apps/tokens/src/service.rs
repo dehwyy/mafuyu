@@ -98,13 +98,13 @@ impl TokensRpc for TokensRpcServiceImplementation {
                 self.integrations_client.clone().borrow_mut().get_basic_user(Request::new(GetBasicUserRequest {
                     provider: oauth2_provider,
                     access_token: req.access_token
-                })).await.map(|_| Option::<String>::None)?
+                })).await.map(|_| Option::<String>::None).map_err(|status| Status::unauthenticated(status.to_string()))
                 // `oauth2_tokens` doesn't have `mafuyu user_id` in their claims,
                 // (for mafuyu tokens `Jwt service` gets `user_id` from claims).
             },
             None => Jwt::validate_access_token(req.access_token)
-                .map(|v| Some(v.user_id)).unauthenticated_error()?
-        };
+                .map(|v| Some(v.user_id)).unauthenticated_error()
+        }?;
 
         Ok(Response::new(rpc::ValidateTokenResponse {
             user_id
