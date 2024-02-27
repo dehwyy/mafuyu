@@ -1,6 +1,7 @@
 use makoto_grpc::pkg::integrations::GetBasicUserResponse;
 
 mod github;
+mod google;
 
 pub enum ProviderRequestError {
     RequestError(String),
@@ -28,15 +29,15 @@ impl Provider {
         }
     }
 
-    pub fn as_provider(&self) -> impl ProviderTrait {
+    pub fn as_provider(&self) -> Box<dyn ProviderTrait> {
         match self {
-            Self::Github => github::Github,
-            Self::Google => github::Github // todo
+            Self::Github => Box::new(github::Github),
+            Self::Google => Box::new(google::Google)
         }
     }
 }
 
 #[tonic::async_trait]
-pub trait ProviderTrait {
+pub trait ProviderTrait: Send {
     async fn get_basic_user(&self, access_token: String) -> Result<GetBasicUserResponse, ProviderRequestError>;
 }

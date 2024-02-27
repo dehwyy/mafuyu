@@ -15,6 +15,15 @@ pub struct Secrets {
     #[envconfig(from = "GITHUB_REDIRECT_URL")]
     pub github_redirect_url: String,
 
+    #[envconfig(from = "GOOGLE_CLIENT_ID")]
+    pub google_client_id: String,
+
+    #[envconfig(from = "GOOGLE_CLIENT_SECRET")]
+    pub google_client_secret: String,
+
+    #[envconfig(from = "GOOGLE_REDIRECT_URL")]
+    pub google_redirect_url: String,
+
     #[envconfig(from = "SENTRY_DSN_RS")]
     pub sentry_dsn: String,
 

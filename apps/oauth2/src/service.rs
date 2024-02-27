@@ -1,3 +1,4 @@
+use std::borrow::Borrow;
 use crate::oauth2::{OAuth2, OAuth2Provider, OAuth2ProviderName, RefreshError};
 
 use tonic::{Request, Response, Status};
@@ -16,14 +17,16 @@ impl OAuth2RpcServiceImplementation {
             ..v
         }
     }
-    fn get_provider(&self, provider: &str) -> Result<&impl OAuth2Provider, Status> {
+    fn get_provider(&self, provider: &str) -> Result<&Box<dyn OAuth2Provider>, Status> {
         let provider_name  = match provider {
             "github" => Ok(OAuth2ProviderName::Github),
             "google" => Ok(OAuth2ProviderName::Google),
             _ => Err("cannot infer provider".to_string())
         }.invalid_argument_error()?;
 
-        Ok(self.oauth2.get_provider(provider_name))
+        let provider = self.oauth2.get_provider(provider_name);
+
+        Ok(provider)
     }
 }
 
@@ -65,10 +68,10 @@ impl OAuth2Rpc for OAuth2RpcServiceImplementation {
 
         let provider = self.get_provider(&req.provider)?;
 
-        let oauth2_token = match  provider.refresh().await {
+        let oauth2_token = match  provider.refresh(Some(req.refresh_token)).await {
             Ok(token) => Ok(token),
             Err(refresh_token) => Err(match refresh_token {
-                    RefreshError::Internal => Status::internal("cannot refresh the token"),
+                    RefreshError::Internal(s) => Status::internal(format!("cannot refresh the token {s}")),
                     RefreshError::NotSupported => Status::unimplemented("oauth2 provider doesn't support token refresh")
                 })
         }?;
