@@ -37,6 +37,8 @@ service ApiRpc {
   // User
   rpc EditUser(user.EditUserRequest) returns (google.protobuf.Empty);
   rpc GetUser(user.GetUserRequest) returns (user.GetUserResponse);
+  rpc GetUsers(user.GetUsersRequest) returns (user.GetUsersResponse);
+  rpc GetUsersIDs(user.GetUsersRequest) returns (user.GetUsersIDsResponse);
   rpc GetBasicUser(user.GetUserRequest) returns (user.GetBasicUserResponse);
   rpc GetUserFriends(user.GetUserFriendsRequest) returns (user.GetUserFriendsResponse);
   rpc GetUserFollowers(user.GetUserFollowersRequest) returns (user.GetUserFollowersResponse);

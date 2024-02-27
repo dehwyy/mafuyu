@@ -10,7 +10,10 @@ service UserRpc {
   rpc CreateUser(CreateUserRequest) returns (google.protobuf.Empty);
   rpc EditUser(EditUserRequest) returns (google.protobuf.Empty);
   rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc GetUsers(GetUsersRequest) returns (GetUsersResponse);
+  rpc GetUsersIDs(GetUsersRequest) returns (GetUsersIDsResponse);
   rpc GetBasicUser(GetUserRequest) returns (GetBasicUserResponse);
+
 
   rpc GetUserFriends(GetUserFriendsRequest) returns (GetUserFriendsResponse);
   rpc GetUserFollowers(GetUserFollowersRequest) returns (GetUserFollowersResponse);
@@ -58,6 +61,22 @@ message GetUserResponse {
   optional string bio = 6;
   optional string picture = 7;
   repeated string languages = 8;
+}
+
+message GetUsersRequest {
+  optional string user_id = 1;
+  optional string pattern = 2;
+  optional uint64 limit = 3;
+  optional uint64 offset = 4;
+  optional bool exclude_languages = 5;
+}
+
+message GetUsersResponse {
+  repeated GetUserResponse users = 1;
+}
+
+message GetUsersIDsResponse {
+  repeated string user_ids = 1;
 }
 
 message GetBasicUserResponse {

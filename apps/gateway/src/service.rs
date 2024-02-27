@@ -5,6 +5,7 @@ use makoto_grpc::{pkg as grpc, Tools};
 use grpc::api::api_rpc_server;
 use grpc::{auth, tokens, oauth2, passport, integrations, user, general, authorization};
 use logger::{info, trace};
+use makoto_grpc::pkg::user::{GetUsersIDsResponse, GetUsersRequest, GetUsersResponse};
 
 
 pub struct ApiRpcServiceImplementation<T = tonic::transport::Channel> {
@@ -195,6 +196,14 @@ impl api_rpc_server::ApiRpc for ApiRpcServiceImplementation {
   async fn get_user(&self, req: Request<user::GetUserRequest>) -> Result<Response<user::GetUserResponse>, Status> {
     let r =self.user_client.clone().borrow_mut().get_user(req).await?;
     Ok(r)
+  }
+
+  async fn get_users(&self, request: Request<GetUsersRequest>) -> Result<Response<GetUsersResponse>, Status> {
+    self.user_client.clone().borrow_mut().get_users(request).await
+  }
+
+  async fn get_users_i_ds(&self, req: Request<GetUsersRequest>) -> Result<Response<GetUsersIDsResponse>, Status> {
+    self.user_client.clone().borrow_mut().get_users_i_ds(req).await
   }
 
   async fn get_basic_user(&self, req: Request<user::GetUserRequest>) -> Result<Response<user::GetBasicUserResponse>, Status> {

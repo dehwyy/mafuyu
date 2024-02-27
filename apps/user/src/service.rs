@@ -1,14 +1,15 @@
 use std::borrow::BorrowMut;
 use tonic::{Request, Response, Status};
 use uuid::Uuid;
+use logger::{info, warn};
 use makoto_db::repo::user::GetUserRecordBy;
 use makoto_grpc::errors::GrpcHandleError;
 use makoto_grpc::pkg::user as rpc;
 use makoto_grpc::pkg::cdn;
-use makoto_grpc::pkg::user::{GetBasicUserResponse, GetBlockedUsersRequest, GetBlockedUsersResponse, GetUserFollowersRequest, GetUserFollowersResponse, GetUserFriendsRequest, GetUserFriendsResponse, GetUserRequest, UserId};
+use makoto_grpc::pkg::user::*;
 use makoto_lib::errors::prelude::*;
 
-use crate::repo::user::EditPrimitiveUserPayload;
+use crate::repo::user::{GetUsersPayload, EditPrimitiveUserPayload};
 use crate::tools::image::{Image, ImageType};
 use crate::tools::request::RequestTools;
 
@@ -136,6 +137,48 @@ impl rpc::user_rpc_server::UserRpc for UserRpcServiceImplementation {
             }))
     }
 
+    async fn get_users(&self, req: Request<GetUsersRequest>) -> Result<Response<GetUsersResponse>, Status> {
+        let req = req.into_inner();
+
+        let users = self.user_repo.get_users(GetUsersPayload {
+            pattern: req.pattern,
+            limit: req.limit,
+            offset: req.offset,
+        }).await.handle()?;
+
+        let users = users.iter().filter_map(|(user, user_cred)| {
+            user_cred.clone().map(|user_cred| {
+                GetUserResponse {
+                    user_id: user.user_id.to_string(),
+                    username: user_cred.username.clone(),
+                    location: user.location.clone(),
+                    birthday: None,
+                    pseudonym: user.pseudonym.clone(),
+                    bio: user.bio.clone(),
+                    picture: user.picture.clone(),
+                    languages: vec!()
+                }
+            })
+        }).collect::<Vec<_>>();
+
+        Ok(Response::new(GetUsersResponse { users }))
+
+    }
+
+    async fn get_users_i_ds(&self, req: Request<GetUsersRequest>) -> Result<Response<GetUsersIDsResponse>, Status> {
+        let req = req.into_inner();
+
+        let users = self.user_repo.get_users(GetUsersPayload {
+            pattern: req.pattern,
+            limit: req.limit,
+            offset: req.offset,
+        }).await.handle()?;
+
+        Ok(Response::new(GetUsersIDsResponse {
+            user_ids: users.iter().map(|(user, _)| user.user_id.to_string()).collect()
+        }))
+    }
+
     async fn get_user_friends(&self, req: Request<GetUserFriendsRequest>) -> Result<Response<GetUserFriendsResponse>, Status> {
         let req = req.into_inner();
 
@@ -200,6 +243,8 @@ impl rpc::user_rpc_server::UserRpc for UserRpcServiceImplementation {
 
         Ok(Response::new(r))
     }
+
+
 }
 
 
