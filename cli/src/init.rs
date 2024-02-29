@@ -50,7 +50,7 @@ impl Init {
 }
 
 pub async fn init() {
-    // Init::pnpm_install().await;
+    Init::pnpm_install().await;
     Init::create_necessary_dirs().await;
     Init::create_necessary_files().await;
 }
