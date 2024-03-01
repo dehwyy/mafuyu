@@ -6,7 +6,6 @@
   import CollectionIconRaw from "$lib/assets/social.svg?raw"
   import NotesIconRaw from "$lib/assets/notes.svg?raw"
   import LogoutIconRaw from "$lib/assets/logout.svg?raw"
-  import ThemeSelectIconRaw from "$lib/assets/theme-select.svg?raw"
 
   import { CreateNavigation, Routes } from "$lib/const"
   import ThemeSelector from "./theme-selector.svelte"
@@ -18,68 +17,33 @@
 
   $: username = $authed_user_store?.username || ($user?.data?.username as string)
   $: user_href = `/@${username}`
+
+  $: panels = [
+    { icon: UserIconRaw, href: CreateNavigation.ToUser(username), placeholder: username },
+    { icon: GearIconRaw, href: CreateNavigation.ToSettings(username), placeholder: "Settings" },
+    { component: ThemeSelector },
+    { icon: CircleIconRaw, href: Routes.Circle, placeholder: "Circle" },
+    { icon: FriendsIconRaw, href: CreateNavigation.ToFriends(username), placeholder: "Friends" },
+    // { icon: CollectionIconRaw, href: null , placeholder: "Collections" },
+    { icon: LogoutIconRaw, href: Routes.Logout, placeholder: "Logout" },
+  ]
 </script>
 
 <ul>
-  <li>
-    <a href={CreateNavigation.ToUser(username)}>
-      <button>
-        <span>{@html UserIconRaw}</span>
-        <span>{username}</span>
-      </button>
-    </a>
-  </li>
-  <li>
-    <button>
-      <span>{@html GearIconRaw}</span>
-      <span>Settings</span>
-    </button>
-  </li>
-  <li>
-    <div>
-      <ThemeSelector>
-        <span class="icon-sm block">{@html ThemeSelectIconRaw}</span>
-      </ThemeSelector>
-    </div>
-  </li>
-  <li>
-    <a href={Routes.Circle}>
-      <button>
-        <span>{@html CircleIconRaw}</span>
-        <span>Circle</span>
-      </button>
-    </a>
-  </li>
-  <li>
-    <button>
-      <span>{@html FriendsIconRaw}</span>
-      <span>Friends</span>
-    </button>
-  </li>
-  <li>
-    <a href={`${user_href}/collections`}>
-      <button>
-        <span>{@html CollectionIconRaw}</span>
-        <span>Collections</span>
-      </button>
-    </a>
-  </li>
-  <li>
-    <a href={`${user_href}/collections`}>
-      <button>
-        <span>{@html NotesIconRaw}</span>
-        <span>Notes</span>
-      </button>
-    </a>
-  </li>
-  <li>
-    <a href={Routes.Logout}>
-      <button on:click={() => clear_user()}>
-        <span>{@html LogoutIconRaw}</span>
-        <span>Logout</span>
-      </button>
-    </a>
-  </li>
+  {#each panels as panel}
+    <li>
+      {#if panel.component}
+        <svelte:component this={panel.component} />
+      {:else}
+        <a href={panel.href}>
+          <button>
+            <span>{@html panel.icon}</span>
+            <span>{panel.placeholder}</span>
+          </button>
+        </a>
+      {/if}
+    </li>
+  {/each}
 </ul>
 
 <style lang="scss">

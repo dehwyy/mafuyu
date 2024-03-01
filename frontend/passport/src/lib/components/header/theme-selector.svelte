@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ThemeSelectIconRaw from "$lib/assets/theme-select.svg?raw"
   import { type PopupSettings, popup } from "@skeletonlabs/skeleton"
   import { ListBox, ListBoxItem } from "@skeletonlabs/skeleton"
   import { onMount } from "svelte"
@@ -34,7 +35,7 @@
   <div use:popup={themeSelectClick} class="cursor-pointer flex-auto">
     <div
       class="flex items-center h-[40px] hover:bg-surface-300/10 text-surface-200 hover:text-white w-full pl-4 gap-x-2 font-medium rounded-3xl select-none">
-      <slot />
+      <span class="icon-sm block">{@html ThemeSelectIconRaw}</span>
       <p>{themes[current_theme]}</p>
     </div>
   </div>

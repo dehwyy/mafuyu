@@ -40,7 +40,7 @@
       },
       "/self": {
         placeholder: "Self",
-        isActive: $userScopes.data?.edit ?? false, // TODO
+        isActive: true, // TODO
       },
     },
   })

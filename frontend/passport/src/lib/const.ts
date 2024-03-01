@@ -11,6 +11,9 @@ export class CreateNavigation {
   static ToUser(username: string, dyn: string = ""): string {
     return `${Routes.Account}@${username}${dyn}`
   }
+  static ToSettings(username: string): string {
+    return `${Routes.Account}@${username}/edit/`
+  }
   static ToFriends(username: string): string {
     return `${Routes.Account}@${username}/self?section=friends`
   }
