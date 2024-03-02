@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 tracing = "0.1"
 tracing-subscriber = { version ="0.3", features = ["ansi", "chrono"] }
+sentry = { version = "0.32.2", features = ["tracing"] }
