@@ -4,16 +4,13 @@ use logger::error;
 use mafuyu_nats::{tools::Tools, route::RouteResult, payload::cdn::{subject, PublishImageRequest}};
 use mafuyu_nats::errors::NatsHandleError;
 
-pub struct Router {
-    cdn_fs: crate::fs::CDNFs
-}
+use super::internal::fs::CDNFs;
+
+pub struct Router;
 
 impl Router {
-    pub async fn new(cdn_fs: crate::fs::CDNFs) -> Self {
-
-        Self {
-            cdn_fs
-        }
+    pub async fn new() -> Self {
+        Self
     }
 
     pub async fn handle(&self, message: Message) {
@@ -45,11 +42,10 @@ impl Router {
 
     }
 
-    pub async fn publish_image(&self, message: Message) -> RouteResult {
+    async fn publish_image(&self, message: Message) -> RouteResult {
         let payload = Tools::get_payload::<PublishImageRequest>(&message.payload)?;
 
-
-        self.cdn_fs.save_image(&payload.filename, payload.base64_image, payload.image_ext).internal_error()?;
+        CDNFs::save_image(&payload.filename, payload.base64_image, payload.image_ext).internal_error()?;
 
         Ok(())
     }

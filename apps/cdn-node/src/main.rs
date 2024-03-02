@@ -1,15 +1,30 @@
-mod router ;
-mod fs;
+mod nats;
+mod api;
+mod internal;
 
 use async_nats::jetstream::{consumer, stream::{Config, RetentionPolicy}};
 use futures::TryStreamExt;
-use logger::Logger;
+use logger::{info, Logger};
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+fn main() {
     let cfg = makoto_config::secrets::Secrets::new();
     Logger::new(cfg.environment);
 
+    let _guard = mafuyu_sentry::Sentry::new(cfg.sentry_dsn);
+
+    info!("Starting Axum API & NATS runtime...");
+    tokio::runtime::Builder::new_multi_thread()
+        .enable_all()
+        .build()
+        .unwrap()
+        .block_on(async {
+            let r_nats = start_nats_runtime();
+            let r_api = api::start_api_runtime();
+            tokio::join!(r_nats, r_api);
+        });
+}
+
+async fn start_nats_runtime() -> Result<(), Box<dyn std::error::Error + Sync + Send>> {
     let client = async_nats::connect(makoto_config::constants::nats::CDN_SERVER).await?;
     let js = async_nats::jetstream::new(client.clone());
 
@@ -28,14 +43,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     }).await?;
 
 
-    let cdn_fs = fs::CDNFs::new();
-    let router = router::Router::new(cdn_fs).await;
+    let router = nats::Router::new().await;
 
     let mut messages_stream = stream_consumer.messages().await?;
 
     while let Ok(Some(message)) = messages_stream.try_next().await {
-        router.handle(message).await
-    }
+        router.handle(message).await;
+    };
 
     Ok(())
 }

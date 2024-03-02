@@ -30,6 +30,9 @@ pub struct Hosts {
     #[envconfig(from = "CDN_RPC")]
     pub cdn_rpc: String,
 
+    #[envconfig(from = "CDN_API")]
+    pub cdn_api: String,
+
     #[envconfig(from = "MAILER_RPC")]
     pub mailer_rpc: String,
 }
