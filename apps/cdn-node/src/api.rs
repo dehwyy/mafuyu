@@ -30,38 +30,20 @@ pub async fn start_api_runtime() {
 }
 
 /// ### Params:
-/// - height || h
-/// - width || w
-/// - quality || q (not yet)
-/// - crop (not yet)
-/// - left? (not yet)
-/// - top? (not yet)
+/// - size (md(medium), sm(small)) - optional
 
 #[instrument]
 async fn serve_image(
     Path(image_name): Path<String>,
-    Query(params): Query<HashMap<String, u32>>
+    Query(params): Query<HashMap<String, String>>
 ) -> Result<Vec<u8>, StatusCode> {
     let img = image_name.rsplit_once(".").map(|(filename, ext)| {
-        CDNFs::read_image(filename, ext)
+        CDNFs::read_image(filename, ext, params.get("size").map(|v| v.clone()))
     });
 
-    let img = match img {
-        Some(Ok(img)) => img,
-        Some(Err(_)) => return Err(StatusCode::INTERNAL_SERVER_ERROR),
-        None => return Err(StatusCode::BAD_REQUEST)
-    };
-
-    let payload = PipeImagePayload {
-        image: img,
-        height: params.get("h").or(params.get("height")).map(|v| v.clone()),
-        width: params.get("w").or(params.get("width")).map(|v| v.clone()),
-    };
-
-    let buf = Image::pipe_image(payload).map_err(|err| {
-        error!("Pipe image: {}", err);
-        StatusCode::INTERNAL_SERVER_ERROR
-    })?;
-
-    Ok(buf)
+     match img {
+        Some(Ok(v)) => Ok(v),
+        Some(Err(_)) => Err(StatusCode::INTERNAL_SERVER_ERROR),
+        None => Err(StatusCode::BAD_REQUEST)
+    }
 }

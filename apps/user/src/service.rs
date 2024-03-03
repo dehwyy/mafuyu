@@ -1,16 +1,14 @@
 use std::borrow::BorrowMut;
 use tonic::{Request, Response, Status};
 use uuid::Uuid;
-use logger::{info, warn};
 use makoto_db::repo::user::GetUserRecordBy;
 use makoto_grpc::errors::GrpcHandleError;
-use makoto_grpc::pkg::user as rpc;
 use makoto_grpc::pkg::cdn;
 use makoto_grpc::pkg::user::*;
 use makoto_lib::errors::prelude::*;
+use makoto_lib::image::{Image, ImageType};
 
 use crate::repo::user::{GetUsersPayload, EditPrimitiveUserPayload};
-use crate::tools::image::{Image, ImageType};
 use crate::tools::request::RequestTools;
 
 pub struct UserRpcServiceImplementation<T = tonic::transport::Channel> {
@@ -42,8 +40,8 @@ impl UserRpcServiceImplementation {
 }
 
 #[tonic::async_trait]
-impl rpc::user_rpc_server::UserRpc for UserRpcServiceImplementation {
-    async fn create_user(&self, req: Request<rpc::CreateUserRequest>) -> Result<Response<()>, Status> {
+impl user_rpc_server::UserRpc for UserRpcServiceImplementation {
+    async fn create_user(&self, req: Request<CreateUserRequest>) -> Result<Response<()>, Status> {
         let req = req.into_inner();
 
         let user_id = Uuid::try_parse(&req.user_id).invalid_argument_error()?;
@@ -53,7 +51,7 @@ impl rpc::user_rpc_server::UserRpc for UserRpcServiceImplementation {
         Ok(Response::new(()))
     }
 
-    async fn edit_user(&self, req: Request<rpc::EditUserRequest>) -> Result<Response<()>, Status> {
+    async fn edit_user(&self, req: Request<EditUserRequest>) -> Result<Response<()>, Status> {
         let req = req.into_inner();
 
         let user_id = Uuid::try_parse(&req.user_id).invalid_argument_error()?;
@@ -63,10 +61,11 @@ impl rpc::user_rpc_server::UserRpc for UserRpcServiceImplementation {
         let mut picture: Option<String> = None;
         if let Some(Some(image)) = req.picture.map(|image| Image::parse(&image)) {
             picture = Some(match image {
-                ImageType::Base64(base64_image) => {
+                ImageType::Base64(base64_image, image_type) => {
                     let response = self.cdn_client.clone().borrow_mut().upload_new_image(Request::new(cdn::UploadNewImageRequest {
                         image_base64: base64_image,
-                        keyword: req.user_id.clone()
+                        keyword: req.user_id.clone(),
+                        ext: image_type.to_string()
                     })).await?.into_inner();
 
                     response.full_url
@@ -90,13 +89,13 @@ impl rpc::user_rpc_server::UserRpc for UserRpcServiceImplementation {
         Ok(Response::new(()))
     }
 
-    async fn get_user(&self, req: Request<rpc::GetUserRequest>) -> Result<Response<rpc::GetUserResponse>, Status> {
+    async fn get_user(&self, req: Request<GetUserRequest>) -> Result<Response<GetUserResponse>, Status> {
         let req = req.into_inner();
 
         // according prost to docs, `oneof` returns `Option`
         let get_by = match req.login.unwrap_or_internal("weirdo error")? {
-            rpc::get_user_request::Login::Username(username) => GetUserRecordBy::Username(username),
-            rpc::get_user_request::Login::UserId(user_id) => GetUserRecordBy::UserId(Uuid::try_parse(&user_id).invalid_argument_error()?),
+            get_user_request::Login::Username(username) => GetUserRecordBy::Username(username),
+            get_user_request::Login::UserId(user_id) => GetUserRecordBy::UserId(Uuid::try_parse(&user_id).invalid_argument_error()?),
         };
 
         let (user , username) = self.user_repo.get_user(get_by).await.handle()?;
@@ -107,7 +106,7 @@ impl rpc::user_rpc_server::UserRpc for UserRpcServiceImplementation {
         let languages = languages.handle()?;
 
 
-        Ok(Response::new(rpc::GetUserResponse {
+        Ok(Response::new(GetUserResponse {
             user_id: user.user_id.to_string(),
             username,
             location: user.location,
@@ -118,23 +117,6 @@ impl rpc::user_rpc_server::UserRpc for UserRpcServiceImplementation {
             languages,
         }))
 
-    }
-
-    async fn get_basic_user(&self, req: Request<GetUserRequest>) -> Result<Response<GetBasicUserResponse>, Status> {
-            let req = req.into_inner();
-
-            let get_by = match req.login.unwrap_or_internal("weirdo error")? {
-                rpc::get_user_request::Login::Username(username) => GetUserRecordBy::Username(username),
-                rpc::get_user_request::Login::UserId(user_id) => GetUserRecordBy::UserId(Uuid::try_parse(&user_id).invalid_argument_error()?),
-            };
-
-            let (user , username) = self.user_repo.get_user(get_by).await.handle()?;
-
-            Ok(Response::new(GetBasicUserResponse {
-                user_id: user.user_id.to_string(),
-                username,
-                picture: user.picture
-            }))
     }
 
     async fn get_users(&self, req: Request<GetUsersRequest>) -> Result<Response<GetUsersResponse>, Status> {
@@ -177,6 +159,23 @@ impl rpc::user_rpc_server::UserRpc for UserRpcServiceImplementation {
         Ok(Response::new(GetUsersIDsResponse {
             user_ids: users.iter().map(|(user, _)| user.user_id.to_string()).collect()
         }))
+    }
+
+    async fn get_basic_user(&self, req: Request<GetUserRequest>) -> Result<Response<GetBasicUserResponse>, Status> {
+            let req = req.into_inner();
+
+            let get_by = match req.login.unwrap_or_internal("weirdo error")? {
+                get_user_request::Login::Username(username) => GetUserRecordBy::Username(username),
+               get_user_request::Login::UserId(user_id) => GetUserRecordBy::UserId(Uuid::try_parse(&user_id).invalid_argument_error()?),
+            };
+
+            let (user , username) = self.user_repo.get_user(get_by).await.handle()?;
+
+            Ok(Response::new(GetBasicUserResponse {
+                user_id: user.user_id.to_string(),
+                username,
+                picture: user.picture
+            }))
     }
 
     async fn get_user_friends(&self, req: Request<GetUserFriendsRequest>) -> Result<Response<GetUserFriendsResponse>, Status> {

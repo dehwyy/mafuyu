@@ -46,18 +46,16 @@ impl CdnRpc for CdnRpcServiceImplementation {
             None => return Err(Status::aborted("cannot generate new image filename 6x times"))
         };
 
-        let image_ext = "jpg".to_string();
-
         let payload = serde_json::to_vec(&nats_cdn::PublishImageRequest {
             filename: filename.clone(),
             base64_image: req.image_base64,
-            image_ext: image_ext.clone()
+            image_ext: req.ext.clone(),
         }).internal_error()?;
 
         self.nats_client.publish(nats_cdn::subject::PUBLISH_IMAGE, payload.into()).await.handle()?;
 
         Ok(Response::new(UploadNewImageResponse {
-            full_url: format!("{base}/{file}.{ext}", base=self.url_base, file=filename, ext=image_ext),
+            full_url: format!("{base}/{filename}.{ext}", base=self.url_base, ext=req.ext),
             filename,
         }))
     }

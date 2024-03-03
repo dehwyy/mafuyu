@@ -4,8 +4,9 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-base64 = "0.21.7"
-image = "0.24.8"
+ril = { version = "0.10.1" , features = ["webp", "gif"]}
+libwebp = { version = "0.1.2", features = ["0_6"] }
+image = { version = "0.24.8", features = ["webp-encoder"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 async-nats = "0.33.0"

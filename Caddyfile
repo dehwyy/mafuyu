@@ -3,7 +3,7 @@ localhost:6996 {
 
     reverse_proxy localhost:3366 {
         header_down +Cache-Control "max-age=14400, must-revalidate"
-        header_down +Content-Type "image/jpeg"
+        header_down +Content-Type "image/webp"
         header_down +Accept-Ranges "bytes"
     }
 }

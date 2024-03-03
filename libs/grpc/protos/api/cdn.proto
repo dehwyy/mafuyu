@@ -12,6 +12,7 @@ service CDNRpc {
 message UploadNewImageRequest {
   string image_base64 = 1;
   string keyword = 2;
+  string ext = 3;
 }
 
 message UploadNewImageResponse {

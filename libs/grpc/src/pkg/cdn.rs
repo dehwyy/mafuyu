@@ -5,6 +5,8 @@ pub struct UploadNewImageRequest {
     pub image_base64: ::prost::alloc::string::String,
     #[prost(string, tag = "2")]
     pub keyword: ::prost::alloc::string::String,
+    #[prost(string, tag = "3")]
+    pub ext: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
