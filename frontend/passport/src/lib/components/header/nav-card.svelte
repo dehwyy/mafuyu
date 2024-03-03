@@ -20,7 +20,7 @@
 </script>
 
 <button class="h-[40px]" use:popup={settingsClick}>
-  <div class="h-full max-w-[40px] overflow-hidden rounded-full border border-surface-500">
+  <div class="h-[40px] w-[40px] overflow-hidden rounded-full border border-surface-500">
     <img src={picture} alt="user" class="h-full w-full object-cover" />
   </div>
 </button>

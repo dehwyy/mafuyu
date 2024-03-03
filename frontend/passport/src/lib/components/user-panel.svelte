@@ -18,7 +18,7 @@
 <button class="btn h-[86px] sm:grid grid-cols-8 gap-x-3 items-center card w-full overflow-hidden min-w-[200px]">
   <div class="col-span-1 select-none pointer-events-none h-[46px] w-[46px]">
     {#if picture}
-      <img src={picture} alt="user" class="max-w-[46px] max-h-[46px] rounded-full object-cover" />
+      <img src={picture} alt="user" class="w-[46px] h-[46px] rounded-full object-cover" />
     {:else}
       <div class="w-[46px] h-[46px] animate-pulse bg-surface-500" />
     {/if}
