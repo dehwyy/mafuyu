@@ -32,6 +32,8 @@ pub async fn start_api_runtime() {
 /// ### Params:
 /// - height || h
 /// - width || w
+/// - quality || q (not yet)
+/// - crop (not yet)
 /// - left? (not yet)
 /// - top? (not yet)
 
@@ -39,7 +41,7 @@ pub async fn start_api_runtime() {
 async fn serve_image(
     Path(image_name): Path<String>,
     Query(params): Query<HashMap<String, u32>>
-) -> Result<impl IntoResponse, StatusCode> {
+) -> Result<Vec<u8>, StatusCode> {
     let img = image_name.rsplit_once(".").map(|(filename, ext)| {
         CDNFs::read_image(filename, ext)
     });
@@ -49,6 +51,7 @@ async fn serve_image(
         Some(Err(_)) => return Err(StatusCode::INTERNAL_SERVER_ERROR),
         None => return Err(StatusCode::BAD_REQUEST)
     };
+
     let payload = PipeImagePayload {
         image: img,
         height: params.get("h").or(params.get("height")).map(|v| v.clone()),
@@ -60,11 +63,5 @@ async fn serve_image(
         StatusCode::INTERNAL_SERVER_ERROR
     })?;
 
-    Response::builder()
-        .header("Content-Type", "image/jpeg")
-        .header("Accept-Ranges", "bytes")
-        .body(axum::body::Body::from(buf)).map_err(|_| {
-            error!("error creating image response");
-            StatusCode::INTERNAL_SERVER_ERROR
-        })
+    Ok(buf)
 }
