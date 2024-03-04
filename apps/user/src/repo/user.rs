@@ -1,5 +1,5 @@
 use sea_orm::{IntoActiveValue, prelude::*, TryFromU64, Condition, QuerySelect};
-use makoto_lib::errors::{RepositoryError, prelude::HandleError};
+use mafuyu_lib::errors::prelude::*;
 
 use makoto_db::models::{users as user, user_credentials, prelude::{Users as User, UserCredentials}};
 use makoto_db::repo::user::get_user;

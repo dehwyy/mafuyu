@@ -13,7 +13,7 @@ axum = { version = "0.7.4" }
 ril = { version = "0.10.1" , features = ["webp", "gif"]}
 tower = "0.4.13"
 
-makoto_lib = {path = "../../libs/utils"}
+mafuyu_lib = {path = "../../libs/utils", features = ["image"]}
 makoto_config = {path = "../../libs/config"}
 logger = {path = "../../libs/logger", features = ["tower"]}
 mafuyu_nats = {path = "../../libs/nats"}

@@ -15,6 +15,6 @@ serde_json = "1.0"
 
 makoto_db = {path = "../../libs/db"}
 makoto_grpc = {path = "../../libs/grpc"}
-makoto_lib = {path = "../../libs/utils"}
+mafuyu_lib = {path = "../../libs/utils", features = ["rpc"]}
 makoto_config = {path = "../../libs/config"}
 logger = {path = "../../libs/logger"}

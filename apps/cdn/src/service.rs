@@ -2,7 +2,7 @@ use tonic::{Request, Response, Status};
 use makoto_grpc::pkg::cdn::cdn_rpc_server::CdnRpc;
 use makoto_grpc::pkg::cdn::{UploadNewImageRequest, UploadNewImageResponse};
 use makoto_grpc::errors::GrpcHandleError;
-use makoto_lib::errors::prelude::HandleError;
+use mafuyu_lib::errors::prelude::*;
 
 use mafuyu_nats::payload::cdn as nats_cdn;
 

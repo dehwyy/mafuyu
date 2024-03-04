@@ -5,8 +5,10 @@ use makoto_db::repo::user::GetUserRecordBy;
 use makoto_grpc::errors::GrpcHandleError;
 use makoto_grpc::pkg::cdn;
 use makoto_grpc::pkg::user::*;
-use makoto_lib::errors::prelude::*;
-use makoto_lib::image::{Image, ImageType};
+
+use mafuyu_lib::errors::prelude::*;
+use mafuyu_lib::image::{Image, ImageType};
+
 
 use crate::repo::user::{GetUsersPayload, EditPrimitiveUserPayload};
 use crate::tools::request::RequestTools;

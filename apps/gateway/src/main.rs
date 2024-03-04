@@ -33,7 +33,7 @@ fn main() {
         });
 }
 
-async fn runtime() -> makoto_lib::Result<()> {
+async fn runtime() -> Result<(), Box<dyn std::error::Error>> {
 
     let cfg = makoto_config::secrets::Secrets::new();
     Logger::new(cfg.environment);

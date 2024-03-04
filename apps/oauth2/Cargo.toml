@@ -11,7 +11,7 @@ tokio = { version = "1.35.0", features = ["macros", "rt-multi-thread"] }
 reqwest = "0.11.23"
 
 makoto_grpc = {path = "../../libs/grpc"}
-makoto_lib = {path = "../../libs/utils"}
+mafuyu_lib = {path = "../../libs/utils", features = ["rpc"]}
 makoto_config = {path = "../../libs/config"}
 logger = {path = "../../libs/logger"}
 mafuyu_sentry = {path = "../../libs/sentry"}

@@ -4,10 +4,9 @@ mod repo;
 
 use makoto_grpc::pkg::tokens::tokens_rpc_server::TokensRpcServer;
 use logger::*;
-use makoto_lib::Result as AnyResult;
 
 #[tokio::main]
-async fn main() -> AnyResult<()> {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cfg = makoto_config::secrets::Secrets::new();
     Logger::new(cfg.environment);
 

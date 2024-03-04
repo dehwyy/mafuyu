@@ -2,7 +2,7 @@ use uuid::Uuid;
 use makoto_grpc::errors::GrpcHandleError;
 use makoto_grpc::metadata::{UserRole, Metadata as MetadataTools};
 use makoto_grpc::pkg::user;
-use makoto_lib::errors::prelude::ResultedOption;
+use mafuyu_lib::errors::prelude::ResultedOption;
 
 pub struct RequestTools;
 

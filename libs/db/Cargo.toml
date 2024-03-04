@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-sea-orm = { version = "0.12.9", features = [ "sqlx-postgres", "runtime-tokio-rustls", "with-uuid", "with-time", "macros"] }
+sea-orm = { version = "0.12.9", features = [ "sqlx-postgres", "runtime-tokio-rustls"] }
 phf = { version = "0.11.2", features = ["macros"] }
 makoto_config = { path = "../config" }
-makoto_lib = {path = "../utils"}
+mafuyu_lib = {path = "../utils", features = ["db"]}

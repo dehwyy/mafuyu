@@ -2,8 +2,6 @@ use std::borrow::BorrowMut;
 use tonic::{Request, Response, Status};
 use uuid::Uuid;
 
-use makoto_lib::errors::prelude::*;
-
 use makoto_grpc::errors::GrpcHandleError;
 use makoto_grpc::pkg::general::IsOkResponse;
 use makoto_grpc::pkg::tokens::{self as rpc, SaveTokensRequest, tokens_rpc_server::TokensRpc};
@@ -13,7 +11,7 @@ use makoto_grpc::pkg::integrations;
 use mafuyu_nats::payload::tokens as nats_tokens;
 use mafuyu_nats::message::Encoder as NatsJsonEncoder;
 use makoto_grpc::pkg::integrations::GetBasicUserRequest;
-use makoto_lib::errors::RepositoryError;
+use mafuyu_lib::errors::prelude::*;
 
 use crate::jwt::{Jwt, JwtPayload, TokenError};
 use crate::repo::GetTokenRecordBy;

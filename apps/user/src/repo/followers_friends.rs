@@ -1,9 +1,8 @@
 use sea_orm::{DatabaseConnection, prelude::*, IntoActiveValue, TransactionTrait, IntoActiveModel, Condition, QuerySelect};
 use sea_orm::sea_query::OnConflict;
 use uuid::Uuid;
-use makoto_lib::errors::RepositoryError;
+use mafuyu_lib::errors::prelude::*;
 use makoto_db::models::{user_followers, user_friends, prelude::{UserFollowers, UserFriends}};
-use makoto_lib::errors::prelude::HandleError;
 
 pub struct FollowersFriendsRepo {
     db: DatabaseConnection

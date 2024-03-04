@@ -2,8 +2,7 @@ use sea_orm::{ActiveValue, DatabaseConnection, IntoActiveValue};
 use sea_orm::prelude::*;
 use makoto_db::models::user_tokens;
 use makoto_db::repo::tokens::get_token_record;
-use makoto_lib::errors::prelude::HandleError;
-use makoto_lib::errors::RepositoryError;
+use mafuyu_lib::errors::prelude::*;
 
 pub use makoto_db::repo::tokens::GetTokenRecordBy;
 

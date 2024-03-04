@@ -1,9 +1,8 @@
 use sea_orm::{DatabaseConnection, prelude::*, IntoActiveValue};
 use sea_orm::sea_query::OnConflict;
 
-use makoto_lib::errors::RepositoryError;
+use mafuyu_lib::errors::prelude::*;
 use makoto_db::models::{user_blocked, prelude::UserBlocked};
-use makoto_lib::errors::prelude::HandleError;
 
 pub struct BlockedUsersRepo {
     db: DatabaseConnection

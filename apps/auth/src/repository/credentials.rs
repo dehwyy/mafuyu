@@ -1,7 +1,8 @@
 use sea_orm::DatabaseConnection;
 use sea_orm::prelude::*;
 use makoto_db::models::user_credentials;
-use makoto_lib::errors::RepositoryError;
+
+use mafuyu_lib::errors::prelude::RepositoryError;
 
 pub use makoto_db::repo::credentials::GetCredentialsRecordBy;
 

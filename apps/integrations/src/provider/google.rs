@@ -1,4 +1,3 @@
-use logger::info;
 use makoto_grpc::pkg::integrations::GetBasicUserResponse;
 use crate::provider::ProviderRequestError;
 

@@ -1,7 +1,7 @@
 use std::cmp::{max, min};
 use std::io;
 use ril::{ImageFormat, Pixel, Rgba};
-use makoto_lib::image::{core::Base64ImageType, Image as ImageOps};
+use mafuyu_lib::image::{core::Base64ImageType, Image as ImageOps};
 use crate::internal::fs::CDNFs;
 
 const MD: u32 = 500;

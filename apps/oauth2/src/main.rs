@@ -4,7 +4,6 @@ mod oauth2;
 
 use makoto_grpc::pkg::oauth2::o_auth2_rpc_server::OAuth2RpcServer;
 use logger::*;
-use makoto_lib::Result as AnyResult;
 
 fn main() {
     let cfg = makoto_config::secrets::Secrets::new();
@@ -19,7 +18,7 @@ fn main() {
             runtime().await.unwrap();
         })
 }
-async fn runtime() -> AnyResult<()> {
+async fn runtime() -> Result<(), Box<dyn std::error::Error>> {
     let cfg = makoto_config::secrets::Secrets::new();
     Logger::new(cfg.environment);
 

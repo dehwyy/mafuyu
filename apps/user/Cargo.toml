@@ -12,6 +12,6 @@ uuid = { version = "1.6.1", features = ["v4"] }
 
 makoto_db = {path = "../../libs/db"}
 makoto_grpc = {path = "../../libs/grpc"}
-makoto_lib = {path = "../../libs/utils"}
+mafuyu_lib = {path = "../../libs/utils", features = ["rpc", "image", "db"]}
 makoto_config = {path = "../../libs/config"}
 logger = {path = "../../libs/logger"}

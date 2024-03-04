@@ -17,7 +17,7 @@ async-nats = {version = "0.33.0", features = ["service"]}
 
 makoto_db = {path = "../../libs/db"}
 makoto_grpc = {path = "../../libs/grpc"}
-makoto_lib = {path = "../../libs/utils"}
+mafuyu_lib = {path = "../../libs/utils", features = ["rpc", "db", "nats"]}
 makoto_config = {path = "../../libs/config"}
 logger = {path = "../../libs/logger"}
 mafuyu_nats = {path = "../../libs/nats"}

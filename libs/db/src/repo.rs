@@ -1,10 +1,10 @@
-use makoto_lib::errors::prelude::*;
+use mafuyu_lib::errors::prelude::*;
 
 pub mod user {
+    use super::*;
     use sea_orm::prelude::*;
     use sea_orm::sea_query::SimpleExpr;
-    use makoto_lib::errors::prelude::*;
-    use makoto_lib::errors::RepositoryError;
+
     use crate::models::prelude::{Users as User, UserCredentials};
     use crate::models::{users as user, user_credentials};
 
@@ -41,7 +41,6 @@ pub mod user {
 pub mod credentials {
     use super::*;
     use sea_orm::prelude::*;
-    use makoto_lib::errors::RepositoryError;
     use crate::models::prelude::UserCredentials;
     use crate::models::user_credentials;
 
@@ -69,7 +68,6 @@ pub mod credentials {
 pub mod tokens {
     use super::*;
     use sea_orm::prelude::*;
-    use makoto_lib::errors::RepositoryError;
     use crate::models::prelude::UserTokens;
     use crate::models::user_tokens;
 

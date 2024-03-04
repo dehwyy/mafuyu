@@ -20,7 +20,7 @@ sha2 = "0.10.8"
 uuid = { version = "1.6.1", features = ["v4"] }
 
 makoto_grpc = {path = "../../libs/grpc"}
-makoto_lib = {path = "../../libs/utils"}
+mafuyu_lib = {path = "../../libs/utils", features = ["db"]}
 makoto_config = {path = "../../libs/config"}
 logger = {path = "../../libs/logger"}
 makoto_db = {path = "../../libs/db"}

@@ -230,10 +230,10 @@ dependencies = [
  "async-nats",
  "bcrypt",
  "logger",
+ "mafuyu_lib",
  "makoto_config",
  "makoto_db",
  "makoto_grpc",
- "makoto_lib",
  "oauth2",
  "prost",
  "rand",
@@ -256,7 +256,6 @@ dependencies = [
  "makoto_config",
  "makoto_db",
  "makoto_grpc",
- "makoto_lib",
  "prost",
  "redis",
  "sea-orm",
@@ -397,6 +396,12 @@ name = "base64"
 version = "0.21.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9d297deb1925b89f2ccc13d7635fa0714f12c87adce1c75356b39ca9b7178567"
+
+[[package]]
+name = "base64"
+version = "0.22.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9475866fec1451be56a3c2400fd081ff546538961565ccb5b7142cbd22bc7a51"
 
 [[package]]
 name = "base64ct"
@@ -572,10 +577,10 @@ dependencies = [
  "futures",
  "image",
  "logger",
+ "mafuyu_lib",
  "mafuyu_nats",
  "makoto_config",
  "makoto_grpc",
- "makoto_lib",
  "prost",
  "redb",
  "serde",
@@ -593,10 +598,10 @@ dependencies = [
  "axum 0.7.4",
  "futures",
  "logger",
+ "mafuyu_lib",
  "mafuyu_nats",
  "mafuyu_sentry",
  "makoto_config",
- "makoto_lib",
  "ril",
  "tokio",
  "tower",
@@ -1307,10 +1312,10 @@ dependencies = [
  "http 0.2.11",
  "hyper 0.14.27",
  "logger",
+ "mafuyu_lib",
  "mafuyu_sentry",
  "makoto_config",
  "makoto_grpc",
- "makoto_lib",
  "prost",
  "tokio",
  "tonic",
@@ -1731,10 +1736,10 @@ name = "integrations"
 version = "0.1.0"
 dependencies = [
  "logger",
+ "mafuyu_lib",
  "makoto_config",
  "makoto_db",
  "makoto_grpc",
- "makoto_lib",
  "prost",
  "reqwest",
  "sea-orm",
@@ -1892,6 +1897,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "mafuyu_lib"
+version = "0.1.0"
+dependencies = [
+ "async-nats",
+ "base64 0.22.0",
+ "mafuyu_nats",
+ "sea-orm",
+ "tonic",
+]
+
+[[package]]
 name = "mafuyu_nats"
 version = "0.1.0"
 dependencies = [
@@ -1920,8 +1936,8 @@ dependencies = [
 name = "makoto_db"
 version = "0.1.0"
 dependencies = [
+ "mafuyu_lib",
  "makoto_config",
- "makoto_lib",
  "phf",
  "sea-orm",
 ]
@@ -1934,17 +1950,6 @@ dependencies = [
  "prost",
  "tonic",
  "tonic-build",
-]
-
-[[package]]
-name = "makoto_lib"
-version = "0.1.0"
-dependencies = [
- "async-nats",
- "base64 0.21.7",
- "mafuyu_nats",
- "reqwest",
- "tonic",
 ]
 
 [[package]]
@@ -2171,10 +2176,10 @@ name = "oauth"
 version = "0.1.0"
 dependencies = [
  "logger",
+ "mafuyu_lib",
  "mafuyu_sentry",
  "makoto_config",
  "makoto_grpc",
- "makoto_lib",
  "oauth2",
  "prost",
  "reqwest",
@@ -2339,10 +2344,10 @@ name = "passport"
 version = "0.1.0"
 dependencies = [
  "logger",
+ "mafuyu_lib",
  "makoto_config",
  "makoto_db",
  "makoto_grpc",
- "makoto_lib",
  "prost",
  "sea-orm",
  "tokio",
@@ -3934,11 +3939,11 @@ dependencies = [
  "hmac",
  "jwt",
  "logger",
+ "mafuyu_lib",
  "mafuyu_nats",
  "makoto_config",
  "makoto_db",
  "makoto_grpc",
- "makoto_lib",
  "prost",
  "sea-orm",
  "sha2",
@@ -3957,11 +3962,11 @@ dependencies = [
  "hmac",
  "jwt",
  "logger",
+ "mafuyu_lib",
  "mafuyu_nats",
  "makoto_config",
  "makoto_db",
  "makoto_grpc",
- "makoto_lib",
  "prost",
  "reqwest",
  "sea-orm",
@@ -4373,10 +4378,10 @@ name = "user"
 version = "0.1.0"
 dependencies = [
  "logger",
+ "mafuyu_lib",
  "makoto_config",
  "makoto_db",
  "makoto_grpc",
- "makoto_lib",
  "prost",
  "sea-orm",
  "tokio",

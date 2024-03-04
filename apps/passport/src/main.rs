@@ -1,13 +1,12 @@
 use tonic::transport::Server;
 use makoto_grpc::pkg::passport::passport_rpc_server::PassportRpcServer;
 use logger::{info, Logger};
-use makoto_lib::Result as AnyResult;
 
 mod service;
 mod repo;
 
 #[tokio::main]
-async fn main() -> AnyResult<()> {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let cfg = makoto_config::secrets::Secrets::new();
     Logger::new(cfg.environment);

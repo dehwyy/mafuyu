@@ -8,10 +8,9 @@ use service::AuthRpcServiceImplementation;
 
 use makoto_grpc::pkg::auth::auth_rpc_server::AuthRpcServer;
 use logger::{info, Logger};
-use makoto_lib::Result as AnyResult;
 
 #[tokio::main]
-async fn main() -> AnyResult<()> {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cfg = makoto_config::secrets::Secrets::new();
     Logger::new(cfg.environment);
 

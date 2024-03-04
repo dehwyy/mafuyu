@@ -1,7 +1,7 @@
-use sea_orm::{prelude::*, IntoActiveValue, QuerySelect};
+use sea_orm::{prelude::*, IntoActiveValue};
 
-use makoto_db::{models::{languages, prelude::{UserLanguages, Languages}, user_languages}, repo::languages::get_language_id_by_name};
-use makoto_lib::errors::{prelude::HandleError, RepositoryError};
+use makoto_db::{models::{prelude::{UserLanguages, Languages}, user_languages}, repo::languages::get_language_id_by_name};
+use mafuyu_lib::errors::prelude::*;
 
 pub struct LanguagesRepo {
     db: DatabaseConnection

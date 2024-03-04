@@ -4,7 +4,7 @@ use uuid::Uuid;
 use makoto_db::repo::credentials::GetCredentialsRecordBy;
 use makoto_grpc::pkg::passport as rpc;
 use makoto_grpc::pkg::passport::{CreateUserPassportResponse, CreateUserPassportRequest, GetPublicUserRequest, GetPublicUserResponse, UpdateUsernameRequest};
-use makoto_lib::errors::prelude::*;
+use mafuyu_lib::errors::prelude::*;
 
 use crate::repo as credentials_repo;
 

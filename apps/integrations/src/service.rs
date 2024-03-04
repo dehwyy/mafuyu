@@ -1,7 +1,7 @@
 use tonic::{Request, Response, Status};
 use makoto_grpc::pkg::integrations as rpc;
 use makoto_grpc::pkg::integrations::integrations_rpc_server::IntegrationsRpc;
-use makoto_lib::errors::prelude::ResultedOption;
+use mafuyu_lib::errors::prelude::*;
 
 use crate::provider::{Provider, ProviderTrait};
 

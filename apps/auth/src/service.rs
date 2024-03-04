@@ -11,8 +11,8 @@ use makoto_grpc::pkg::{tokens, passport, mailer, user};
 use makoto_grpc::pkg::general::IsOkResponse;
 use makoto_grpc::errors::GrpcHandleError;
 use makoto_grpc::pkg::auth::{AuthenticationServiceResponse, SendEmailVerificationCodeRequest, VerifyEmailCodeRequest};
-use makoto_lib::errors::prelude::*;
-use makoto_lib::errors::RepositoryError;
+
+use mafuyu_lib::errors::prelude::*;
 
 use crate::repository::credentials::{Credentials, GetCredentialsRecordBy as GetUserRecordBy};
 use crate::repository::tokens::{Tokens, GetTokenRecordBy};

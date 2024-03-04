@@ -16,7 +16,7 @@ async-nats = "0.33.0"
 hyper = "0.14"
 
 makoto_grpc = {path = "../../libs/grpc"}
-makoto_lib = {path = "../../libs/utils"}
+mafuyu_lib = {path = "../../libs/utils"}
 makoto_config = {path = "../../libs/config"}
 logger = {path = "../../libs/logger"}
 mafuyu_sentry = {path = "../../libs/sentry"}
