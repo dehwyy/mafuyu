@@ -1,8 +1,7 @@
 use std::cmp::{max, min};
 use std::io;
-use ril::{Frame, ImageFormat, Pixel, Rgb, Rgba};
-use tracing::info;
-use makoto_lib::image::{core::*, Image as ImageOps};
+use ril::{ImageFormat, Pixel, Rgba};
+use makoto_lib::image::{core::Base64ImageType, Image as ImageOps};
 use crate::internal::fs::CDNFs;
 
 const MD: u32 = 500;
@@ -30,12 +29,6 @@ impl Into<ImageTarget> for RilAnimatedImage {
 }
 
 
-pub struct PipeImagePayload {
-    pub image: Vec<u8>,
-    pub height: Option<u32>,
-    pub width: Option<u32>,
-}
-
 pub struct Image;
 
 impl Image {
@@ -45,18 +38,17 @@ impl Image {
         let ext = Base64ImageType::from(image_ext);
         match ext {
             Base64ImageType::Webp => {
-                info!("hell1");
                 let image: RilImage  = ril::Image::from_bytes(ImageFormat::WebP, image_buf.as_slice())?;
                 let images = Self::resize_image_default_sizes(image).await;
 
                 Self::save_resized(filename, images).await?;
             },
             Base64ImageType::Gif => {
-                CDNFs::save_image(&filename, image_buf, "gif", None)?;
+                CDNFs::save_image(&filename, image_buf, "gif", None).await?;
                 // TODO: consider.
-                /// Well, I don't exactly know whether `gif` image should be resized or not.
-                /// I may put just **max_size* limit
-                /// But... I wrote these abstractions for `gif` + other formats...
+                // Well, I don't exactly know whether `gif` image should be resized or not.
+                // I may put just **max_size* limit
+                // But... I wrote these abstractions for `gif` + other formats...
 
                 // let image_frames = ril::ImageSequence::<Rgba>::from_bytes(ImageFormat::Gif, image_buf.as_slice())?;
                 //
@@ -127,7 +119,7 @@ impl Image {
 
         r.map_err(|err| io::Error::new(io::ErrorKind::Other, err))?;
 
-        CDNFs::save_image(filename, buffer, &ext, size)?;
+        CDNFs::save_image(filename, buffer, &ext, size).await?;
 
         Ok(())
     }

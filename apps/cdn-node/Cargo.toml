@@ -4,23 +4,17 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-ril = { version = "0.10.1" , features = ["webp", "gif"]}
-libwebp = { version = "0.1.2", features = ["0_6"] }
-image = { version = "0.24.8", features = ["webp-encoder"] }
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
 async-nats = "0.33.0"
 tokio = { version = "1.35.0", features = ["macros", "rt-multi-thread"] }
 futures = { version = "0.3.28", default-features = false, features = ["std"] }
 uuid = { version = "1.6.1", features = ["v4"] }
+
 axum = { version = "0.7.4" }
-sentry-tower = "0.32.2"
-tower-http = { version = "0.5.2" , features = ["trace"]}
+ril = { version = "0.10.1" , features = ["webp", "gif"]}
 tower = "0.4.13"
-tracing = "0.1.40"
 
 makoto_lib = {path = "../../libs/utils"}
 makoto_config = {path = "../../libs/config"}
-logger = {path = "../../libs/logger"}
+logger = {path = "../../libs/logger", features = ["tower"]}
 mafuyu_nats = {path = "../../libs/nats"}
-mafuyu_sentry = {path = "../../libs/sentry"}
+mafuyu_sentry = {path = "../../libs/sentry", features = ["tower"]}

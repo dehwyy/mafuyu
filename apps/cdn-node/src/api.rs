@@ -2,14 +2,13 @@ use std::collections::HashMap;
 use axum::{Router, routing, extract::{Query, Path}, http::StatusCode, response::Response};
 use axum::response::IntoResponse;
 
-use tracing::instrument;
-use tower_http::{trace::TraceLayer};
 use tower::ServiceBuilder;
 
+use logger as tracing;
 use logger::{error, info};
 
 use super::internal::fs::CDNFs;
-use super::internal::image::{PipeImagePayload, Image};
+use super::internal::image::Image;
 
 pub async fn start_api_runtime() {
     let cfg = makoto_config::hosts::Hosts::new();
@@ -18,8 +17,8 @@ pub async fn start_api_runtime() {
         .route("/v1/static/:image", routing::get(serve_image))
         .layer(
             ServiceBuilder::new()
-                .layer(sentry_tower::NewSentryLayer::new_from_top())
-                .layer(TraceLayer::new_for_http())
+                .layer(mafuyu_sentry::tower::get_sentry_layer())
+                .layer(logger::tower::get_tower_tracing_layer())
         );
 
     info!("Running server on {}", cfg.cdn_api);
@@ -32,7 +31,7 @@ pub async fn start_api_runtime() {
 /// ### Params:
 /// - size (md(medium), sm(small)) - optional
 
-#[instrument]
+#[tracing::instrument]
 async fn serve_image(
     Path(image_name): Path<String>,
     Query(params): Query<HashMap<String, String>>
@@ -42,8 +41,7 @@ async fn serve_image(
     });
 
      match img {
-        Some(Ok(v)) => Ok(v),
-        Some(Err(_)) => Err(StatusCode::INTERNAL_SERVER_ERROR),
+        Some(img_fut) => img_fut.await.map_err(|_| StatusCode::INTERNAL_SERVER_ERROR),
         None => Err(StatusCode::BAD_REQUEST)
     }
 }
