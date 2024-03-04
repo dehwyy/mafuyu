@@ -1,3 +1,6 @@
+#[cfg(feature = "tower")]
+pub mod tower;
+
 pub struct Sentry;
 
 impl Sentry {
