@@ -7,3 +7,8 @@ edition = "2021"
 tracing = "0.1"
 tracing-subscriber = { version ="0.3", features = ["ansi", "chrono"] }
 sentry = { version = "0.32.2", features = ["tracing"] }
+tower-http = { version = "0.5.2" , features = ["trace"], optional = true}
+
+[features]
+default = []
+tower = ["dep:tower-http"]

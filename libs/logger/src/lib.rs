@@ -1,9 +1,10 @@
+#[cfg(feature = "tower")]
+pub mod tower;
+
 use std::fmt::Debug;
 use tracing_subscriber::prelude::*;
 use tracing_subscriber::fmt::time::ChronoLocal;
-use tracing::instrument::WithSubscriber;
-
-pub use tracing::{trace, debug, info, error, warn, instrument};
+pub use tracing::*;
 
 #[derive(Clone)]
 enum  LoggerMode {
