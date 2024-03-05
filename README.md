@@ -15,13 +15,16 @@
 - Redis
 - GORM
 - SeaORM
+- Sentry
+- Tracing(Rust) + Zerolog(Go)
 
 ## Development
  
 There are features that work only with appropriate `env secrets`. They should be set, if you want to have these features enabled.
 ### Features: 
-- OAuth2 (`Github`)
+- OAuth2 (`Github`, `Google`)
 - Email confirmation via `Gmail`
+- Telemetry (`Sentry`)
 
 ### CLI Usage
 
