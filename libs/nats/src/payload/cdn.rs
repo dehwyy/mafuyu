@@ -9,5 +9,4 @@ pub struct PublishImageRequest {
 
 pub mod subject {
     pub const PUBLISH_IMAGE: &str = "cdn.do.publish_image";
-    pub const PUBLISH_IMAGE_PARSED: &str = "publish_image";
 }

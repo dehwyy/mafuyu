@@ -1,5 +1,22 @@
 use crate::errors::*;
 
+impl<T, R> NatsHandleError<T> for Result<T, R>
+    where R: std::fmt::Display
+{
+    fn internal_error(self) -> Result<T, RouteError> {
+        self.map_err(|err| RouteError::InternalError(err.to_string()))
+    }
+    fn invalid_argument_error(self) -> Result<T, RouteError> {
+        self.map_err(|err| RouteError::InvalidArgument(err.to_string()))
+    }
+    fn not_found_error(self) -> Result<T, RouteError> {
+        self.map_err(|err| RouteError::NotFound(err.to_string()))
+    }
+    fn already_exists_error(self) -> Result<T, RouteError> {
+        self.map_err(|err| RouteError::AlreadyExists(err.to_string()))
+    }
+}
+
 impl std::fmt::Display for RouteError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s=  match self {
