@@ -4,6 +4,7 @@ pub mod repo;
 use async_nats::jetstream::stream::{Config, RetentionPolicy};
 use async_nats::jetstream::consumer;
 use futures::TryStreamExt;
+use logger::log::error;
 use logger::Logger;
 
 #[tokio::main]
@@ -32,12 +33,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let db = makoto_db::new().await.expect("cannot open database connection");
     let token_repo = repo::Repo::new(db);
 
-    let router = router::Router::new(token_repo).await;
+    let service = router::RouterService::new(token_repo).await;
+
+    let router = router::Router::new(service).await;
 
     let mut messages_stream = stream_consumer.messages().await?;
 
     while let Ok(Some(message)) = messages_stream.try_next().await {
-        router.handle(message).await
+        if let Err(err) = router.handler.handle(message).await {
+            error!("[Nats Handle Error]: {:?}", err);
+        }
     }
 
     Ok(())
