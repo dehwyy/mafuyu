@@ -3,7 +3,7 @@ mod grpc;
 mod internal;
 mod init;
 
-use clap::{Parser, Subcommand, Args};
+use clap::{Parser, Subcommand};
 use logger::Logger;
 
 #[derive(Parser)]

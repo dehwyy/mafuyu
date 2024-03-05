@@ -19,6 +19,7 @@ impl Init {
     pub async fn create_necessary_dirs() {
         create_dir_all(".cdn/static").await.unwrap();
         create_dir_all("libs/grpc/dist").await.unwrap();
+        create_dir_all("libs/grpc/gen").await.unwrap();
     }
 
     async fn create_rw_file(path: impl AsRef<std::path::Path>) -> File {
@@ -32,7 +33,6 @@ impl Init {
             let mut env_f = File::options().read(true).open(".env.example").await.expect("cannot open .env.example");
             let mut buf: Vec<u8> = vec!();
             env_f.read_to_end(&mut buf).await.expect("cannot read from .env.example");
-            info!("env example: {}", String::from_utf8_lossy(&buf));
             let mut f = Self::create_rw_file(".env").await;
             f.write(&buf).await.expect("cannot write to .env file");
             f.flush().await.expect("cannot flush .env file");
