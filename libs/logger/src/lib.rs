@@ -1,7 +1,6 @@
 #[cfg(feature = "tower")]
 pub mod tower;
 
-use std::fmt::Debug;
 use tracing_subscriber::prelude::*;
 use tracing_subscriber::fmt::time::ChronoLocal;
 pub use tracing::*;
@@ -25,12 +24,12 @@ impl LoggerMode {
     }
 }
 
-impl Into<tracing::Level> for LoggerMode {
-    fn into(self) -> tracing::Level {
+impl Into<Level> for LoggerMode {
+    fn into(self) -> Level {
         match self {
-            LoggerMode::Trace => tracing::Level::TRACE,
-            LoggerMode::Default => tracing::Level::INFO,
-            LoggerMode::Production => tracing::Level::ERROR
+            LoggerMode::Trace => Level::TRACE,
+            LoggerMode::Default => Level::INFO,
+            LoggerMode::Production => Level::ERROR
         }
     }
 }
@@ -40,7 +39,7 @@ pub struct Logger;
 impl Logger {
     pub fn new(environment: String) {
         let mode = LoggerMode::new(environment);
-        let level: tracing::Level = mode.clone().into();
+        let level: Level = mode.clone().into();
 
         let fmt_subscriber = tracing_subscriber::FmtSubscriber::builder()
             .with_target(true)
