@@ -14,10 +14,12 @@ fn main() -> std::io::Result<()> {
 
         std::env::set_var("OUT_DIR", &out_dir);
 
-        tonic_build::configure().compile(
-            &protos.iter().map(|proto| format!("{0}", proto)).collect::<Vec<_>>(),
-            &vec!("protos").iter().map(|path| format!("{0}/{1}", cwd, path)).collect::<Vec<_>>(),
-        ).expect("cannot compile rust protos!");
+        tonic_build::configure()
+            .protoc_arg("--experimental_allow_proto3_optional")
+            .compile(
+                &protos.iter().map(|proto| format!("{0}", proto)).collect::<Vec<_>>(),
+                &vec!("protos").iter().map(|path| format!("{0}/{1}", cwd, path)).collect::<Vec<_>>(),
+            ).expect("cannot compile rust protos!");
     }
 
     Ok(())
