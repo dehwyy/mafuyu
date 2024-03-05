@@ -4,7 +4,7 @@ mod internal;
 
 use async_nats::jetstream::{consumer, stream::{Config, RetentionPolicy}};
 use futures::TryStreamExt;
-use logger::{info, Logger};
+use logger::{error, info, Logger};
 
 fn main() {
     let cfg = makoto_config::secrets::Secrets::new();
@@ -48,7 +48,9 @@ async fn start_nats_runtime() -> Result<(), Box<dyn std::error::Error + Sync + S
     let mut messages_stream = stream_consumer.messages().await?;
 
     while let Ok(Some(message)) = messages_stream.try_next().await {
-        router.handle(message).await;
+        if let Err(err) = router.handler.handle(message).await {
+            error!( "[nats router error] {err:?}");
+        }
     };
 
     Ok(())
