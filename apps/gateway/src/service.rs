@@ -6,6 +6,7 @@ use grpc::api::api_rpc_server;
 use grpc::{auth, tokens, oauth2, passport, integrations, user, general, authorization};
 use logger::{info, trace};
 use makoto_grpc::pkg::user::{GetUsersIDsResponse, GetUsersRequest, GetUsersResponse};
+use uuid::Uuid;
 
 
 pub struct ApiRpcServiceImplementation<T = tonic::transport::Channel> {
@@ -148,9 +149,19 @@ impl api_rpc_server::ApiRpc for ApiRpcServiceImplementation {
       Err(err) => {
         match err.code() {
           tonic::Code::NotFound => {
+            let found_user = self.passport_client.clone().borrow_mut().get_public_user(Request::new(passport::GetPublicUserRequest {
+              get_user_by: Some(passport::get_public_user_request::GetUserBy::Username(user.username.clone()))
+            })).await;
+
+            let username = match found_user.map_err(|err| err.code()) {
+              Ok(_) => format!("{}-{}", user.username, Uuid::new_v4()),
+              Err(tonic::Code::NotFound) => user.username,
+              Err(_) => return Err(err),
+            };
+
             let created_user = self.passport_client.clone().borrow_mut().create_user(Request::new(passport::CreateUserPassportRequest {
               email: user.email,
-              username: user.username.clone(),
+              username: username.clone(),
               password: None,
               provider_id: Some(user.provider_id.clone())
             })).await?.into_inner();
@@ -161,7 +172,7 @@ impl api_rpc_server::ApiRpc for ApiRpcServiceImplementation {
             })).await?;
 
             Ok(passport::GetPublicUserResponse {
-              username: user.username,
+              username,
               user_id: created_user.user_id,
               provider_id: Some(user.provider_id)
             })

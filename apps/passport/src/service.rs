@@ -25,19 +25,29 @@ impl rpc::passport_rpc_server::PassportRpc for PassportRpcServiceImplementation 
     async fn create_user(&self, req: Request<CreateUserPassportRequest>) -> Result<Response<CreateUserPassportResponse>, Status> {
         let req = req.into_inner();
 
-        let user = self.credentials_repo.create_user(credentials_repo::CreateUserPayload {
+        let mut email = req.email.clone();
+
+        if let Some(v) = email.clone() {
+            email = match self.credentials_repo.get_user(GetCredentialsRecordBy::Email(v)).await {
+                Ok(_) => Ok(None::<String>),
+                Err(RepositoryError::NotFound(_)) => Ok(email),
+                Err(err) => Err(err)
+            }.handle()?;
+        }
+
+        let user_id = self.credentials_repo.create_user(credentials_repo::CreateUserPayload {
+            email,
             username: req.username,
-            email: req.email,
             password: req.password,
             provider_id: req.provider_id,
         }).await.handle()?;
 
         Ok(Response::new(CreateUserPassportResponse {
-            user_id: user.id.into()
+            user_id: user_id.into()
         }))
     }
 
-    async fn update_username(&self, req: Request<UpdateUsernameRequest>) -> Result<Response<()>, tonic::Status> {
+    async fn update_username(&self, req: Request<UpdateUsernameRequest>) -> Result<Response<()>, Status> {
         let req =  req.into_inner();
 
         let user_id = Uuid::try_parse(&req.user_id).invalid_argument_error()?;
