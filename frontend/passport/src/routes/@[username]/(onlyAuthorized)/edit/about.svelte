@@ -47,13 +47,6 @@
       return
     }
 
-    if (userId === $authed_user_store?.id) {
-      authed_user_store.set({
-        id: userId,
-        username,
-      })
-    }
-
     await $editUserMutation.mutateAsync({
       userId,
       updateUsername: initialUsername !== username,
