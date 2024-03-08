@@ -7,3 +7,4 @@ edition = "2021"
 clap = { version = "4.5.0", features = ["derive"] }
 tokio = { version = "1.35.0", features = ["time", "macros", "rt-multi-thread", "process", "io-util", "fs"] }
 logger = { path = "../libs/logger" }
+indicatif = { version = "0.17.8" }
