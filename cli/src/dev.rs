@@ -1,6 +1,7 @@
 use tokio::process::Command;
 use tokio::time::{sleep, Duration};
 use logger::info;
+use crate::internal::animated::{Animated, Process};
 
 use crate::internal::cmd::Cmd;
 
@@ -63,11 +64,19 @@ impl Apps {
     }
 
     pub async fn exec(self) {
+        let mut multi = Animated::builder();
         for (i, build_cmd) in self.apps_build_commands.iter().enumerate().collect::<Vec<_>>() {
-            let app: &App  = self.apps.get(i).unwrap();
-            info!("Building app: {}", app.service);
-            Cmd::tokio_cmd(build_cmd.clone(), true).await.unwrap();
+            let app = self.apps.get(i).unwrap().service.clone();
+            let cmd = build_cmd.clone();
+
+            multi = multi.add(Process{
+                func: Box::pin(async move {Cmd::tokio_cmd(cmd).await.map(|_| {}).unwrap() }),
+                on_start: format!("Building app: {app}"),
+                on_end: format!("Built app: {app}"),
+            });
         }
+
+        multi.invoke().await;
 
         let mut runtimes = vec!();
         for (i, exec_cmd) in self.apps_exec_commands.iter().enumerate().collect::<Vec<_>>() {
@@ -75,7 +84,7 @@ impl Apps {
             info!("Running app: {}", app.service);
 
             sleep(Duration::from_secs(2)).await;
-            runtimes.push(tokio::spawn(Cmd::tokio_cmd(exec_cmd.clone(), false)));
+            runtimes.push(tokio::spawn(Cmd::tokio_cmd_with_output(exec_cmd.clone())));
         }
 
         for runtime in runtimes {
@@ -102,9 +111,9 @@ impl Apps {
 struct Others;
 
 impl Others {
-    pub async fn caddy_run() {
+    pub async fn caddy_start() {
         info!("Starting Caddy!");
-        Command::new("caddy").arg("run")
+        Command::new("caddy").arg("start")
             .spawn().unwrap().wait_with_output().await.unwrap();
     }
 
@@ -132,16 +141,9 @@ impl Others {
 pub async fn dev() {
     Others::docker_compose_up().await;
     Others::migrate_db().await;
+    Others::caddy_start().await;
 
     let apps: Apps = Apps::new();
-    let apps_runtime = tokio::spawn(apps.exec());
-
-    let caddy_runtime = tokio::spawn(Others::caddy_run());
-
-    let runtimes = [apps_runtime, caddy_runtime];
-
-    for runtime in runtimes {
-        runtime.await.unwrap();
-    }
+    apps.exec().await;
 }
 
