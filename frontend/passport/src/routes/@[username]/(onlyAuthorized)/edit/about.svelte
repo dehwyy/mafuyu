@@ -85,18 +85,32 @@
     username = initialUsername
   }
 
+  $: unchangedUsername = username === initialUsername
+
   $: has_changes =
-    username !== initialUsername ||
+    !unchangedUsername ||
     pseudonym !== initialPseudonym ||
     photo !== initialPhoto ||
     location !== initialLocation ||
     bio !== initialBio ||
     JSON.stringify(selected_languages) !== JSON.stringify(initialSelectedLanguages)
+
+  let isPending = false
+  let isRejected = false
 </script>
 
 <section class="col-span-2 flex flex-col gap-y-5 settings px-5">
   <div class={`${has_changes ? "bottom-5" : "-bottom-20"} fixed self-end  z-10 -mr-6 transition-all duration-200`}>
-    <button on:click={() => Save()} class="w-[50px] h-[50px] variant-glass-success btn rounded-full px-3 border border-success-500">
+    <button
+      disabled={(isPending || isRejected) && !unchangedUsername}
+      on:click={() => Save()}
+      class={`${
+        isPending && !unchangedUsername
+          ? "variant-glass-secondary border-blue-400"
+          : isRejected && !unchangedUsername
+            ? "variant-glass-error border-error-500"
+            : "variant-glass-success border-success-500"
+      } w-[50px] h-[50px]  btn rounded-full px-3 border `}>
       {@html CheckIconRaw}
     </button>
   </div>
@@ -108,7 +122,7 @@
 
   <div class="flex flex-col gap-y-7">
     <ProfilePhoto bind:photo />
-    <Username bind:username />
+    <Username bind:isPending bind:isRejected bind:username />
     <Pseudonym bind:pseudonym />
     <Bio bind:bio />
   </div>

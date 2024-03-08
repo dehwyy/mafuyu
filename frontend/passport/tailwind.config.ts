@@ -37,14 +37,14 @@ const darkAgeTheme: CustomThemeConfig = {
     "--color-primary-800": "153 153 153", // #999999
     "--color-primary-900": "125 125 125", // #7d7d7d
     // secondary | #d12e3e
-    "--color-secondary-50": "248 224 226", // #f8e0e2
-    "--color-secondary-100": "246 213 216", // #f6d5d8
-    "--color-secondary-200": "244 203 207", // #f4cbcf
-    "--color-secondary-300": "237 171 178", // #edabb2
-    "--color-secondary-400": "223 109 120", // #df6d78
-    "--color-secondary-500": "209 46 62", // #d12e3e
-    "--color-secondary-600": "188 41 56", // #bc2938
-    "--color-secondary-700": "157 35 47", // #9d232f
+    "--color-secondary-50": "227 237 243",
+    "--color-secondary-100": "218 231 239",
+    "--color-secondary-200": "209 225 235",
+    "--color-secondary-300": "181 206 223",
+    "--color-secondary-400": "126 170 199",
+    "--color-secondary-500": "70 133 175",
+    "--color-secondary-600": "63 120 158",
+    "--color-secondary-700": "53 100 131",
     "--color-secondary-800": "125 28 37", // #7d1c25
     "--color-secondary-900": "102 23 30", // #66171e
     // tertiary | #1c0de7

@@ -32,8 +32,6 @@ export const load: LayoutServerLoad = async ({ cookies, url, setHeaders }) => {
       url: url.pathname,
     }
   } catch (e) {
-    console.log(e)
-
     return {
       url: url.pathname,
     }
