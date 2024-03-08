@@ -4,7 +4,7 @@ mod internal;
 mod init;
 
 use clap::{Parser, Subcommand};
-use logger::Logger;
+use logger::{Logger, LoggerConfig};
 
 #[derive(Parser)]
 #[command(version,about, propagate_version = true)]
@@ -31,7 +31,13 @@ enum Command {
 
 #[tokio::main]
 async fn main() {
-    Logger::new("dev".to_owned());
+    Logger::with_config(LoggerConfig {
+        with_file: false,
+        with_sentry: false,
+        with_target: false,
+        with_line_number: false,
+        ..Default::default()
+    });
 
     let cli = Cli::parse();
     match &cli.command {
