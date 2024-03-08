@@ -5,17 +5,22 @@ import { GrpcClient } from "@makoto/grpc"
 import { GrpcCookiesKeys } from "@makoto/grpc/const"
 
 export const load: PageServerLoad = async ({ cookies }) => {
-  const { response } = await GrpcClient.signOut({
-    accessToken: cookies.get(GrpcCookiesKeys.AccessToken)!,
-  })
+  const token = cookies.get(GrpcCookiesKeys.AccessToken)
 
-  if (response.isOk) {
-    cookies.delete(GrpcCookiesKeys.AccessToken, {
-      path: "/",
+  if (token) {
+    const { response } = await GrpcClient.signOut({
+      accessToken: cookies.get(GrpcCookiesKeys.AccessToken)!,
     })
-    cookies.delete(GrpcCookiesKeys.RefreshToken, {
-      path: "/",
-    })
-    throw redirect(302, Routes.Login)
+
+    if (response.isOk) {
+      cookies.delete(GrpcCookiesKeys.AccessToken, {
+        path: "/",
+      })
+      cookies.delete(GrpcCookiesKeys.RefreshToken, {
+        path: "/",
+      })
+    }
   }
+
+  throw redirect(302, Routes.Login)
 }

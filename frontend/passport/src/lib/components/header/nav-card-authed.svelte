@@ -25,7 +25,17 @@
     { icon: CircleIconRaw, href: Routes.Circle, placeholder: "Circle" },
     { icon: FriendsIconRaw, href: CreateNavigation.ToFriends(username), placeholder: "Friends" },
     // { icon: CollectionIconRaw, href: null , placeholder: "Collections" },
-    { icon: LogoutIconRaw, href: Routes.Logout, placeholder: "Logout" },
+    {
+      icon: LogoutIconRaw,
+      href: Routes.Logout,
+      placeholder: "Logout",
+      preAction: async () => {
+        // TODO: invalidate session
+        await new Promise(resolve => {
+          setTimeout(() => resolve(null), 0)
+        })
+      },
+    },
   ]
 </script>
 
@@ -35,7 +45,15 @@
       {#if panel.component}
         <svelte:component this={panel.component} />
       {:else}
-        <a href={panel.href}>
+        <a
+          href={panel.href}
+          on:click={async e => {
+            if (panel.preAction) {
+              e.preventDefault()
+              await panel.preAction()
+            }
+            panel.href && (window.location.href = panel.href)
+          }}>
           <button>
             <span>{@html panel.icon}</span>
             <span>{panel.placeholder}</span>
