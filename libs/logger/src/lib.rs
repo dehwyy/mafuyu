@@ -5,31 +5,24 @@ use tracing_subscriber::prelude::*;
 use tracing_subscriber::fmt::time::ChronoLocal;
 pub use tracing::*;
 
-#[derive(Clone)]
-enum  LoggerMode {
-    Trace,
-    Default,
-    Production
+pub struct LoggerConfig {
+    pub log_level: Level,
+    pub with_sentry: bool,
+    pub with_target: bool,
+    pub with_file: bool,
+    pub with_line_number: bool,
+    pub with_ansi: bool,
 }
 
-impl LoggerMode {
-    fn new(env: String) -> Self {
-        match env.as_str() {
-            "trace" => LoggerMode::Trace,
-            "debug" => LoggerMode::Default,
-            "dev" => LoggerMode::Default,
-            "production" => LoggerMode::Production,
-            _ => LoggerMode::Default
-        }
-    }
-}
-
-impl Into<Level> for LoggerMode {
-    fn into(self) -> Level {
-        match self {
-            LoggerMode::Trace => Level::TRACE,
-            LoggerMode::Default => Level::INFO,
-            LoggerMode::Production => Level::ERROR
+impl Default for LoggerConfig {
+    fn default() -> Self {
+        LoggerConfig {
+            log_level: Level::INFO,
+            with_sentry: true,
+            with_ansi: true,
+            with_file: true,
+            with_target: true,
+            with_line_number: true
         }
     }
 }
@@ -37,22 +30,30 @@ impl Into<Level> for LoggerMode {
 pub struct Logger;
 
 impl Logger {
-    pub fn new(environment: String) {
-        let mode = LoggerMode::new(environment);
-        let level: Level = mode.clone().into();
+    pub fn with_config(config: LoggerConfig) {
 
         let fmt_subscriber = tracing_subscriber::FmtSubscriber::builder()
-            .with_target(true)
-            .with_file(true)
-            .with_line_number(true)
-            .with_ansi(true)
             .pretty()
-            .with_timer(ChronoLocal::new("%Y-%m-%d %H:%M:%S".to_owned()))
-            .with_max_level(level)
+            .with_target(config.with_target)
+            .with_file(config.with_file)
+            .with_line_number(config.with_line_number)
+            .with_ansi(config.with_ansi)
+            .with_timer(ChronoLocal::new("%H:%M:%S".to_owned()))
+            .with_max_level(config.log_level)
             .finish();
 
-        fmt_subscriber
-            .with(sentry::integrations::tracing::layer())
-            .init();
+        match config.with_sentry {
+            true => fmt_subscriber.with(sentry::integrations::tracing::layer()).init(),
+            false => fmt_subscriber.init(),
+        }
     }
+    pub fn new(_legacy: String) {
+        Logger::with_config(LoggerConfig {
+            ..Default::default()
+        });
+    }
+}
+
+pub fn with_loader() {
+
 }
