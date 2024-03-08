@@ -55,7 +55,7 @@ export const MostPopularLanguage: Language[] = [
 
 export const enum DevFallbackImages {
   VerticalOriented = "/images/r.jpg",
-  HorizontalOriented = "/images/hana.png",
+  HorizontalOriented = "/images/user_default.webp",
 }
 
 export const enum StaleTime {
