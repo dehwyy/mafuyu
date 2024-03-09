@@ -1,6 +1,5 @@
 <script lang="ts">
   import { fade } from "svelte/transition"
-
   import { getBaseUserInfoQuery } from "$lib/query/user"
   import UserPanel from "$lib/components/user-panel.svelte"
   import { CreateNavigation } from "$lib/const"

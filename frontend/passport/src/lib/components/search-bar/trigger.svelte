@@ -1,17 +1,9 @@
 <script lang="ts">
   import LoopIconRaw from "$lib/assets/loop.svg?raw"
-  import SearchBar from "./search-bar.svelte"
-  import { getModalStore, type ModalSettings } from "@skeletonlabs/skeleton"
+  import { getModalStore } from "@skeletonlabs/skeleton"
+  import { searchBarModal } from "$lib/modals"
 
   const modalStore = getModalStore()
-
-  const searchBarModal: ModalSettings = {
-    title: "SearchBar",
-    type: "component",
-    position: "top-0",
-    component: { ref: SearchBar },
-  }
-
   const triggerModal = () => {
     modalStore.trigger(searchBarModal)
   }

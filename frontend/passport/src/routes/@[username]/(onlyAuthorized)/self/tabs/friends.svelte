@@ -3,10 +3,12 @@
 
   import { getBaseUserInfoQuery } from "$lib/query/user"
   import UserPanel from "$lib/components/user-panel.svelte"
+  import UsersExplore from "$lib/components/users-explore.svelte"
   import { CreateNavigation } from "$lib/const"
   import { createQueries } from "@tanstack/svelte-query"
   import { derived, type Readable } from "svelte/store"
 
+  export let isCurrentUser = false
   export let friendsIDs: Readable<string[]>
 
   const friends = createQueries({
@@ -29,6 +31,8 @@
       {/if}
     {/each}
   </div>
+{:else if isCurrentUser}
+  <UsersExplore />
 {:else}
-  <p transition:fade={{ duration: 100 }} class="text-center text-xl mt-10">No friends</p>
+  <p in:fade={{ duration: 100 }} class="text-center text-xl mt-10">No Friends</p>
 {/if}

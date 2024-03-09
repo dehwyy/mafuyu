@@ -1,6 +1,5 @@
 <script lang="ts">
   import { derived } from "svelte/store"
-  import { fade } from "svelte/transition"
 
   import { useUserFollowers, useUserFriends } from "$lib/query/friends"
   import FriendsIconRaw from "$lib/assets/people.svg?raw"
@@ -12,6 +11,7 @@
   import Friends from "./tabs/friends.svelte"
   import Followers from "./tabs/followers.svelte"
   import { CreateNavigation } from "$lib/const"
+  import { authed_user_store } from "$lib/stores/user"
 
   // TODO: prefetch in +layout.server.ts
 
@@ -37,6 +37,8 @@
   const followersIDs = derived(followers, friend => {
     return friend.data?.followers || []
   })
+
+  $: isCurrentUser = $authed_user_store?.username === $page.params.username
 </script>
 
 <div class="flex flex-col gap-y-5 w-full">
@@ -59,7 +61,7 @@
     </TabAnchor>
     <svelte:fragment slot="panel">
       {#if isTabFriends}
-        <Friends {friendsIDs} />
+        <Friends {friendsIDs} {isCurrentUser} />
       {:else if isTabFollowers}
         <Followers {followersIDs} />
       {/if}
