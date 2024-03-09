@@ -17,6 +17,9 @@ export class CreateNavigation {
   static ToFriends(username: string): string {
     return `${Routes.Account}@${username}/self?section=friends`
   }
+  static ToFollowed(username: string): string {
+    return `${Routes.Account}@${username}/self?section=followed`
+  }
   static ToFollowers(username: string): string {
     return `${Routes.Account}@${username}/self?section=followers`
   }

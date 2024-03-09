@@ -1,7 +1,7 @@
 <script lang="ts">
   import { derived } from "svelte/store"
 
-  import { useUserFollowers, useUserFriends } from "$lib/query/friends"
+  import { useUserFollowedTo, useUserFollowers, useUserFriends } from "$lib/query/friends"
   import FriendsIconRaw from "$lib/assets/people.svg?raw"
   import FollowersIconRaw from "$lib/assets/people-group.svg?raw"
 
@@ -10,15 +10,17 @@
   import { useUserInfo } from "$lib/query/user"
   import Friends from "./tabs/friends.svelte"
   import Followers from "./tabs/followers.svelte"
+  import Followed from "./tabs/followed.svelte"
   import { CreateNavigation } from "$lib/const"
   import { authed_user_store } from "$lib/stores/user"
 
   // TODO: prefetch in +layout.server.ts
 
-  $: section = $page.url.searchParams.get("section") || "friends"
+  $: section = $page.url.searchParams.get("section") || "friends" || "followed"
   $: username = $page.params.username
 
   $: isTabFriends = section === "friends"
+  $: isTabFollowed = section === "followed"
   $: isTabFollowers = section === "followers"
 
   const [currentUser, currentUserStore] = useUserInfo({ oneofKind: "username", username: $page.params.username })
@@ -27,11 +29,18 @@
   const [friends, friendsStore] = useUserFriends($currentUser.data?.userId)
   $: friendsStore.set({ userId: $currentUser.data?.userId, limit: undefined })
 
+  const [followed, followedStore] = useUserFollowedTo($currentUser.data?.userId)
+  $: followedStore.set({ userId: $currentUser.data?.userId, limit: undefined })
+
   const [followers, followersStore] = useUserFollowers($currentUser.data?.userId)
   $: followersStore.set({ userId: $currentUser.data?.userId, limit: undefined })
 
   const friendsIDs = derived(friends, friends => {
     return friends.data?.friends || []
+  })
+
+  const followedIds = derived(followed, followed => {
+    return followed.data?.followers || []
   })
 
   const followersIDs = derived(followers, friend => {
@@ -51,6 +60,14 @@
         <span> Friends </span>
       </div>
     </TabAnchor>
+    <TabAnchor href={CreateNavigation.ToFollowed(username)} selected={isTabFollowed}>
+      <div class="tab">
+        <div class="icon-sm">
+          {@html FollowersIconRaw}
+        </div>
+        <span> Followed to </span>
+      </div>
+    </TabAnchor>
     <TabAnchor href={CreateNavigation.ToFollowers(username)} selected={isTabFollowers}>
       <div class="tab">
         <div class="icon-sm">
@@ -62,6 +79,8 @@
     <svelte:fragment slot="panel">
       {#if isTabFriends}
         <Friends {friendsIDs} {isCurrentUser} />
+      {:else if isTabFollowed}
+        <Followed followedIDs={followedIds} />
       {:else if isTabFollowers}
         <Followers {followersIDs} />
       {/if}

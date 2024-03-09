@@ -9,6 +9,7 @@ import { StaleTime } from "$lib/const"
 export const FriendsKeys = {
   "query.friends": "friends.getFriends",
   "query.followers": "friends.getFollowers",
+  "query.followedTo": "friends.getFollowedTo",
   "mutate.follow": "friends.followUser",
   "mutate.unfollow": "friends.unfollowUser",
 } as const
@@ -48,6 +49,21 @@ export const useUserFollowers = (userId: string | undefined, limit?: number) => 
     queryFn: async () => {
       if (!userId) return null
       const { response } = await GrpcWebClient.getUserFollowers({
+        userId,
+        limit,
+      })
+      return response
+    },
+  }))
+}
+
+export const useUserFollowedTo = (userId: string | undefined, limit?: number) => {
+  return createReactiveQuery({ userId, limit }, ({ userId, limit }) => ({
+    queryKey: [FriendsKeys["query.followedTo"], userId, limit],
+    staleTime: 5 * StaleTime.MINUTE,
+    queryFn: async () => {
+      if (!userId) return null
+      const { response } = await GrpcWebClient.getUserFollowedTo({
         userId,
         limit,
       })
