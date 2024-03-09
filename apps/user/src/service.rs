@@ -202,6 +202,18 @@ impl user_rpc_server::UserRpc for UserRpcServiceImplementation {
         Ok(Response::new(GetUserFollowersResponse { followers }))
     }
 
+    async fn get_user_followed_to(&self, req: Request<GetUserFollowersRequest>) -> Result<Response<GetUserFollowersResponse>, Status> {
+        let req = req.into_inner();
+
+        let user_id = Uuid::try_parse(&req.user_id).invalid_argument_error()?;
+
+        let followed_to = self.followers_friends_repo.get_followed_to(&user_id, req.limit).await.handle()?;
+        let followed_to = followed_to.iter().map(|v| v.followed_to_user_id.to_string()).collect::<Vec<_>>();
+
+        Ok(Response::new(GetUserFollowersResponse { followers: followed_to }))
+
+    }
+
     async fn get_blocked_users(&self, req: Request<GetBlockedUsersRequest>) -> Result<Response<GetBlockedUsersResponse>, Status> {
         let req = req.into_inner();
 

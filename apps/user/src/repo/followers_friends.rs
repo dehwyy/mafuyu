@@ -22,6 +22,13 @@ impl FollowersFriendsRepo {
             .all(&self.db).await.handle()
     }
 
+    pub async fn get_followed_to(&self, user_id: &Uuid, limit: Option<u32>) -> Result<Vec<user_followers::Model>, RepositoryError> {
+        UserFollowers::find()
+            .filter(user_followers::Column::UserId.eq(*user_id))
+            .limit(limit.map(|v| v as u64))
+            .all(&self.db).await.handle()
+    }
+
     pub async fn get_friends(&self, user_id: &Uuid, limit: Option<u32>) -> Result<Vec<user_friends::Model>, RepositoryError> {
         UserFriends::find()
             .filter(user_friends::Column::UserId.eq(*user_id))

@@ -42,6 +42,7 @@ service ApiRpc {
   rpc GetBasicUser(user.GetUserRequest) returns (user.GetBasicUserResponse);
   rpc GetUserFriends(user.GetUserFriendsRequest) returns (user.GetUserFriendsResponse);
   rpc GetUserFollowers(user.GetUserFollowersRequest) returns (user.GetUserFollowersResponse);
+  rpc GetUserFollowedTo(user.GetUserFollowersRequest) returns (user.GetUserFollowersResponse);
   rpc GetBlockedUsers(user.GetBlockedUsersRequest) returns (user.GetBlockedUsersResponse);
   rpc FollowUser(user.UserId) returns (google.protobuf.Empty);
   rpc UnfollowUser(user.UserId) returns (google.protobuf.Empty);

@@ -17,6 +17,7 @@ service UserRpc {
 
   rpc GetUserFriends(GetUserFriendsRequest) returns (GetUserFriendsResponse);
   rpc GetUserFollowers(GetUserFollowersRequest) returns (GetUserFollowersResponse);
+  rpc GetUserFollowedTo(GetUserFollowersRequest) returns (GetUserFollowersResponse);
   rpc GetBlockedUsers(GetBlockedUsersRequest) returns (GetBlockedUsersResponse);
 
   rpc FollowUser(UserId) returns (google.protobuf.Empty);

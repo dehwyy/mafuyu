@@ -5,7 +5,7 @@ use makoto_grpc::{pkg as grpc, Tools};
 use grpc::api::api_rpc_server;
 use grpc::{auth, tokens, oauth2, passport, integrations, user, general, authorization};
 use logger::{info, trace};
-use makoto_grpc::pkg::user::{GetUsersIDsResponse, GetUsersRequest, GetUsersResponse};
+use makoto_grpc::pkg::user::{GetUserFollowersResponse, GetUsersIDsResponse, GetUsersRequest, GetUsersResponse};
 use uuid::Uuid;
 
 
@@ -228,6 +228,10 @@ impl api_rpc_server::ApiRpc for ApiRpcServiceImplementation {
 
   async fn get_user_followers(&self, req: Request<user::GetUserFollowersRequest>) -> Result<Response<user::GetUserFollowersResponse>, Status> {
     self.user_client.clone().borrow_mut().get_user_followers(req).await
+  }
+
+  async fn get_user_followed_to(&self, req: Request<user::GetUserFollowersRequest>) -> Result<Response<GetUserFollowersResponse>, Status> {
+    self.user_client.clone().borrow_mut().get_user_followed_to(req).await
   }
 
   async fn get_blocked_users(&self, req: Request<user::GetBlockedUsersRequest>) -> Result<Response<user::GetBlockedUsersResponse>, Status> {
