@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { authed_user_store } from "$lib/stores/user"
+  import { authedUserStore } from "$lib/stores/user"
   import { page } from "$app/stores"
   import { ListBox, ListBoxItem } from "@skeletonlabs/skeleton"
   import UserPreview from "$lib/components/user-preview.svelte"
@@ -30,24 +30,20 @@
         placeholder: "Overview",
         isActive: $userScopes.data?.viewInfo ?? false,
       },
-      "/statistics": {
-        placeholder: "Statistics",
-        isActive: $userScopes.data?.viewStatistics ?? false,
-      },
       "/edit": {
         placeholder: "Settings",
         isActive: $userScopes.data?.edit ?? false,
       },
-      "/self": {
-        placeholder: "Self",
+      "/community": {
+        placeholder: "Community",
         isActive: true, // TODO
       },
     },
   })
 
-  $: is_current_user = $page.params.username === $authed_user_store?.username
+  $: is_current_user = $page.params.username === $authedUserStore?.username
   $: username = $user.data?.username as string
-  $: isAuthedUserBlocked = $userBlockedUsers.data?.blockedUsers.includes($authed_user_store?.id!) ?? false
+  $: isAuthedUserBlocked = $userBlockedUsers.data?.blockedUsers.includes($authedUserStore?.id!) ?? false
 </script>
 
 {#if isAuthedUserBlocked}

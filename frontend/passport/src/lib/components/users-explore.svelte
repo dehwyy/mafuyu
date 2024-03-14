@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ExploreIconRaw from "$lib/assets/world.svg?raw"
+  import ExploreIconRaw from "$lib/assets/explore.svg?raw"
   import { fade } from "svelte/transition"
   import { getModalStore } from "@skeletonlabs/skeleton"
   import { searchBarModal } from "$lib/modals"

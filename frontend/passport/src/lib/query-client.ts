@@ -10,10 +10,12 @@ export const queryClient = new QueryClient({
       if (error instanceof RpcError) {
         const refresh_token = ParseCookie(document.cookie)[GrpcCookiesKeys.RefreshToken]
         if (error.code === GrpcErrors.UNAUTHENTICATED && refresh_token) {
+          console.log("trying to refresh")
           // Try to refresh token
           await GrpcWebClient.refreshTheToken({
             refreshToken: refresh_token,
           })
+          console.log("refreshed?")
         }
       }
     },

@@ -4,7 +4,7 @@
   import { useUsersIDs, getUserInfoQuery } from "$lib/query/user"
   import { getModalStore } from "@skeletonlabs/skeleton"
   import UserPanel from "../user-panel.svelte"
-  import { authed_user_store } from "$lib/stores/user"
+  import { authedUserStore } from "$lib/stores/user"
   import { createQueries } from "@tanstack/svelte-query"
   import { derived } from "svelte/store"
   import { localStorageStore } from "@skeletonlabs/skeleton"
@@ -24,10 +24,10 @@
   }
 
   const [usersIDs, usersIDsStore] = useUsersIDs({
-    userId: $authed_user_store?.id,
+    userId: $authedUserStore?.id,
   })
 
-  $: usersIDsStore.set({ payload: { userId: $authed_user_store?.id, pattern: $debouncedSearch } })
+  $: usersIDsStore.set({ payload: { userId: $authedUserStore?.id, pattern: $debouncedSearch } })
 
   const users = createQueries({
     queries: derived(usersIDs, IDs => {

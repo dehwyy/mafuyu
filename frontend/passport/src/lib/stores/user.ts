@@ -10,10 +10,10 @@ interface IDynUser {
   pseudonym?: string
 }
 
-export const authed_user_store = writable<IUser | null>(null)
+export const authedUserStore = writable<IUser | null>(null)
 export const dyn_user_store = writable<IDynUser | null>(null)
 
 export const clear_user = () => {
-  authed_user_store.set(null)
+  authedUserStore.set(null)
   dyn_user_store.set(null)
 }

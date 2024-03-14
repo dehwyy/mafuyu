@@ -2,7 +2,7 @@ import FriendsIconRaw from "$lib/assets/people.svg?raw"
 import BlockIconRaw from "$lib/assets/block.svg?raw"
 
 import { useFollowUser, useUnfollowUser, useUserFollowers, useUserFriends } from "$lib/query/friends"
-import { authed_user_store as authedUserStore } from "$lib/stores/user"
+import { authedUserStore as authedUserStore } from "$lib/stores/user"
 import { type Readable, writable, get, derived } from "svelte/store"
 import { useBlockUser, useBlockedUsers, useUnblockUser } from "$lib/query/user"
 

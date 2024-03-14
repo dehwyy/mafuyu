@@ -60,12 +60,12 @@
   // Before this line, everything is INIT
   import Header from "$lib/components/header/header.svelte"
   import { ProgressBar } from "@prgm/sveltekit-progress-bar"
-  import { authed_user_store } from "$lib/stores/user"
+  import { authedUserStore } from "$lib/stores/user"
 
   export let data: import("./$types").LayoutData
   hydrate(queryClient, data.dehydrateState)
 
-  authed_user_store.set(
+  authedUserStore.set(
     data.username
       ? {
           id: data.userId,

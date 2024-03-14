@@ -15,13 +15,13 @@ export class CreateNavigation {
     return `${Routes.Account}@${username}/edit/`
   }
   static ToFriends(username: string): string {
-    return `${Routes.Account}@${username}/self?section=friends`
+    return `${Routes.Account}@${username}/community?section=friends`
   }
   static ToFollowed(username: string): string {
-    return `${Routes.Account}@${username}/self?section=followed`
+    return `${Routes.Account}@${username}/community?section=followed`
   }
   static ToFollowers(username: string): string {
-    return `${Routes.Account}@${username}/self?section=followers`
+    return `${Routes.Account}@${username}/community?section=followers`
   }
   static ToGoogleIntegration(username: string): string {
     return `${Routes.Account}@${username}/google`

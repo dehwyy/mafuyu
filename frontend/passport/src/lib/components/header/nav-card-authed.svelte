@@ -10,12 +10,12 @@
   import { CreateNavigation, Routes } from "$lib/const"
   import ThemeSelector from "./theme-selector.svelte"
   import { useUserInfo } from "$lib/query/user"
-  import { authed_user_store, clear_user } from "$lib/stores/user"
+  import { authedUserStore, clear_user } from "$lib/stores/user"
 
-  const [user, userStore] = useUserInfo({ oneofKind: "userId", userId: $authed_user_store?.id })
-  $: userStore.set({ getBy: { oneofKind: "userId", userId: $authed_user_store?.id } })
+  const [user, userStore] = useUserInfo({ oneofKind: "userId", userId: $authedUserStore?.id })
+  $: userStore.set({ getBy: { oneofKind: "userId", userId: $authedUserStore?.id } })
 
-  $: username = $authed_user_store?.username || ($user?.data?.username as string)
+  $: username = $authedUserStore?.username || ($user?.data?.username as string)
   $: user_href = `/@${username}`
 
   $: panels = [

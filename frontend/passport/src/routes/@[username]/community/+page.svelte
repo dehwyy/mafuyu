@@ -12,7 +12,7 @@
   import Followers from "./tabs/followers.svelte"
   import Followed from "./tabs/followed.svelte"
   import { CreateNavigation } from "$lib/const"
-  import { authed_user_store } from "$lib/stores/user"
+  import { authedUserStore } from "$lib/stores/user"
 
   // TODO: prefetch in +layout.server.ts
 
@@ -47,7 +47,7 @@
     return friend.data?.followers || []
   })
 
-  $: isCurrentUser = $authed_user_store?.username === $page.params.username
+  $: isCurrentUser = $authedUserStore?.username === $page.params.username
 </script>
 
 <div class="flex flex-col gap-y-5 w-full">

@@ -1,6 +1,7 @@
 <script lang="ts">
-  export let location: string | undefined
   import LocationIconRaw from "$lib/assets/location.svg?raw"
+
+  export let location: string | undefined
 </script>
 
 {#if location}

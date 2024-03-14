@@ -8,7 +8,7 @@
   let user_email = ""
   let step = 1
 
-  let set_next_step = (email: string, username: string, password: string) => {
+  let setNextStep = (email: string, username: string, password: string) => {
     step += 1
     user_email = email
     $signUp.mutate({
@@ -20,7 +20,7 @@
 </script>
 
 {#if step === 1}
-  <RegistrationForm onFormSubmit={set_next_step} />
+  <RegistrationForm onFormSubmit={setNextStep} />
 {:else if step === 2}
   <ConfirmationMail email={user_email} />
 {/if}

@@ -57,6 +57,10 @@ export const useUserFollowers = (userId: string | undefined, limit?: number) => 
   }))
 }
 
+const invalidateUserFollowedTo = (q: QueryClient, userId: string, limit?: number) => {
+  q.invalidateQueries({ queryKey: [FriendsKeys["query.followedTo"], userId, limit] })
+}
+
 export const useUserFollowedTo = (userId: string | undefined, limit?: number) => {
   return createReactiveQuery({ userId, limit }, ({ userId, limit }) => ({
     queryKey: [FriendsKeys["query.followedTo"], userId, limit],
@@ -92,6 +96,7 @@ export const useFollowUser = () => {
 
     onSuccess: (_, p) => {
       Toasts.success(p.getSuccessText())
+      invalidateUserFollowedTo(queryClient, p.userId)
       invalidateUserFollowers(queryClient, [p.userId, p.reqUserId])
       invalidateUserFriends(queryClient, [p.userId, p.reqUserId])
     },
@@ -113,6 +118,7 @@ export const useUnfollowUser = () => {
     onSuccess: (_, p) => {
       Toasts.success(p.getSuccessText())
       invalidateUserFollowers(queryClient, [p.userId, p.reqUserId])
+      invalidateUserFollowedTo(queryClient, p.userId)
       invalidateUserFriends(queryClient, [p.userId, p.reqUserId])
     },
   })

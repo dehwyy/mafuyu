@@ -5,7 +5,7 @@
 
   import { type PopupSettings, popup } from "@skeletonlabs/skeleton"
   import { useUserInfo } from "$lib/query/user"
-  import { authed_user_store, dyn_user_store } from "$lib/stores/user"
+  import { authedUserStore, dyn_user_store } from "$lib/stores/user"
 
   const settingsClick: PopupSettings = {
     event: "click",
@@ -13,10 +13,10 @@
     target: "header-account-popup",
   }
 
-  const [user, userStore] = useUserInfo({ oneofKind: "username", username: $authed_user_store?.username })
-  $: userStore.set({ getBy: { oneofKind: "username", username: $authed_user_store?.username } })
+  const [user, userStore] = useUserInfo({ oneofKind: "username", username: $authedUserStore?.username })
+  $: userStore.set({ getBy: { oneofKind: "username", username: $authedUserStore?.username } })
 
-  $: picture = ($authed_user_store?.id && ($dyn_user_store?.picture || $user?.data?.picture)) || DevFallbackImages.HorizontalOriented
+  $: picture = ($authedUserStore?.id && ($dyn_user_store?.picture || $user?.data?.picture)) || DevFallbackImages.HorizontalOriented
 </script>
 
 <button class="h-[40px]" use:popup={settingsClick}>
@@ -32,7 +32,7 @@
       <div class="absolute bottom-0 flex h-full w-full bg-gradient-to-t from-surface-800 from-15% to-transparent" />
     </div>
     <div class="relative -mt-16 mb-2">
-      {#if $authed_user_store?.id}
+      {#if $authedUserStore?.id}
         <NavCardAuthed />
       {:else}
         <NavCardUnAuthed />

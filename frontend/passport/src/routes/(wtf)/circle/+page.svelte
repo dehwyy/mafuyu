@@ -1,11 +1,11 @@
 <script>
   import { useUserInfo } from "$lib/query/user"
-  import { authed_user_store } from "$lib/stores/user"
+  import { authedUserStore } from "$lib/stores/user"
   import { spring } from "svelte/motion"
   import { DevFallbackImages } from "$lib/const"
 
-  const [user, userStore] = useUserInfo({ oneofKind: "userId", userId: $authed_user_store?.id })
-  $: userStore.set({ getBy: { oneofKind: "userId", userId: $authed_user_store?.id } })
+  const [user, userStore] = useUserInfo({ oneofKind: "userId", userId: $authedUserStore?.id })
+  $: userStore.set({ getBy: { oneofKind: "userId", userId: $authedUserStore?.id } })
 
   let minSize = 30
   let maxSize = 100
