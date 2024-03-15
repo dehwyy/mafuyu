@@ -162,7 +162,6 @@ export const useEditUser = () => {
         query_client.invalidateQueries({ queryKey: [UserKeys["query.getBaseUserInfo"], payload.userId] })
         query_client.invalidateQueries({ queryKey: [UserKeys["query.getUserInfo"], payload.userId] })
         query_client.invalidateQueries({ queryKey: [UserKeys["query.getUserInfo"], payload.username] })
-        query_client.invalidateQueries({ queryKey: [UserKeys["query.getUserInfo"], payload.username] })
       }
     },
     onError: error => {

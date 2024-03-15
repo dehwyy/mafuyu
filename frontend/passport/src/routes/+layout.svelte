@@ -2,12 +2,12 @@
   import "../app.postcss"
   import "highlight.js/styles/github-dark.css"
   import { initializeStores, Modal, Toast, getModalStore, AppShell, storeHighlightJs, storePopup } from "@skeletonlabs/skeleton"
-  import hljs from "highlight.js/lib/core"
   import { computePosition, autoUpdate, flip, shift, offset, arrow } from "@floating-ui/dom"
-  import xml from "highlight.js/lib/languages/xml"
-  import css from "highlight.js/lib/languages/css"
-  import javascript from "highlight.js/lib/languages/javascript"
-  import typescript from "highlight.js/lib/languages/typescript"
+  // import hljs from "highlight.js/lib/core"
+  // import xml from "highlight.js/lib/languages/xml"
+  // import css from "highlight.js/lib/languages/css"
+  // import javascript from "highlight.js/lib/languages/javascript"
+  // import typescript from "highlight.js/lib/languages/typescript"
   import { hydrate, QueryClientProvider } from "@tanstack/svelte-query"
   import type { AfterNavigate } from "@sveltejs/kit"
   import { afterNavigate, onNavigate } from "$app/navigation"
@@ -17,20 +17,20 @@
   // skeleton stores
   initializeStores()
   // Highlight JS
-  hljs.registerLanguage("xml", xml) // html
-  hljs.registerLanguage("css", css)
-  hljs.registerLanguage("javascript", javascript)
-  hljs.registerLanguage("typescript", typescript)
-  storeHighlightJs.set(hljs)
+  // hljs.registerLanguage("xml", xml) // html
+  // hljs.registerLanguage("css", css)
+  // hljs.registerLanguage("javascript", javascript)
+  // hljs.registerLanguage("typescript", typescript)
+  // storeHighlightJs.set(hljs)
   // Floating UI for Popups
   storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow })
 
   // Scroll to top onNavigation
   afterNavigate((params: AfterNavigate) => {
-    const is_new_page = params.from?.url.pathname !== params.to?.url.pathname
-    const page_element = document.querySelector("#page")
-    if (is_new_page && page_element) {
-      page_element.scrollTop = 0
+    const isNewPage = params.from?.url.pathname !== params.to?.url.pathname
+    const pageElement = document.querySelector("#page")
+    if (isNewPage && pageElement) {
+      pageElement.scrollTop = 0
     }
   })
 
@@ -57,7 +57,6 @@
     body!.style.overflow = v.length ? "hidden" : "auto"
   })
 
-  // Before this line, everything is INIT
   import Header from "$lib/components/header/header.svelte"
   import { ProgressBar } from "@prgm/sveltekit-progress-bar"
   import { authedUserStore } from "$lib/stores/user"

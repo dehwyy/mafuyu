@@ -6,20 +6,22 @@ import GrpcServerClient from "$lib/query/grpc/server"
 import { getUserInfoQuery } from "$lib/query/user"
 import { dehydrate } from "@tanstack/svelte-query"
 
-export const load: LayoutServerLoad = async ({ cookies, url, setHeaders }) => {
-  if (!cookies.get(GrpcCookiesKeys.AccessToken) && !cookies.get(GrpcCookiesKeys.RefreshToken))
-    return {
-      url: url.pathname,
-    }
+const defaultVal = (url: URL) => ({ url: url.pathname })
+
+export const load: LayoutServerLoad = async ({ cookies, url }) => {
+  const accessToken = cookies.get(GrpcCookiesKeys.AccessToken)
+
+  if (!accessToken && !cookies.get(GrpcCookiesKeys.RefreshToken)) {
+    return defaultVal(url)
+  }
 
   try {
-    const { response, headers } = await GrpcClient.signInWithToken(
+    const { response } = await GrpcClient.signInWithToken(
       {
-        token: "", // will be set in interceptor
+        token: accessToken ?? "",
       },
       {
         interceptors: [Interceptors.WithTokens(Interceptors.WithTokensPayload.CreateForSvelteKit(cookies))],
-        timeout: 5000, // secs
       },
     )
 
@@ -31,9 +33,7 @@ export const load: LayoutServerLoad = async ({ cookies, url, setHeaders }) => {
       dehydrateState: structuredClone(dehydrate(queryClient)),
       url: url.pathname,
     }
-  } catch (e) {
-    return {
-      url: url.pathname,
-    }
+  } catch (_) {
+    return defaultVal(url)
   }
 }

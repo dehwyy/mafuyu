@@ -3,7 +3,6 @@ import { GrpcWebClient } from "@makoto/grpc/web"
 import { Toasts } from "$lib/utils/toast"
 import { createReactiveQuery } from "$lib/query-abstraction"
 import { queryClient as qc } from "$lib/query-client"
-import { browser } from "$app/environment"
 import { StaleTime } from "$lib/const"
 
 export const FriendsKeys = {

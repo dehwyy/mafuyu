@@ -1,10 +1,4 @@
-import {
-  createQuery,
-  type UndefinedInitialDataOptions,
-  type DefinedInitialDataOptions,
-  type CreateQueryOptions,
-  type CreateQueryResult,
-} from "@tanstack/svelte-query"
+import { createQuery, type UndefinedInitialDataOptions, type CreateQueryResult, type CreateQueryOptions } from "@tanstack/svelte-query"
 import { derived, type Writable, writable } from "svelte/store"
 
 type TQueryKey = ReadonlyArray<unknown>
@@ -22,4 +16,4 @@ const createReactiveQuery = <Args, T, E, D, QueryKey extends TQueryKey>(
   return [query, store] as const
 }
 
-export { createReactiveQuery }
+export { createReactiveQuery, type CreateQueryOptions }

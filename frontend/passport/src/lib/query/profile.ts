@@ -1,6 +1,5 @@
-import { createQuery, type CreateQueryOptions } from "@tanstack/svelte-query"
 import { type GrpcClient, GrpcWeb } from "$lib/query/grpc"
-import { createReactiveQuery } from "$lib/query-abstraction"
+import { createReactiveQuery, type CreateQueryOptions } from "$lib/query-abstraction"
 
 export const ProfileKeys = {
   "query.userProfileScopes": "profile.getQueryProfileScopes",
