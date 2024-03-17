@@ -76,7 +76,6 @@
   }
 
   const DiscardAll = () => {
-    console.log(selected_languages, initialSelectedLanguages)
     pseudonym = initialPseudonym
     selected_languages = [...initialSelectedLanguages]
     bio = initialBio
@@ -136,7 +135,7 @@
     <InputWithLabel bind:value={location} label_text="Country, city" />
   </article>
   <hr />
-  <LanguageSelector bind:selected_languages />
+  <LanguageSelector bind:selectedLanguages={selected_languages} />
   <hr />
 </section>
 
