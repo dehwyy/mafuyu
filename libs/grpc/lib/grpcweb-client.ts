@@ -30,12 +30,12 @@ const WithTokens = (): RpcInterceptor => {
       r.headers.then(headers => {
         const access_token = headers[MetadataKeys.AccessToken]
         if (access_token && typeof access_token === "string") {
-          document.cookie = `${GrpcCookiesKeys.AccessToken}=${access_token};path=/`
+          document.cookie = `${GrpcCookiesKeys.AccessToken}=${access_token};path=/;maxAge=604800`
         }
 
         const refresh_token = headers[MetadataKeys.RefreshToken]
         if (refresh_token && typeof refresh_token === "string") {
-          document.cookie = `${GrpcCookiesKeys.RefreshToken}=${refresh_token};path=/`
+          document.cookie = `${GrpcCookiesKeys.RefreshToken}=${refresh_token};path=/;maxAge=18144000`
         }
       })
 
