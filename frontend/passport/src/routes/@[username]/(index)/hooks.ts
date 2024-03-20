@@ -10,7 +10,7 @@ export const usePage = () => {
   const [user, userStore] = useUserInfo({ oneofKind: "username", username: initialUsername })
   const [authedUserBlockedUsers, authedUserBlockedUsersStore] = useBlockedUsers(initialAuthedUserId)
 
-  derived(page, pageValue => {
+  page.subscribe(pageValue => {
     userStore.set({ getBy: { oneofKind: "username", username: pageValue.params.username } })
   })
 
