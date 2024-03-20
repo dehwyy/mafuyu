@@ -1,8 +1,24 @@
-<div class="stars__wrapper">
-  <div class="stars" />
-  <div class="stars2" />
-  <div class="stars3" />
-</div>
+<script lang="ts">
+  import { fade } from "svelte/transition"
+  import { settingsStore } from "$lib/stores/settings"
+  import { onMount } from "svelte"
+
+  let animatedBackground = false
+  onMount(() => {
+    animatedBackground = $settingsStore.animatedBackground
+    settingsStore.subscribe(v => {
+      animatedBackground = v.animatedBackground
+    })
+  })
+</script>
+
+{#if animatedBackground}
+  <div transition:fade class="stars__wrapper">
+    <div class="stars" />
+    <div class="stars2" />
+    <div class="stars3" />
+  </div>
+{/if}
 <div class="stars__content">
   <slot />
 </div>

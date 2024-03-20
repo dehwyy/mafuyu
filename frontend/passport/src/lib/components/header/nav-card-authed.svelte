@@ -3,12 +3,10 @@
   import GearIconRaw from "$lib/assets/gear.svg?raw"
   import FriendsIconRaw from "$lib/assets/people-group.svg?raw"
   import CircleIconRaw from "$lib/assets/circle.svg?raw"
-  import CollectionIconRaw from "$lib/assets/social.svg?raw"
-  import NotesIconRaw from "$lib/assets/notes.svg?raw"
   import LogoutIconRaw from "$lib/assets/logout.svg?raw"
 
   import { CreateNavigation, Routes } from "$lib/const"
-  import ThemeSelector from "./theme-selector.svelte"
+  import CustomSettings from "./custom-settings.svelte"
   import { useUserInfo } from "$lib/query/user"
   import { authedUserStore, clear_user } from "$lib/stores/user"
 
@@ -16,12 +14,11 @@
   $: userStore.set({ getBy: { oneofKind: "userId", userId: $authedUserStore?.id } })
 
   $: username = $authedUserStore?.username || ($user?.data?.username as string)
-  $: user_href = `/@${username}`
 
   $: panels = [
     { icon: UserIconRaw, href: CreateNavigation.ToUser(username), placeholder: username },
-    { icon: GearIconRaw, href: CreateNavigation.ToSettings(username), placeholder: "Settings" },
-    { component: ThemeSelector },
+    // { icon: GearIconRaw, href: CreateNavigation.ToSettings(username), placeholder: "Settings" },
+    { component: CustomSettings },
     { icon: CircleIconRaw, href: Routes.Circle, placeholder: "Circle" },
     { icon: FriendsIconRaw, href: CreateNavigation.ToFriends(username), placeholder: "Friends" },
     // { icon: CollectionIconRaw, href: null , placeholder: "Collections" },

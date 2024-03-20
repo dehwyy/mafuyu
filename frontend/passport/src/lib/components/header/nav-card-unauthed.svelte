@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Routes } from "$lib/const"
-  import ThemeSelector from "./theme-selector.svelte"
+  import ThemeSelector from "./custom-settings/theme-selector.svelte"
 
   import LoginIconRaw from "$lib/assets/user.svg?raw"
   import ThemeSelectIconRaw from "$lib/assets/theme-select.svg?raw"
