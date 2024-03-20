@@ -9,17 +9,18 @@
 
 <style lang="scss">
   @function multiple-box-shadow($n) {
-    $value: "#{random(100)}vh #{random(100)}vw #FFF";
+    $value: "#{random(100)}vw #{random(100)}vh #FFF";
     @for $i from 2 through $n {
-      $value: "#{$value} , #{random(100)}vw #{random(100)}vw #FFF";
+      $value: "#{$value} , #{random(100)}vw #{random(100)}vh #FFF";
     }
 
     @return unquote($value);
   }
 
-  $shadows-small: multiple-box-shadow(700);
-  $shadows-medium: multiple-box-shadow(200);
-  $shadows-big: multiple-box-shadow(100);
+  $shadows-small: multiple-box-shadow(300);
+  $shadows-medium: multiple-box-shadow(100);
+  $shadows-big: multiple-box-shadow(50);
+  $h: 100vh;
 
   .stars {
     width: 1px;
@@ -32,7 +33,7 @@
   .stars:after {
     content: " ";
     position: absolute;
-    top: 2000px;
+    top: $h;
     width: 1px;
     height: 1px;
     background: transparent;
@@ -48,7 +49,7 @@
   .stars2:after {
     content: " ";
     position: absolute;
-    top: 2000px;
+    top: $h;
     width: 2px;
     height: 2px;
     background: transparent;
@@ -64,7 +65,7 @@
   .stars3:after {
     content: " ";
     position: absolute;
-    top: 2000px;
+    top: $h;
     width: 3px;
     height: 3px;
     background: transparent;
@@ -92,7 +93,7 @@
       transform: translateY(0);
     }
     from {
-      transform: translateY(-100vh);
+      transform: translateY(calc(#{$h} * -1));
     }
   }
 </style>

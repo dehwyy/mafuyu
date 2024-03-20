@@ -18,8 +18,8 @@
 </script>
 
 <section class="mb-7">
-  <div class="w-[175px] h-[175px] object-cover overflow-hidden rounded-full mb-4 border-2 mx-auto">
-    <img alt="account_image" class="w-full h-full object-cover" src={userImage} />
+  <div class="w-[175px] h-[175px] object-cover overflow-hidden rounded-full mb-4 border-2 mx-auto select-none">
+    <img alt="account_image" class="w-full h-full object-cover pointer-events-none select-none" src={userImage} />
   </div>
   <div class="text-center">
     <h4 class="h4">{username}</h4>
