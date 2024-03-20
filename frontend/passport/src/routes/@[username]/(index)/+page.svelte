@@ -16,15 +16,19 @@
         </p>
       </section>
     {:else}
-      <Card class="p-6 w-full flex flex-col gap-y-4">
+      <Card class="p-6 w-full flex flex-col gap-y-4 justify-betwee min-w-[250px]">
         <Birthday />
         <Location location={$user.location} />
         <hr />
-        <Friends userId={$user.userId} username={$user.username} />
-        <Followers userId={$user.userId} username={$user.username} />
-        <FollowedTo userId={$user.userId} username={$user.username} />
-        <hr />
-        <Languages languages={$user.languages || []} />
+        <div class="flex-col flex gap-y-2">
+          <Friends userId={$user.userId} username={$user.username} />
+          <Followers userId={$user.userId} username={$user.username} />
+          <FollowedTo userId={$user.userId} username={$user.username} />
+        </div>
+        {#if $user.languages.length}
+          <hr />
+          <Languages languages={$user.languages || []} />
+        {/if}
       </Card>
     {/if}
   </section>
