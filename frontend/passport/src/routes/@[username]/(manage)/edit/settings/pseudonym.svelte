@@ -1,5 +1,5 @@
 <script lang="ts">
-  import InputWithLabel from "$lib/components/form/input.svelte"
+  import InputWithLabel from "$lib/components/form/items/input.svelte"
   export let pseudonym = ""
 </script>
 

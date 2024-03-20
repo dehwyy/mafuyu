@@ -50,7 +50,7 @@
   use:popup={user_actions_popup}
   class:!border-primary-500={is_open}
   class="btn hover:variant-soft w-full font-bold text-lg border border-transparent my-2">Actions</button>
-<div data-popup="user_actions" class="card border border-surface-600">
+<div data-popup="user_actions" class="card border border-surface-600 z-10">
   <ul class="list select-none py-3 px-0.5">
     {#each $options as option}
       <li>

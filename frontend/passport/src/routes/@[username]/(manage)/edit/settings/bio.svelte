@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Textarea from "$lib/components/form/textarea.svelte"
+  import { Textarea } from "$lib/components/form/items"
   export let bio = "Hello! My name is Egor. My dreams are becoming Google developer and visiting Japan!"
 
   let is_focused = false

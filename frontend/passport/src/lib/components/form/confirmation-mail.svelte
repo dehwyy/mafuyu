@@ -1,6 +1,6 @@
 <script lang="ts">
   import { fade } from "svelte/transition"
-  import Input from "$lib/components/form/input.svelte"
+  import Input from "$lib/components/form/items/input.svelte"
   import { useConfirmEmailByCode, useSendConfirmationEmail } from "$lib/query/email"
 
   export let email: string

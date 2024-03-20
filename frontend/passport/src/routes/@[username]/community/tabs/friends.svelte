@@ -2,8 +2,7 @@
   import { fade } from "svelte/transition"
 
   import { getBaseUserInfoQuery } from "$lib/query/user"
-  import UserPanel from "$lib/components/user-panel.svelte"
-  import UsersExplore from "$lib/components/users-explore.svelte"
+  import { UserExplore, UserPanel } from "$lib/components/user"
   import { CreateNavigation } from "$lib/const"
   import { createQueries } from "@tanstack/svelte-query"
   import { derived, type Readable } from "svelte/store"
@@ -32,7 +31,7 @@
     {/each}
   </div>
 {:else if isCurrentUser}
-  <UsersExplore />
+  <UserExplore />
 {:else}
   <p in:fade={{ duration: 100 }} class="text-center text-xl mt-10">No Friends</p>
 {/if}

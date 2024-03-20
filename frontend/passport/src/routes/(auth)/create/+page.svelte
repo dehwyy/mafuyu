@@ -1,5 +1,5 @@
 <script lang="ts">
-  import RegistrationForm from "$lib/components/form/registration-form.svelte"
+  import RegistrationForm from "$lib/components/form/registration.svelte"
   import ConfirmationMail from "$lib/components/form/confirmation-mail.svelte"
   import { useSignUp } from "$lib/query/auth"
 

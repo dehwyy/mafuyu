@@ -16,11 +16,33 @@
 <body data-sveltekit-preload-data="hover">
 	<script>
 		const body = document.querySelector("body")
+
 		const current_theme = localStorage.getItem('theme') || "darkest"
+		let settings = JSON.parse(localStorage.getItem("settings") || "{}")
+
+		console.log(Boolean(settings))
+
+		if (!Object.keys(settings).length) {
+			settings = {
+				animatedBackground: true,
+				theme: current_theme
+			}
+
+			localStorage.setItem("settings", JSON.stringify(settings))
+		}
+
+
+		if (settings.animatedBackground) {
+			// body.style.backgroundColor = "transparent"
+		}
+
+
 		body.dataset.theme = current_theme
 
 	</script>
-	<div style="display: contents" class="h-full overflow-hidden">%sveltekit.body%</div>
+	<div style="display: contents" class="h-full overflow-hidden">
+		%sveltekit.body%
+	</div>
 </body>
 
 </html>

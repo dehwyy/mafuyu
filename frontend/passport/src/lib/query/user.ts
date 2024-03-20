@@ -3,7 +3,7 @@ import { GrpcWebClient } from "@makoto/grpc/web"
 import { Toasts } from "$lib/utils/toast"
 import { type GrpcClient, GrpcWeb } from "$lib/query/grpc"
 import { createReactiveQuery } from "$lib/query-abstraction"
-import { StaleTime } from "$lib/const"
+import { Time } from "$lib/const"
 
 export const UserKeys = {
   "query.getUserInfo": "user.getUserInfo",
@@ -18,7 +18,7 @@ export const UserKeys = {
 
 type GetUserBy = { oneofKind: "userId"; userId: string | undefined } | { oneofKind: "username"; username: string | undefined }
 
-export const getUserInfoQuery = (getBy: GetUserBy, grpc: GrpcClient = GrpcWeb(5 * StaleTime.MINUTE)) => {
+export const getUserInfoQuery = (getBy: GetUserBy, grpc: GrpcClient = GrpcWeb(5 * Time.MINUTE)) => {
   const value = getBy.oneofKind === "userId" ? getBy.userId : getBy.username
   return {
     queryKey: [UserKeys["query.getUserInfo"], value],
@@ -48,7 +48,7 @@ type GetUsersPayload = {
   offset?: bigint
   excludeLanguages?: boolean
 }
-export const getUsers = (payload: GetUsersPayload, grpc: GrpcClient = GrpcWeb(5 * StaleTime.MINUTE)) => {
+export const getUsers = (payload: GetUsersPayload, grpc: GrpcClient = GrpcWeb(5 * Time.MINUTE)) => {
   return {
     queryKey: [UserKeys["query.getUsers"], payload],
     staleTime: grpc.staleTime,
@@ -73,7 +73,7 @@ export const useUsers = (payload: GetUsersPayload) => {
   return createReactiveQuery({ payload }, ({ payload }) => getUsers(payload))
 }
 
-export const getUsersIDs = (payload: GetUsersPayload, grpc: GrpcClient = GrpcWeb(5 * StaleTime.MINUTE)) => {
+export const getUsersIDs = (payload: GetUsersPayload, grpc: GrpcClient = GrpcWeb(5 * Time.MINUTE)) => {
   return {
     queryKey: [UserKeys["query.getUsersIDs"], payload],
     staleTime: grpc.staleTime,
@@ -98,7 +98,7 @@ export const useUsersIDs = (payload: GetUsersPayload) => {
   return createReactiveQuery({ payload }, ({ payload }) => getUsersIDs(payload))
 }
 
-export const getBaseUserInfoQuery = (getBy: GetUserBy, grpc: GrpcClient = GrpcWeb(5 * StaleTime.MINUTE)) => {
+export const getBaseUserInfoQuery = (getBy: GetUserBy, grpc: GrpcClient = GrpcWeb(5 * Time.MINUTE)) => {
   const value = getBy.oneofKind === "userId" ? getBy.userId : getBy.username
   return {
     queryKey: [UserKeys["query.getBaseUserInfo"], value],
@@ -172,12 +172,12 @@ export const useEditUser = () => {
 
 // Block User section
 
-export const getBlockedUsersQuery = (userId: string | undefined, grpc: GrpcClient = GrpcWeb(StaleTime.MINUTE)) => {
+export const getBlockedUsersQuery = (userId: string | undefined, grpc: GrpcClient = GrpcWeb(Time.MINUTE)) => {
   return {
     queryKey: [UserKeys["query.getBlockedUsers"], userId],
     staleTime: grpc.staleTime,
     refetchOnWindowFocus: true,
-    gcTime: 30 * StaleTime.MINUTE,
+    gcTime: 30 * Time.MINUTE,
     queryFn: async () => {
       if (!userId) return null
       const r = await grpc.client.getBlockedUsers({ userId }, { interceptors: grpc.interceptors })

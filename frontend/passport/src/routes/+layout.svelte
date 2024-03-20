@@ -58,6 +58,7 @@
   })
 
   import Header from "$lib/components/header/header.svelte"
+  import StarsBackground from "$lib/components/hoshisora.svelte"
   import { ProgressBar } from "@prgm/sveltekit-progress-bar"
   import { authedUserStore } from "$lib/stores/user"
 
@@ -77,12 +78,14 @@
 <ProgressBar class="text-primary-600" zIndex={100} settleTime={100} />
 <QueryClientProvider client={queryClient}>
   <Modal />
-  <AppShell>
-    <svelte:fragment slot="header">
-      <Header />
-    </svelte:fragment>
-    <SvelteToast />
-    <Toast />
-    <slot />
-  </AppShell>
+  <StarsBackground>
+    <AppShell>
+      <svelte:fragment slot="header">
+        <Header />
+      </svelte:fragment>
+      <SvelteToast />
+      <Toast />
+      <slot />
+    </AppShell>
+  </StarsBackground>
 </QueryClientProvider>

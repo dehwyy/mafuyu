@@ -5,7 +5,7 @@ import { getUserInfoQuery } from "$lib/query/user"
 import { getUserProfileScopesQuery } from "$lib/query/profile"
 import { getBlockedUsersQuery } from "$lib/query/user"
 import { dehydrate } from "@tanstack/svelte-query"
-import { StaleTime } from "$lib/const"
+import { Time } from "$lib/const"
 
 export const load: LayoutServerLoad = async ({ cookies, params, parent }) => {
   const { userId: authedUserId } = await parent()
@@ -31,7 +31,7 @@ export const load: LayoutServerLoad = async ({ cookies, params, parent }) => {
 
   const withAuthedUserPromise = new Promise(async r => {
     await queryClient.prefetchQuery({
-      ...getBlockedUsersQuery(authedUserId, GrpcServerClient(StaleTime.MINUTE * 0, cookies)),
+      ...getBlockedUsersQuery(authedUserId, GrpcServerClient(Time.MINUTE * 0, cookies)),
     })
 
     r({})

@@ -1,7 +1,4 @@
-// @ts-nocheck
-export { default as Location } from "./location.svelte"
-export { default as Birthday } from "./birthday.svelte"
-export { default as Friends } from "./friends.svelte"
-export { default as Followers } from "./followers.svelte"
-export { default as FollowedTo } from "./followed-to.svelte"
-export { default as Languages } from "./languages.svelte"
+export { default as UserActions } from "./user-actions.svelte"
+export { default as UserPanel } from "./user-panel.svelte"
+export { default as UserPreview } from "./user-preview.svelte"
+export { default as UserExplore } from "./explore.svelte"

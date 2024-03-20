@@ -10,7 +10,7 @@
 </script>
 
 <div>
-  <button on:click={() => triggerModal()} class="flex gap-x-3 btn variant-outline-primary pr-10">
+  <button on:click={() => triggerModal()} class="flex gap-x-3 btn variant-filled-surface pr-10">
     <span class="icon-sm block">{@html LoopIconRaw}</span>
     <span>Search</span>
   </button>

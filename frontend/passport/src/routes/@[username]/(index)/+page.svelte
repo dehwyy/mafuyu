@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { Birthday, Location, Friends, Followers, FollowedTo, Languages } from "$lib/components/user"
+  import Card from "$lib/components/card.svelte"
+  import { Birthday, Location, Friends, Followers, FollowedTo, Languages } from "$lib/components/user/fields"
   import { fade } from "svelte/transition"
   import { usePage } from "./hooks"
 
@@ -15,7 +16,7 @@
         </p>
       </section>
     {:else}
-      <section transition:fade={{ duration: 100 }} class="information__data card">
+      <Card class="p-6 w-full flex flex-col gap-y-4">
         <Birthday />
         <Location location={$user.location} />
         <hr />
@@ -24,7 +25,7 @@
         <FollowedTo userId={$user.userId} username={$user.username} />
         <hr />
         <Languages languages={$user.languages || []} />
-      </section>
+      </Card>
     {/if}
   </section>
 {/if}
@@ -35,10 +36,6 @@
 
     &__blocked {
       @apply p-6 w-full;
-    }
-
-    &__data {
-      @apply p-6 w-full flex flex-col gap-y-4;
     }
   }
 </style>

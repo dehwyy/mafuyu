@@ -1,8 +1,8 @@
 <script lang="ts">
   import CameraIconRaw from "$lib/assets/camera.svg?raw"
-  import ImageUploader from "./image-uploader/trigger.svelte"
+  import ImageUploader from "../../image-uploader/trigger.svelte"
   import AdaptiveImageGrid from "$lib/components/adaptive-image-grid.svelte"
-  import Textarea from "$lib/components/form/textarea.svelte"
+  import { Textarea } from "$lib/components/form/items"
   export let button_text: string
   export let placeholder: string
   export let padding: string = "1.5rem"

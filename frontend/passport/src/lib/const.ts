@@ -61,8 +61,8 @@ export const enum DevFallbackImages {
   HorizontalOriented = "/images/user_default.webp",
 }
 
-export const enum StaleTime {
+export const enum Time {
   SECOND = 1000,
-  MINUTE = 60 * StaleTime.SECOND,
-  HOUR = 60 * StaleTime.MINUTE,
+  MINUTE = 60 * Time.SECOND,
+  HOUR = 60 * Time.MINUTE,
 }

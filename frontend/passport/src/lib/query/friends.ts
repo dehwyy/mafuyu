@@ -3,7 +3,7 @@ import { GrpcWebClient } from "@makoto/grpc/web"
 import { Toasts } from "$lib/utils/toast"
 import { createReactiveQuery } from "$lib/query-abstraction"
 import { queryClient as qc } from "$lib/query-client"
-import { StaleTime } from "$lib/const"
+import { Time } from "$lib/const"
 
 export const FriendsKeys = {
   "query.friends": "friends.getFriends",
@@ -22,7 +22,7 @@ const invalidateUserFriends = (q: QueryClient, keys: unknown[]) => {
 export const useUserFriends = (userId: string | undefined, limit?: number) => {
   return createReactiveQuery({ userId, limit }, ({ userId, limit }) => ({
     queryKey: [FriendsKeys["query.friends"], userId, limit],
-    staleTime: 5 * StaleTime.MINUTE,
+    staleTime: 5 * Time.MINUTE,
     queryFn: async () => {
       if (!userId) return null
 
@@ -44,7 +44,7 @@ const invalidateUserFollowers = (q: QueryClient, keys: unknown[]) => {
 export const useUserFollowers = (userId: string | undefined, limit?: number) => {
   return createReactiveQuery({ userId, limit }, ({ userId, limit }) => ({
     queryKey: [FriendsKeys["query.followers"], userId, limit],
-    staleTime: 5 * StaleTime.MINUTE,
+    staleTime: 5 * Time.MINUTE,
     queryFn: async () => {
       if (!userId) return null
       const { response } = await GrpcWebClient.getUserFollowers({
@@ -63,7 +63,7 @@ const invalidateUserFollowedTo = (q: QueryClient, userId: string, limit?: number
 export const useUserFollowedTo = (userId: string | undefined, limit?: number) => {
   return createReactiveQuery({ userId, limit }, ({ userId, limit }) => ({
     queryKey: [FriendsKeys["query.followedTo"], userId, limit],
-    staleTime: 5 * StaleTime.MINUTE,
+    staleTime: 5 * Time.MINUTE,
     queryFn: async () => {
       if (!userId) return null
       const { response } = await GrpcWebClient.getUserFollowedTo({

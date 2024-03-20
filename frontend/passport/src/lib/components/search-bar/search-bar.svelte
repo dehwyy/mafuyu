@@ -3,7 +3,7 @@
   import { CreateNavigation } from "$lib/const"
   import { useUsersIDs, getUserInfoQuery } from "$lib/query/user"
   import { getModalStore } from "@skeletonlabs/skeleton"
-  import UserPanel from "../user-panel.svelte"
+  import UserPanel from "../user/user-panel.svelte"
   import { authedUserStore } from "$lib/stores/user"
   import { createQueries } from "@tanstack/svelte-query"
   import { derived } from "svelte/store"

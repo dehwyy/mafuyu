@@ -23,9 +23,7 @@
     <span>Languages:</span>
     <span class="flex flex-wrap gap-x-3">
       {#each langs as language, i}
-        <a href={`/${language}`} class="block hover:underline">
-          {DisplayLanguage(language, i)}
-        </a>
+        <span class="hover:underline cursor-default">{DisplayLanguage(language, i)}</span>
       {/each}
     </span>
   </p>

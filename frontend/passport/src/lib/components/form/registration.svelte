@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { email as emailValidation, matchField, required, pattern } from "svelte-forms/validators"
+  import { email as emailValidation, required, pattern } from "svelte-forms/validators"
   import { field, form } from "svelte-forms"
   import { Routes } from "$lib/const"
   import { onMount } from "svelte"
