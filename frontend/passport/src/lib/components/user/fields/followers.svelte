@@ -3,7 +3,7 @@
   import { createQueries } from "@tanstack/svelte-query"
   import PeopleGroupIconRaw from "$lib/assets/people-group.svg?raw"
   import People from "./people.svelte"
-  import { getBaseUserInfoQuery} from "$lib/query/user"
+  import { getBaseUserInfoQuery } from "$lib/query/user"
   import { useUserFollowers } from "$lib/query/friends"
   import { CreateNavigation } from "$lib/const"
 
@@ -15,10 +15,16 @@
 
   const followers = createQueries({
     queries: derived(userFollowers, userFollowers => {
-      const aligned = new Array(3).fill(undefined).map((_, i) => userFollowers.data?.followers[i])
-      return aligned.map(id => getBaseUserInfoQuery({ oneofKind: "userId", userId: id })) || []
+      const followers = userFollowers.data?.followers || []
+
+      return followers.map(id => getBaseUserInfoQuery({ oneofKind: "userId", userId: id })) || []
     }),
   })
 </script>
 
-<People href={CreateNavigation.ToFollowers(username)} raw_icon={PeopleGroupIconRaw} label="Followers" images={$followers.map(follower => follower.data?.picture)} />
+<People
+  href={CreateNavigation.ToFollowers(username)}
+  raw_icon={PeopleGroupIconRaw}
+  label="Followers"
+  isLoading={$userFollowers.isLoading}
+  images={$followers.map(follower => follower.data?.picture || null)} />

@@ -15,8 +15,9 @@
 
   const followers = createQueries({
     queries: derived(userFollowers, userFollowers => {
-      const aligned = new Array(3).fill(undefined).map((_, i) => userFollowers.data?.followers[i])
-      return aligned.map(id => getBaseUserInfoQuery({ oneofKind: "userId", userId: id })) || []
+      const followers = userFollowers.data?.followers || []
+
+      return followers.map(id => getBaseUserInfoQuery({ oneofKind: "userId", userId: id })) || []
     }),
   })
 </script>
@@ -25,4 +26,5 @@
   href={CreateNavigation.ToFollowed(username)}
   raw_icon={PeopleGroupIconRaw}
   label="Followed"
-  images={$followers.map(follower => follower.data?.picture)} />
+  isLoading={$userFollowers.isLoading}
+  images={$followers.map(follower => follower.data?.picture || null)} />

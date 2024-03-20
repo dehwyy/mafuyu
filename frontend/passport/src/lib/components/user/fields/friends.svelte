@@ -15,10 +15,16 @@
 
   const friends = createQueries({
     queries: derived(userFriends, userFriends => {
-      const aligned = new Array(3).fill(undefined).map((_, i) => userFriends.data?.friends[i])
-      return aligned.map(id => getBaseUserInfoQuery({ oneofKind: "userId", userId: id })) || []
+      const friends = userFriends.data?.friends || []
+
+      return friends.map(id => getBaseUserInfoQuery({ oneofKind: "userId", userId: id })) || []
     }),
   })
 </script>
 
-<People href={CreateNavigation.ToFriends(username)} raw_icon={FriendsIconRaw} label="Friends" images={$friends.map(friend => friend.data?.picture)} />
+<People
+  href={CreateNavigation.ToFriends(username)}
+  raw_icon={FriendsIconRaw}
+  label="Friends"
+  isLoading={$userFriends.isLoading}
+  images={$friends.map(friend => friend.data?.picture || null)} />
