@@ -1,12 +1,13 @@
 <script lang="ts">
   import UserIconRaw from "$lib/assets/user.svg?raw"
-  import GearIconRaw from "$lib/assets/gear.svg?raw"
   import FriendsIconRaw from "$lib/assets/people-group.svg?raw"
   import CircleIconRaw from "$lib/assets/circle.svg?raw"
   import LogoutIconRaw from "$lib/assets/logout.svg?raw"
 
   import { CreateNavigation, Routes } from "$lib/const"
   import CustomSettings from "./custom-settings.svelte"
+  import { Button, Icon } from "$lib/components/header/nav-items"
+
   import { useUserInfo } from "$lib/query/user"
   import { authedUserStore, clear_user } from "$lib/stores/user"
 
@@ -51,21 +52,12 @@
             }
             panel.href && (window.location.href = panel.href)
           }}>
-          <button>
-            <span>{@html panel.icon}</span>
+          <Button>
+            <Icon rawIcon={panel.icon} />
             <span>{panel.placeholder}</span>
-          </button>
+          </Button>
         </a>
       {/if}
     </li>
   {/each}
 </ul>
-
-<style lang="scss">
-  ul li button {
-    @apply max-h-[40px] btn hover:bg-surface-300/10 text-surface-200 hover:text-white w-full justify-start pl-4 font-medium;
-    & span:first-child {
-      @apply h-[24px] mr-2;
-    }
-  }
-</style>

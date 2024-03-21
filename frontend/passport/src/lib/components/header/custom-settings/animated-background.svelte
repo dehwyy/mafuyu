@@ -1,19 +1,16 @@
 <script lang="ts">
   import SparklesIconRaw from "$lib/assets/sparkles.svg?raw"
-  import { onMount } from "svelte"
   import { SlideToggle } from "@skeletonlabs/skeleton"
-  import { settingsStore } from "$lib/stores/settings"
+  import { Icon, Card } from "$lib/components/header/nav-items"
+  import { settingsStore, updateSettingsStore } from "$lib/stores/settings"
 
-  $: isAnimatedBackground = $settingsStore.animatedBackground
+  $: onChange = () => updateSettingsStore({ animatedBackground: !$settingsStore.animatedBackground })
 </script>
 
-<div class="flex justify-between px-4">
+<Card>
   <div class="flex">
-    <p class="h-[24px] mr-2">{@html SparklesIconRaw}</p>
-    <p class="">Animated BG</p>
+    <Icon rawIcon={SparklesIconRaw} />
+    <p>Animated background</p>
   </div>
-  <SlideToggle
-    size="sm"
-    name="animatedBackground"
-    on:change={() => settingsStore.update(v => ({ ...v, animatedBackground: !isAnimatedBackground }))} />
-</div>
+  <SlideToggle size="sm" name="animatedBackground" checked={$settingsStore.animatedBackground} on:change={onChange} />
+</Card>

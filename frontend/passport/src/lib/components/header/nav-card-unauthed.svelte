@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Routes } from "$lib/const"
   import ThemeSelector from "./custom-settings/theme-selector.svelte"
+  import { Button, Icon } from "$lib/components/header/nav-items"
 
   import LoginIconRaw from "$lib/assets/user.svg?raw"
   import ThemeSelectIconRaw from "$lib/assets/theme-select.svg?raw"
@@ -9,10 +10,10 @@
 <ul class="mt-5">
   <li>
     <a href={Routes.Login}>
-      <button>
-        <span>{@html LoginIconRaw}</span>
+      <Button>
+        <Icon rawIcon={LoginIconRaw} />
         <span>Log in</span>
-      </button>
+      </Button>
     </a>
   </li>
   <li>
@@ -23,12 +24,3 @@
     </div>
   </li>
 </ul>
-
-<style lang="scss">
-  ul li button {
-    @apply max-h-[40px] btn hover:bg-surface-300/10 text-surface-200 hover:text-white w-full justify-start pl-4 font-medium;
-    & span:first-child {
-      @apply h-[24px] mr-2;
-    }
-  }
-</style>
