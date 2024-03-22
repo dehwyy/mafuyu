@@ -1,3 +1,4 @@
+use tokio::join;
 use tokio::process::Command;
 use tokio::time::{sleep, Duration};
 use logger::info;
@@ -111,39 +112,39 @@ impl Apps {
 struct Others;
 
 impl Others {
-    pub async fn caddy_start() {
-        info!("Starting Caddy!");
-        Command::new("caddy").arg("start")
-            .spawn().unwrap().wait_with_output().await.unwrap();
+    pub async fn caddy_start_runtime() {
+        Cmd::tokio_cmd("caddy start".to_string()).await.unwrap();
     }
 
     pub async fn docker_compose_up() {
-        info!("Starting Docker!");
-        Command::new("docker-compose")
-            .args(["-f", "docker-compose.dev.yml"])
-            .arg("up")
-            .arg("-d")
-            .output().await.unwrap();
+        Cmd::tokio_cmd("docker compose -f docker-compose.dev.yml up -d".to_string()).await.unwrap();
     }
 
     pub async fn migrate_db() {
-        info!("Migrating db...!");
+        let database_url = makoto_config::db::Database::new().database_dsn.unwrap();
+        std::env::set_var("DATABASE_DSN", database_url);
 
-        std::env::set_var("DATABASE_DSN", "host=localhost user=postgres password=postgres dbname=postgres port=54321 sslmode=disable");
-        Command::new("go")
-            .args(["run", "libs/db/main.go", "migrate"])
-            .output().await.unwrap();
-
-        info!("Migrating db succeed!");
+        Cmd::tokio_cmd("go run libs/db/main.go migrate".to_string()).await.unwrap();
     }
 }
 
 pub async fn dev() {
-    Others::docker_compose_up().await;
-    Others::migrate_db().await;
-    Others::caddy_start().await;
+    Animated::builder()
+        .add(Process {
+            func: Others::docker_compose_up(),
+            on_start: "Starting Docker...",
+            on_end: "Docker started!",
+        })
+        .add(Process {
+            func: Others::migrate_db(),
+            on_start: "Migrating db...",
+            on_end: "Migrated db!",
+        }).invoke_sequentially("Docker was started!".to_string()).await;
+
+    let caddy_runtime = tokio::spawn(Others::caddy_start_runtime());
 
     let apps: Apps = Apps::new();
-    apps.exec().await;
+
+    join!(caddy_runtime, apps.exec());
 }
 

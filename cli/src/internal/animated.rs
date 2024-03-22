@@ -28,6 +28,21 @@ impl Animated {
         self
     }
 
+    pub async fn invoke_sequentially(self, end_message: String) {
+        let bar = self.multi.add(ProgressBar::new_spinner());
+        bar.enable_steady_tick(Duration::from_millis(100));
+        bar.set_style(ProgressStyle::with_template("{spinner:.blue} [{elapsed_precise}] {msg:.blue.underlined}").unwrap());
+
+        for p in self.processes {
+            bar.set_message(p.on_start);
+            p.func.await;
+        }
+
+        bar.set_style(ProgressStyle::with_template("{prefix} {msg:.blue} in {elapsed:.green.bold.underlined}").unwrap());
+        bar.set_prefix("✅");
+        bar.finish_with_message(end_message);
+    }
+
     pub async fn invoke(self) {
         let mut h = vec!();
         for p in self.processes {
@@ -39,7 +54,7 @@ impl Animated {
                 bar.set_message(p.on_start);
                 p.func.await;
 
-                bar.set_style(ProgressStyle::with_template("{prefix:.bold.dim} {msg:.green} in {elapsed:.cyan}").unwrap());
+                bar.set_style(ProgressStyle::with_template("{prefix:.bold.dim} {msg:.green} in {elapsed:.cyan.underlined}").unwrap());
                 bar.set_prefix("✅");
                 bar.finish_with_message(p.on_end);
                 ()
@@ -50,5 +65,4 @@ impl Animated {
             handle.await.unwrap();
         }
     }
-
 }
