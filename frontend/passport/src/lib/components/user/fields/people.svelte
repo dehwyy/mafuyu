@@ -5,14 +5,15 @@
   export let images: Array<string | null>
   export let isLoading = true
   export let raw_icon: string | undefined = undefined
-  export let href: string
+  export let href: string = "#"
+  export let onClick: () => void = () => {}
 
   $: aligned_images = new Array(3).fill(undefined).map((_, i) => images[i] || undefined)
   $: isNotLoading = typeof window === "undefined" ? false : !isLoading
   $: hasAny = !isNotLoading || images.length !== 0
 </script>
 
-<a {href} class={`${hasAny ? "max-h-[30px]" : "max-h-[0]"} overflow-hidden transition-all`}>
+<a {href} on:click={onClick} class={`${hasAny ? "max-h-[30px]" : "max-h-[0]"} overflow-hidden transition-all cursor-pointer`}>
   <div class="flex gap-x-5 pointer-events-none h-[30px]">
     {#if raw_icon}<p class="icon-sm mt-0.5">{@html raw_icon}</p>{/if}
     <div class="flex w-full items-center">

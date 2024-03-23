@@ -5,6 +5,7 @@
   import { getBaseUserInfoQuery } from "$lib/query/user"
   import { useUserFriends } from "$lib/query/friends"
   import { createQueries } from "@tanstack/svelte-query"
+  import { updatePersistentDataStore, CommunitySection } from "$lib/stores/nav"
   import { CreateNavigation } from "$lib/const"
 
   export let userId: string
@@ -23,7 +24,8 @@
 </script>
 
 <People
-  href={CreateNavigation.ToFriends(username)}
+  href={CreateNavigation.ToCommunity(username)}
+  onClick={() => updatePersistentDataStore({ communitySection: CommunitySection.FRIENDS })}
   raw_icon={FriendsIconRaw}
   label="Friends"
   isLoading={$userFriends.isLoading}

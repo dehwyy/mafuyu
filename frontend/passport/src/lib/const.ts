@@ -14,6 +14,9 @@ export class CreateNavigation {
   static ToSettings(username: string): string {
     return `${Routes.Account}@${username}/edit/`
   }
+  static ToCommunity(username: string): string {
+    return `${Routes.Account}@${username}/community`
+  }
   static ToFriends(username: string): string {
     return `${Routes.Account}@${username}/community?section=friends`
   }

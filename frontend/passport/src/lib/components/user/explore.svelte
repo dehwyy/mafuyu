@@ -11,7 +11,7 @@
 </script>
 
 <div in:fade={{ duration: 100 }} class="flex justify-center mt-10">
-  <button on:click={triggerModal} class="btn variant-outline-primary px-10 flex gap-x-2">
+  <button on:click={triggerModal} class="btn variant-outline-primary px-10 flex h-min gap-x-2">
     <span class="block h-[28px] w-[28px] relative top-[0.5px]">{@html ExploreIconRaw}</span>
     <span class="text-xl">Explore</span>
   </button>

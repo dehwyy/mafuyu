@@ -6,23 +6,15 @@
   import FollowersIconRaw from "$lib/assets/people-group.svg?raw"
 
   import { page } from "$app/stores"
-  import { TabGroup, TabAnchor } from "@skeletonlabs/skeleton"
+  import { TabGroup, Tab } from "@skeletonlabs/skeleton"
   import { useUserInfo } from "$lib/query/user"
   import Friends from "./tabs/friends.svelte"
   import Followers from "./tabs/followers.svelte"
   import Followed from "./tabs/followed.svelte"
-  import { CreateNavigation } from "$lib/const"
   import { authedUserStore } from "$lib/stores/user"
+  import { CommunitySection, persistentDataStore, updatePersistentDataStore } from "$lib/stores/nav"
 
   // TODO: prefetch in +layout.server.ts
-
-  $: section = $page.url.searchParams.get("section") || "friends" || "followed"
-  $: username = $page.params.username
-
-  $: isTabFriends = section === "friends"
-  $: isTabFollowed = section === "followed"
-  $: isTabFollowers = section === "followers"
-
   const [currentUser, currentUserStore] = useUserInfo({ oneofKind: "username", username: $page.params.username })
   $: currentUserStore.set({ getBy: { oneofKind: "username", username: $page.params.username } })
 
@@ -39,7 +31,7 @@
     return friends.data?.friends || []
   })
 
-  const followedIds = derived(followed, followed => {
+  const followedIDs = derived(followed, followed => {
     return followed.data?.followers || []
   })
 
@@ -47,56 +39,85 @@
     return friend.data?.followers || []
   })
 
+  const tabBySection = (section: string) => {
+    return (
+      {
+        frineds: 0,
+        followed: 1,
+        followers: 2,
+      }[section] || 0
+    )
+  }
+
   $: isCurrentUser = $authedUserStore?.username === $page.params.username
+
+  $: setVirtualPath = (tab: number) => {
+    const sect = {
+      0: CommunitySection.FRIENDS,
+      1: CommunitySection.FOLLOWED,
+      2: CommunitySection.FOLLOWERS,
+    }[tab]
+
+    if (sect) {
+      updatePersistentDataStore({ communitySection: sect })
+    }
+  }
+
+  $: scrollElement = () => {
+    elemCarousel.scroll(elemCarousel.clientWidth * tab, 0)
+  }
+
+  let tab = 0
+  let innerWidth = 421
+  let elemCarousel: HTMLElement
+
+  $: tab = tabBySection($persistentDataStore.communitySection)
+  $: elemCarousel && scrollElement()
+  console.log($friends.isFetching)
 </script>
 
+<svelte:window bind:innerWidth on:resize={() => scrollElement()} />
+
 <div class="flex flex-col gap-y-5 w-full">
-  <TabGroup flex="flex-1" direction="vertical">
-    <TabAnchor href={CreateNavigation.ToFriends(username)} selected={isTabFriends}>
+  <TabGroup justify={innerWidth < 420 ? "flex-col" : "flew-row"} flex="flex-1">
+    <Tab on:click={() => setVirtualPath(0)} bind:group={tab} value={0} name="friends">
       <div class="tab">
         <div class="icon-sm">
           {@html FriendsIconRaw}
         </div>
         <span> Friends </span>
       </div>
-    </TabAnchor>
-    <TabAnchor href={CreateNavigation.ToFollowed(username)} selected={isTabFollowed}>
+    </Tab>
+    <Tab on:click={() => setVirtualPath(1)} bind:group={tab} value={1} name="followedTo">
       <div class="tab">
-        <div class="icon-sm">
+        <div class="icon-sm min-h-[24px] min-w-[24px]">
           {@html FollowersIconRaw}
         </div>
         <span> Followed to </span>
       </div>
-    </TabAnchor>
-    <TabAnchor href={CreateNavigation.ToFollowers(username)} selected={isTabFollowers}>
+    </Tab>
+    <Tab on:click={() => setVirtualPath(2)} bind:group={tab} value={2} name="followers">
       <div class="tab">
         <div class="icon-sm">
           {@html FollowersIconRaw}
         </div>
         <span> Followers </span>
       </div>
-    </TabAnchor>
+    </Tab>
     <svelte:fragment slot="panel">
-      {#if isTabFriends}
-        <Friends {friendsIDs} {isCurrentUser} />
-      {:else if isTabFollowed}
-        <Followed followedIDs={followedIds} />
-      {:else if isTabFollowers}
-        <Followers {followersIDs} />
-      {/if}
+      <div bind:this={elemCarousel} class="overflow-x-hidden snap-x snap-mandatory scroll-smooth">
+        <div class="grid grid-cols-3 gap-x-5 overflow-x-auto w-[300%]">
+          <Friends isFetching={$friends.isFetching} {friendsIDs} {isCurrentUser} />
+          <Followed isFetching={$followed.isFetching} {followedIDs} />
+          <Followers isFetching={$followers.isFetching} {followersIDs} />
+        </div>
+      </div>
     </svelte:fragment>
   </TabGroup>
 </div>
 
 <style lang="scss">
   .tab {
-    @apply flex items-center gap-x-3 justify-center -ml-3;
-    & > span {
-      @apply font-[700];
-    }
-  }
-
-  .icon {
-    @apply btn-icon-base hover:bg-surface-600 transition-all p-2 rounded-xl;
+    @apply flex items-center gap-x-3 justify-center -ml-3 font-[700];
   }
 </style>

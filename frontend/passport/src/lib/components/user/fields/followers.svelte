@@ -6,6 +6,7 @@
   import { getBaseUserInfoQuery } from "$lib/query/user"
   import { useUserFollowers } from "$lib/query/friends"
   import { CreateNavigation } from "$lib/const"
+  import { updatePersistentDataStore, CommunitySection } from "$lib/stores/nav"
 
   export let userId: string
   export let username: string
@@ -23,7 +24,8 @@
 </script>
 
 <People
-  href={CreateNavigation.ToFollowers(username)}
+  onClick={() => updatePersistentDataStore({ communitySection: CommunitySection.FOLLOWERS })}
+  href={CreateNavigation.ToCommunity(username)}
   raw_icon={PeopleGroupIconRaw}
   label="Followers"
   isLoading={$userFollowers.isLoading}

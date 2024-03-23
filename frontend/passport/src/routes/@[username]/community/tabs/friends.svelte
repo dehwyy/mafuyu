@@ -1,13 +1,14 @@
 <script lang="ts">
-  import { fade } from "svelte/transition"
-
+  import { browser } from "$app/environment"
+  import { fade, slide } from "svelte/transition"
   import { getBaseUserInfoQuery } from "$lib/query/user"
-  import { UserExplore, UserPanel } from "$lib/components/user"
+  import { UserExplore, UserPanel, UserPanelFallback } from "$lib/components/user"
   import { CreateNavigation } from "$lib/const"
   import { createQueries } from "@tanstack/svelte-query"
   import { derived, type Readable } from "svelte/store"
 
   export let isCurrentUser = false
+  export let isFetching = false
   export let friendsIDs: Readable<string[]>
 
   const friends = createQueries({
@@ -16,18 +17,28 @@
     }),
   })
 
-  let atLeastOne = true
+  console.log(isFetching, isCurrentUser)
+
   $: atLeastOne = $friends.reduce((acc, v) => acc + (v.data || v.isFetching ? 1 : 0), 0) > 0
 </script>
 
 {#if atLeastOne}
-  <div class="flex flex-col gap-y-5 py-5">
+  <div class="panel-container">
     {#each $friends as friend}
-      {#if friend.data}
-        <a in:fade={{ duration: 100 }} href={CreateNavigation.ToUser(friend.data.username)}>
-          <UserPanel username={friend.data.username} pseudonym={friend.data.pseudonym} picture={friend.data.picture} withIntegrations={true} />
-        </a>
-      {/if}
+      <a href={CreateNavigation.ToUser(friend.data?.username || "")}>
+        <UserPanel
+          isLoading={friend.isFetching}
+          username={friend.data?.username}
+          pseudonym={friend.data?.pseudonym}
+          picture={friend.data?.picture}
+          withIntegrations={true} />
+      </a>
+    {/each}
+  </div>
+{:else if isFetching || !browser}
+  <div class="panel-container">
+    {#each Array(4) as _}
+      <UserPanel isLoading={true} />
     {/each}
   </div>
 {:else if isCurrentUser}
@@ -35,3 +46,9 @@
 {:else}
   <p in:fade={{ duration: 100 }} class="text-center text-xl mt-10">No Friends</p>
 {/if}
+
+<style lang="scss">
+  .panel-container {
+    @apply flex flex-col gap-y-5 py-5;
+  }
+</style>

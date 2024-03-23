@@ -1,11 +1,14 @@
 <script lang="ts">
+  import { fade } from "svelte/transition"
   import GoogleIconRaw from "$lib/assets/google.svg?raw"
   import GithubIconRaw from "$lib/assets/github.svg?raw"
   import { CreateNavigation } from "$lib/const"
 
   export let picture: string | undefined = undefined
-  export let username: string
+  export let username: string | undefined = undefined
   export let pseudonym: string | undefined = undefined
+
+  export let isLoading = false
 
   export let withIntegrations = true
   $: windowWidth = 0
@@ -17,20 +20,24 @@
 
 <button class="btn h-[86px] sm:grid grid-cols-8 gap-x-3 items-center card w-full overflow-hidden min-w-[200px]">
   <div class="col-span-1 select-none pointer-events-none h-[46px] w-[46px]">
-    {#if picture}
-      <img src={picture} alt="user" class="w-[46px] h-[46px] rounded-full object-cover" />
+    {#if picture && !isLoading}
+      <img in:fade src={picture} alt="user" class="w-[46px] h-[46px] rounded-full object-cover" />
     {:else}
-      <div class="w-[46px] h-[46px] animate-pulse bg-surface-500" />
+      <div class="w-[46px] h-[46px] rounded-full animate-pulse bg-surface-500" />
     {/if}
   </div>
   <div class="flex items-center col-span-4 sm:col-span-5 overflow-hidden relative h-full">
-    <p class="break-keep sm:absolute top-1/2 sm:-translate-y-1/2">
-      <span>{username}</span>&nbsp;
-      {#if windowWidth > 360 && pseudonym}<span>({pseudonym})</span>{/if}
-    </p>
+    {#if isLoading}
+      <div out:fade={{ duration: 100 }} class="bg-surface-500 animate-pulse h-[20px] w-full"></div>
+    {:else}
+      <p in:fade={{ delay: 100 }} class="break-keep sm:absolute top-1/2 sm:-translate-y-1/2">
+        <span>{username}</span>&nbsp;
+        {#if windowWidth > 360 && pseudonym}<span>({pseudonym})</span>{/if}
+      </p>
+    {/if}
   </div>
-  {#if withIntegrations && windowWidth > sm}
-    <div class="sm:cols-span-3 ml-auto flex items-center gap-x-3">
+  {#if withIntegrations && windowWidth > sm && username}
+    <div in:fade class="sm:cols-span-3 ml-auto flex items-center gap-x-3">
       <a href={CreateNavigation.ToGoogleIntegration(username)}>
         <button on:click|stopPropagation class="icon">
           {@html GoogleIconRaw}

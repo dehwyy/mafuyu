@@ -5,6 +5,7 @@
   import People from "./people.svelte"
   import { getBaseUserInfoQuery } from "$lib/query/user"
   import { useUserFollowedTo } from "$lib/query/friends"
+  import { updatePersistentDataStore, CommunitySection } from "$lib/stores/nav"
   import { CreateNavigation } from "$lib/const"
 
   export let userId: string
@@ -23,7 +24,8 @@
 </script>
 
 <People
-  href={CreateNavigation.ToFollowed(username)}
+  href={CreateNavigation.ToCommunity(username)}
+  onClick={() => updatePersistentDataStore({ communitySection: CommunitySection.FOLLOWED })}
   raw_icon={PeopleGroupIconRaw}
   label="Followed"
   isLoading={$userFollowers.isLoading}
