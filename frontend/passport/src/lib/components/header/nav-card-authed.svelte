@@ -9,7 +9,8 @@
   import { Button, Icon } from "$lib/components/header/nav-items"
 
   import { useUserInfo } from "$lib/query/user"
-  import { authedUserStore, clear_user } from "$lib/stores/user"
+  import { authedUserStore } from "$lib/stores/user"
+  import { updatePersistentDataStore, CommunitySection } from "$lib/stores/nav"
 
   const [user, userStore] = useUserInfo({ oneofKind: "userId", userId: $authedUserStore?.id })
   $: userStore.set({ getBy: { oneofKind: "userId", userId: $authedUserStore?.id } })
@@ -21,18 +22,17 @@
     // { icon: GearIconRaw, href: CreateNavigation.ToSettings(username), placeholder: "Settings" },
     { component: CustomSettings },
     { icon: CircleIconRaw, href: Routes.Circle, placeholder: "Circle" },
-    { icon: FriendsIconRaw, href: CreateNavigation.ToFriends(username), placeholder: "Friends" },
-    // { icon: CollectionIconRaw, href: null , placeholder: "Collections" },
+    {
+      icon: FriendsIconRaw,
+      href: CreateNavigation.ToCommunity(username),
+      placeholder: "Friends",
+      preAction: () => updatePersistentDataStore({ communitySection: CommunitySection.FRIENDS }),
+    },
     {
       icon: LogoutIconRaw,
       href: Routes.Logout,
       placeholder: "Logout",
-      preAction: async () => {
-        // TODO: invalidate session
-        await new Promise(resolve => {
-          setTimeout(() => resolve(null), 0)
-        })
-      },
+      preAction: async () => authedUserStore.set(null),
     },
   ]
 </script>

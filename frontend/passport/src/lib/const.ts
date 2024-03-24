@@ -17,15 +17,6 @@ export class CreateNavigation {
   static ToCommunity(username: string): string {
     return `${Routes.Account}@${username}/community`
   }
-  static ToFriends(username: string): string {
-    return `${Routes.Account}@${username}/community?section=friends`
-  }
-  static ToFollowed(username: string): string {
-    return `${Routes.Account}@${username}/community?section=followed`
-  }
-  static ToFollowers(username: string): string {
-    return `${Routes.Account}@${username}/community?section=followers`
-  }
   static ToGoogleIntegration(username: string): string {
     return `${Routes.Account}@${username}/google`
   }
