@@ -1,0 +1,3 @@
+# Nuxt dev/build outputs
+.nuxt
+node_modules
