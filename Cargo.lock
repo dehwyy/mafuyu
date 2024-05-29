@@ -692,6 +692,7 @@ dependencies = [
  "clap",
  "indicatif",
  "logger",
+ "makoto_config",
  "tokio",
 ]
 

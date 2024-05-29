@@ -3,6 +3,7 @@ version: "3.8"
 services:
   nats:
     container_name: nats
+    restart: always
     image: "nats:latest"
     command: "-js -c /etc/nats/nats-server.conf"
     volumes:

@@ -1,6 +1,4 @@
 use std::borrow::BorrowMut;
-use redis::AsyncCommands;
-
 use rand::Rng;
 use tonic::{Status, Response, Request};
 use uuid::Uuid;
@@ -101,7 +99,7 @@ impl rpc::auth_rpc_server::AuthRpc for AuthRpcServiceImplementation {
     created_user_future.await?;
 
     Ok(Response::new(
-      rpc::AuthenticationServiceResponse {
+      AuthenticationServiceResponse {
         access_token: tokens.access_token,
         refresh_token: tokens.refresh_token,
         user_id: created_user_passport.user_id,

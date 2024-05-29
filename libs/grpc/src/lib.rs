@@ -61,26 +61,16 @@ impl RpcClients {
 
         let with_http = |url: &str| format!("http://{}", url);
 
-        let auth_client     = auth_rpc_client::AuthRpcClient::connect(with_http(&hosts.auth)).await;
-        let authorization_client = authorization_rpc_client::AuthorizationRpcClient::connect(with_http(&hosts.authorization)).await;
-        let integrations_client     = integrations_rpc_client::IntegrationsRpcClient::connect(with_http(&hosts.integrations)).await;
-        let oauth2_client = o_auth2_rpc_client::OAuth2RpcClient::connect(with_http(&hosts.oauth2)).await;
-        let passport_client = passport_rpc_client::PassportRpcClient::connect(with_http(&hosts.passport)).await;
-        let tokens_client =  tokens_rpc_client::TokensRpcClient::connect(with_http(&hosts.tokens)).await;
-        let user_client  = user_rpc_client::UserRpcClient::connect(with_http(&hosts.user)).await;
-        let cdn_client = cdn_rpc_client::CdnRpcClient::connect(with_http(&hosts.cdn_rpc)).await;
-        let mailer_client = mailer_rpc_client::MailerRpcClient::connect(with_http(&hosts.mailer_rpc)).await;
-
         Self {
-            auth_client,
-            authorization_client,
-            integrations_client,
-            oauth2_client,
-            passport_client,
-            tokens_client,
-            user_client,
-            cdn_client,
-            mailer_client
+            auth_client:                   auth_rpc_client::AuthRpcClient::connect(with_http(&hosts.auth)).await,
+            authorization_client: authorization_rpc_client::AuthorizationRpcClient::connect(with_http(&hosts.authorization)).await,
+            integrations_client:   integrations_rpc_client::IntegrationsRpcClient::connect(with_http(&hosts.integrations)).await,
+            oauth2_client:              o_auth2_rpc_client::OAuth2RpcClient::connect(with_http(&hosts.oauth2)).await,
+            passport_client:           passport_rpc_client::PassportRpcClient::connect(with_http(&hosts.passport)).await,
+            tokens_client:               tokens_rpc_client::TokensRpcClient::connect(with_http(&hosts.tokens)).await,
+            user_client:                   user_rpc_client::UserRpcClient::connect(with_http(&hosts.user)).await,
+            cdn_client:                     cdn_rpc_client::CdnRpcClient::connect(with_http(&hosts.cdn_rpc)).await,
+            mailer_client:               mailer_rpc_client::MailerRpcClient::connect(with_http(&hosts.mailer_rpc)).await
         }
     }
 }
