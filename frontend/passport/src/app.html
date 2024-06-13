@@ -15,13 +15,14 @@
 
 <body data-sveltekit-preload-data="hover">
 	<script>
+		const defaultTheme = "darkest" // @see ($lib/const) for more themes
 		let settings = JSON.parse(localStorage.getItem("settings") || "{}")
 
 		// insert default settings
 		if (!Object.keys(settings).length) {
 			settings = {
 				animatedBackground: true,
-				theme: current_theme
+				theme: defaultTheme
 			}
 
 			localStorage.setItem("settings", JSON.stringify(settings))

@@ -1,22 +1,21 @@
 <script lang="ts">
   import ThemeSelectIconRaw from "$lib/assets/theme-select.svg?raw"
   import { settingsStore, updateSettingsStore } from "$lib/stores/settings"
+  import { Themes } from "$lib/const"
   import { type PopupSettings, popup } from "@skeletonlabs/skeleton"
   import { ListBox, ListBoxItem } from "@skeletonlabs/skeleton"
   import { onMount } from "svelte"
 
   const themes = {
-    darkest: "🦀 Darkest",
-    modern: "🤖 Modern",
-    wintry: "❄️ Wintry",
-    crimson: "🕸️ Crimson",
+    [Themes.darkest]: "🦀 Darkest",
+    [Themes.modern]: "🤖 Modern",
+    [Themes.wintry]: "❄️ Wintry",
+    [Themes.crimson]: "🕸️ Crimson",
   }
-  type Theme = keyof typeof themes
-
-  let currentTheme: Theme | undefined
+  let currentTheme: Themes | undefined
 
   onMount(() => {
-    currentTheme = $settingsStore.theme as Theme
+    currentTheme = $settingsStore.theme as Themes
   })
 
   const themeSelectClick: PopupSettings = {

@@ -7,6 +7,13 @@ export const enum Routes {
   Circle = "/circle/",
 }
 
+export const enum Themes {
+  darkest = "darkest",
+  modern = "modern",
+  wintry = "wintry",
+  crimson = "crimson",
+}
+
 export class CreateNavigation {
   static ToUser(username: string, dyn: string = ""): string {
     return `${Routes.Account}@${username}${dyn}`

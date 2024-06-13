@@ -1,5 +1,6 @@
 import { localStorageStore } from "@skeletonlabs/skeleton"
 import type { Writable } from "svelte/store"
+import { Themes } from "$lib/const"
 
 interface ISettings {
   animatedBackground: boolean
@@ -10,7 +11,7 @@ interface ISettings {
 export const settingsStore: Writable<ISettings> = localStorageStore("settings", {
   animatedBackground: true,
   rgbCard: true,
-  theme: "darkest",
+  theme: Themes.darkest,
 })
 
 export const updateSettingsStore = (settings: Partial<ISettings>) => {
