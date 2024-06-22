@@ -10,6 +10,8 @@
   // import typescript from "highlight.js/lib/languages/typescript"
   import { hydrate, QueryClientProvider } from "@tanstack/svelte-query"
   import type { AfterNavigate } from "@sveltejs/kit"
+  // Well, it should exist.
+  // @ts-ignore
   import { afterNavigate, onNavigate } from "$app/navigation"
   import { SvelteToast } from "@zerodevx/svelte-toast"
   import { queryClient } from "$lib/query-client"
@@ -35,6 +37,7 @@
   })
 
   // Perform transition (Chromium only, if I'm not mistaking)
+  // @ts-ignore
   onNavigate(navigation => {
     // @ts-ignore
     if (!document.startViewTransition) return
@@ -42,6 +45,7 @@
     return new Promise(resolve => {
       // @ts-ignore
       document.startViewTransition(async () => {
+        // @ts-ignore
         resolve()
         await navigation.complete
       })

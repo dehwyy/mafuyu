@@ -1,4 +1,5 @@
 <script lang="ts">
+  import SearchBarTrigger from "$lib/components/search-bar/trigger.svelte"
   import UserIconRaw from "$lib/assets/user.svg?raw"
   import FriendsIconRaw from "$lib/assets/people-group.svg?raw"
   import CircleIconRaw from "$lib/assets/circle.svg?raw"

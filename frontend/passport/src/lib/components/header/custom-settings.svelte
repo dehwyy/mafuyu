@@ -1,9 +1,7 @@
 <script lang="ts">
   import SettingsIconRaw from "$lib/assets/gear.svg?raw"
 
-  import ThemeSelector from "./custom-settings/theme-selector.svelte"
-  import AnimatedBackground from "./custom-settings/animated-background.svelte"
-  import RgbCard from "./custom-settings/rgb-card.svelte"
+  import { MinimalisticHeader, AnimatedBackground, RgbCard, ThemeSelector } from "./custom-settings"
 
   import { Icon, Button } from "$lib/components/header/nav-items"
 
@@ -22,7 +20,7 @@
 
   // $: username = $authedUserStore?.username || ($user?.data?.username as string)
 
-  $: panels = [{ component: ThemeSelector }, { component: AnimatedBackground }, { component: RgbCard }]
+  $: panels = [{ component: ThemeSelector }, { component: AnimatedBackground }, { component: RgbCard }, { component: MinimalisticHeader }]
 </script>
 
 <div use:popup={customSettingsSelectClick} class="cursor-pointer flex-auto">
