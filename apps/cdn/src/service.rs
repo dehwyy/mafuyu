@@ -27,14 +27,17 @@ impl CdnRpc for CdnRpcServiceImplementation {
     async fn upload_new_image(&self, req: Request<UploadNewImageRequest>) -> Result<Response<UploadNewImageResponse>, Status> {
         let req = req.into_inner();
 
+        // Iterates at most 5 times to generate a unique filename
         let mut i = 0;
         let filename = match loop {
-            if i > 5 { break None }
+            // strict `==` is acceptable, but why not `>=`? :3
+            if i >= 5 { break None }
 
             let filename = format!("{}.{}", req.keyword, uuid::Uuid::new_v4().to_string());
+            // if `generated filename` is unique (not exists in db) -> break the loop and return `new filename`
             if !self.repo.has_value_by_key(&filename).await.internal_error()? {
                 break Some(filename);
-            };
+            }
 
             i+=1
         } {
@@ -43,7 +46,7 @@ impl CdnRpc for CdnRpcServiceImplementation {
 
                 filename
             },
-            None => return Err(Status::aborted("cannot generate new image filename 6x times"))
+            None => return Err(Status::aborted("cannot generate new image filename 5x times"))
         };
 
         let payload = serde_json::to_vec(&nats_cdn::PublishImageRequest {

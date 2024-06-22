@@ -7,7 +7,7 @@ use makoto_grpc::pkg::cdn;
 use makoto_grpc::pkg::user::*;
 
 use mafuyu_lib::errors::prelude::*;
-use mafuyu_lib::image::{Image, ImageType};
+use mafuyu_lib::image::Image;
 
 
 use crate::repo::user::{GetUsersPayload, EditPrimitiveUserPayload};
@@ -60,20 +60,23 @@ impl user_rpc_server::UserRpc for UserRpcServiceImplementation {
 
         let update_languages_fut = self.languages_repo.set_languages(&user_id, req.languages);
 
-        let mut picture: Option<String> = None;
-        if let Some(Some(image)) = req.picture.map(|image| Image::parse(&image)) {
-            picture = Some(match image {
-                ImageType::Base64(base64_image, image_type) => {
-                    let response = self.cdn_client.clone().borrow_mut().upload_new_image(Request::new(cdn::UploadNewImageRequest {
-                        image_base64: base64_image,
-                        keyword: req.user_id.clone(),
-                        ext: image_type.to_string()
-                    })).await?.into_inner();
+        // If image was provided as `URL` then just upload it as it is
+        // Otherwise, if it was provided as `base64`, upload it to `CDN`, get the url and save it
+        let mut picture_url: Option<String> = None;
+        if let Some(Some(image)) = req.picture.map(|image| Image::try_parse(&image)) {
+            picture_url = Some(
+                match image {
+                    Image::Url(url_image) => url_image,
+                    Image::Base64(base64_image, image_type) => {
+                        let response = self.cdn_client.clone().borrow_mut().upload_new_image(Request::new(cdn::UploadNewImageRequest {
+                            image_base64: base64_image,
+                            keyword: req.user_id.clone(),
+                            ext: image_type.to_string()
+                        })).await?.into_inner();
 
-                    response.full_url
-                },
-                ImageType::Url(url_image) => url_image
-            });
+                        response.full_url
+                    },
+                });
         }
 
         self.user_repo.edit_primitive_user(EditPrimitiveUserPayload {
@@ -82,7 +85,7 @@ impl user_rpc_server::UserRpc for UserRpcServiceImplementation {
             birthday: req.birthday,
             pseudonym: req.pseudonym,
             bio: req.bio,
-            picture,
+            picture: picture_url,
         }).await.handle()?;
 
         let (update_languages, ) = tokio::join!(update_languages_fut);

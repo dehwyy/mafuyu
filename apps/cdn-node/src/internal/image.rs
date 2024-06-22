@@ -1,7 +1,7 @@
 use std::cmp::{max, min};
 use std::io;
 use ril::{ImageFormat, Pixel, Rgba};
-use mafuyu_lib::image::{core::Base64ImageType, Image as ImageOps};
+use mafuyu_lib::image::{core::Base64ImageType, Image as ImageOperations};
 use crate::internal::fs::CDNFs;
 
 const MD: u32 = 500;
@@ -33,7 +33,7 @@ pub struct Image;
 
 impl Image {
     pub async fn save_image(filename: String, image: String, image_ext: String) -> ril::Result<()> {
-        let image_buf = ImageOps::from_base64_to_bytes(&image)?;
+        let image_buf = ImageOperations::from_base64_to_bytes(&image)?;
 
         let ext = Base64ImageType::from(image_ext);
         match ext {
