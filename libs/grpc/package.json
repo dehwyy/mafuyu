@@ -16,7 +16,6 @@
       "types": "./dist/const.d.ts",
       "import": "./dist/const.js"
     }
-
   },
   "typesVersions": {
     "*": {

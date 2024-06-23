@@ -1,16 +1,22 @@
 <script lang="ts">
-  let extraCssClass = ""
+  let extraCssClass = ''
   export let closeAfterClick = true
 
   export { extraCssClass as class }
 </script>
 
 {#if closeAfterClick}
-  <button class={extraCssClass} {...$$restProps}>
+  <button
+    class={extraCssClass}
+    {...$$restProps}
+  >
     <slot />
   </button>
 {:else}
-  <div class={extraCssClass} {...$$restProps}>
+  <div
+    class={extraCssClass}
+    {...$$restProps}
+  >
     <slot />
   </div>
 {/if}

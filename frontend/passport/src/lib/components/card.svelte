@@ -1,21 +1,28 @@
 <script lang="ts">
-  import { settingsStore } from "$lib/stores/settings"
-  import { onMount } from "svelte"
-  import { fade } from "svelte/transition"
-  let cssClass = ""
+  import { settingsStore } from '$lib/stores/settings'
+  import { onMount } from 'svelte'
+  import { fade } from 'svelte/transition'
+
+  let cssClass = ''
 
   export { cssClass as class }
 
   let isRgbEnabled = false
   onMount(() => {
     isRgbEnabled = $settingsStore.rgbCard
-    settingsStore.subscribe(v => {
+    settingsStore.subscribe((v) => {
       isRgbEnabled = v.rgbCard
     })
   })
 </script>
 
-<div in:fade={{ duration: 500 }} class={`${cssClass} ${isRgbEnabled || "off"} gradient-border !card after:transition-all`} {...$$restProps}>
+<div
+  in:fade={{ duration: 500 }}
+  class={`${cssClass} ${
+    isRgbEnabled || 'off'
+  } gradient-border !card after:transition-all`}
+  {...$$restProps}
+>
   <slot />
 </div>
 
@@ -30,7 +37,7 @@
 
   .gradient-border::after {
     position: absolute;
-    content: "";
+    content: '';
     top: calc(-1 * $border-width);
     left: calc(-1 * $border-width);
     z-index: -1;

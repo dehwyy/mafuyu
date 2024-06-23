@@ -13,23 +13,23 @@ interface Args {
 function UseSyncedNavigation({ base_route, current_route, navigations }: Args) {
   const get_current_value = () => {
     if (current_route.startsWith(base_route)) {
-      return current_route.slice(base_route.length) || "/"
+      return current_route.slice(base_route.length) || '/'
     }
 
-    return "/"
+    return '/'
   }
 
   return {
     current_value: get_current_value(),
     iter: () => {
       return Object.keys(navigations)
-        .map(key => ({
+        .map((key) => ({
           value: key,
           placeholder: navigations[key].placeholder,
-          _active: navigations[key].isActive ?? true,
+          _active: navigations[key].isActive ?? true
         }))
-        .filter(v => v._active)
-    },
+        .filter((v) => v._active)
+    }
   }
 }
 

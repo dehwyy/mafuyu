@@ -1,13 +1,18 @@
-import { type GrpcClient, GrpcWeb } from "$lib/query/grpc"
-import { createReactiveQuery, type CreateQueryOptions } from "$lib/query-abstraction"
+import { createReactiveQuery } from '$lib/query-abstraction'
+import { GrpcWeb } from '$lib/query/grpc'
+import type { CreateQueryOptions } from '$lib/query-abstraction'
+import type { GrpcClient } from '$lib/query/grpc'
 
 export const ProfileKeys = {
-  "query.userProfileScopes": "profile.getQueryProfileScopes",
+  'query.userProfileScopes': 'profile.getQueryProfileScopes'
 } as const
 
-export const getUserProfileScopesQuery = (userId: string | undefined, grpc: GrpcClient = GrpcWeb(Infinity)) => {
+export const getUserProfileScopesQuery = (
+  userId: string | undefined,
+  grpc: GrpcClient = GrpcWeb(Infinity)
+) => {
   return {
-    queryKey: [ProfileKeys["query.userProfileScopes"], userId],
+    queryKey: [ProfileKeys['query.userProfileScopes'], userId],
     retry: 1,
     staleTime: grpc.staleTime,
     refetchOnWindowFocus: false,
@@ -16,16 +21,18 @@ export const getUserProfileScopesQuery = (userId: string | undefined, grpc: Grpc
 
       const { response } = await grpc.client.getUserProfileScopes(
         {
-          userId,
+          userId
         },
-        { interceptors: grpc.interceptors },
+        { interceptors: grpc.interceptors }
       )
 
       return response
-    },
+    }
   } satisfies CreateQueryOptions
 }
 
 export const useUserProfileScopes = (userId: string | undefined) => {
-  return createReactiveQuery({ userId }, ({ userId }) => getUserProfileScopesQuery(userId))
+  return createReactiveQuery({ userId }, ({ userId }) =>
+    getUserProfileScopesQuery(userId)
+  )
 }

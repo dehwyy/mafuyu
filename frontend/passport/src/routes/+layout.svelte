@@ -1,20 +1,40 @@
 <script lang="ts">
-  import "../app.postcss"
-  import "highlight.js/styles/github-dark.css"
-  import { initializeStores, Modal, Toast, getModalStore, AppShell, storeHighlightJs, storePopup } from "@skeletonlabs/skeleton"
-  import { computePosition, autoUpdate, flip, shift, offset, arrow } from "@floating-ui/dom"
+  import '../app.postcss'
+  import 'highlight.js/styles/github-dark.css'
+
+  import {
+    arrow,
+    autoUpdate,
+    computePosition,
+    flip,
+    offset,
+    shift
+  } from '@floating-ui/dom'
+  import { ProgressBar } from '@prgm/sveltekit-progress-bar'
+  import {
+    AppShell,
+    getModalStore,
+    initializeStores,
+    Modal,
+    storeHighlightJs,
+    storePopup,
+    Toast
+  } from '@skeletonlabs/skeleton'
   // import hljs from "highlight.js/lib/core"
   // import xml from "highlight.js/lib/languages/xml"
   // import css from "highlight.js/lib/languages/css"
   // import javascript from "highlight.js/lib/languages/javascript"
   // import typescript from "highlight.js/lib/languages/typescript"
-  import { hydrate, QueryClientProvider } from "@tanstack/svelte-query"
-  import type { AfterNavigate } from "@sveltejs/kit"
+  import { hydrate, QueryClientProvider } from '@tanstack/svelte-query'
+  import { SvelteToast } from '@zerodevx/svelte-toast'
   // Well, it should exist.
   // @ts-ignore
-  import { afterNavigate, onNavigate } from "$app/navigation"
-  import { SvelteToast } from "@zerodevx/svelte-toast"
-  import { queryClient } from "$lib/query-client"
+  import { afterNavigate, onNavigate } from '$app/navigation'
+  import Header from '$lib/components/header/header.svelte'
+  import StarsBackground from '$lib/components/hoshisora.svelte'
+  import { queryClient } from '$lib/query-client'
+  import { authedUserStore } from '$lib/stores/user'
+  import type { AfterNavigate } from '@sveltejs/kit'
 
   // skeleton stores
   initializeStores()
@@ -30,7 +50,7 @@
   // Scroll to top onNavigation
   afterNavigate((params: AfterNavigate) => {
     const isNewPage = params.from?.url.pathname !== params.to?.url.pathname
-    const pageElement = document.querySelector("#page")
+    const pageElement = document.querySelector('#page')
     if (isNewPage && pageElement) {
       pageElement.scrollTop = 0
     }
@@ -38,11 +58,11 @@
 
   // Perform transition (Chromium only, if I'm not mistaking)
   // @ts-ignore
-  onNavigate(navigation => {
+  onNavigate((navigation) => {
     // @ts-ignore
     if (!document.startViewTransition) return
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       // @ts-ignore
       document.startViewTransition(async () => {
         // @ts-ignore
@@ -54,32 +74,31 @@
 
   // hide scroll when modal
   const modal_store = getModalStore()
-  modal_store.subscribe(v => {
-    if (typeof window === "undefined") return
+  modal_store.subscribe((v) => {
+    if (typeof window === 'undefined') return
 
-    let body = document.querySelector("body")
-    body!.style.overflow = v.length ? "hidden" : "auto"
+    let body = document.querySelector('body')
+    body!.style.overflow = v.length ? 'hidden' : 'auto'
   })
 
-  import Header from "$lib/components/header/header.svelte"
-  import StarsBackground from "$lib/components/hoshisora.svelte"
-  import { ProgressBar } from "@prgm/sveltekit-progress-bar"
-  import { authedUserStore } from "$lib/stores/user"
-
-  export let data: import("./$types").LayoutData
+  export let data: import('./$types').LayoutData
   hydrate(queryClient, data.dehydrateState)
 
   authedUserStore.set(
     data.username
       ? {
           id: data.userId,
-          username: data.username,
+          username: data.username
         }
-      : null,
+      : null
   )
 </script>
 
-<ProgressBar class="text-primary-600" zIndex={100} settleTime={100} />
+<ProgressBar
+  class="text-primary-600"
+  zIndex={100}
+  settleTime={100}
+/>
 <QueryClientProvider client={queryClient}>
   <Modal />
   <StarsBackground>

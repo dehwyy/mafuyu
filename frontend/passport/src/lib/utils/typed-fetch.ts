@@ -1,9 +1,9 @@
 class TypedFetch<Req, Res> {
-  private RouteBase = "/api/v1"
+  private RouteBase = '/api/v1'
 
   constructor(
     private route: string,
-    private method: string,
+    private method: string
   ) {}
 
   async fetch(req: Req): Promise<{
@@ -13,7 +13,7 @@ class TypedFetch<Req, Res> {
   }> {
     const response = await fetch(this.api_route, {
       method: this.method,
-      body: JSON.stringify(req),
+      body: JSON.stringify(req)
     })
 
     const r = response.json()
@@ -21,16 +21,21 @@ class TypedFetch<Req, Res> {
     return {
       response: await r,
       ok: response.ok,
-      status: response.status,
+      status: response.status
     }
   }
 
-  async get_request_with_response_creator(req: Request): Promise<[Req, typeof this.create_new_response]> {
+  async get_request_with_response_creator(
+    req: Request
+  ): Promise<[Req, typeof this.create_new_response]> {
     const r = await req.json()
     return [r, this.create_new_response]
   }
 
-  private create_new_response(res: Res, response_init?: ResponseInit): Response {
+  private create_new_response(
+    res: Res,
+    response_init?: ResponseInit
+  ): Response {
     return new Response(JSON.stringify(res), response_init)
   }
 
@@ -45,5 +50,5 @@ export const Routes = {
       provider: string
     },
     { redirect_url: string }
-  >("oauth", "POST"),
+  >('oauth', 'POST')
 } as const

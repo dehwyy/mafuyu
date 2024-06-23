@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {page} from "$app/stores"
+  import { page } from '$app/stores'
 
   $: username = $page.params.username
 </script>

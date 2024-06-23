@@ -1,10 +1,12 @@
-import type { LayoutServerLoad } from "./$types"
-import { GrpcClient, Interceptors } from "@makoto/grpc"
-import { GrpcCookiesKeys } from "@makoto/grpc/const"
-import { queryClient } from "$lib/query-client"
-import GrpcServerClient from "$lib/query/grpc/server"
-import { getUserInfoQuery } from "$lib/query/user"
-import { dehydrate } from "@tanstack/svelte-query"
+import { GrpcClient, Interceptors } from '@makoto/grpc'
+import { GrpcCookiesKeys } from '@makoto/grpc/const'
+import { dehydrate } from '@tanstack/svelte-query'
+import { queryClient } from '$lib/query-client'
+import GrpcServerClient from '$lib/query/grpc/server'
+import { getUserInfoQuery } from '$lib/query/user'
+
+import type { LayoutServerLoad } from './$types'
+
 
 const defaultVal = (url: URL) => ({ url: url.pathname })
 
@@ -18,20 +20,29 @@ export const load: LayoutServerLoad = async ({ cookies, url }) => {
   try {
     const { response } = await GrpcClient.signInWithToken(
       {
-        token: accessToken ?? "",
+        token: accessToken ?? ''
       },
       {
-        interceptors: [Interceptors.WithTokens(Interceptors.WithTokensPayload.CreateForSvelteKit(cookies))],
-      },
+        interceptors: [
+          Interceptors.WithTokens(
+            Interceptors.WithTokensPayload.CreateForSvelteKit(cookies)
+          )
+        ]
+      }
     )
 
-    await queryClient.prefetchQuery(getUserInfoQuery({ oneofKind: "username", username: response.username }, GrpcServerClient(5000, cookies)))
+    await queryClient.prefetchQuery(
+      getUserInfoQuery(
+        { oneofKind: 'username', username: response.username },
+        GrpcServerClient(5000, cookies)
+      )
+    )
 
     return {
       userId: response.userId,
       username: response.username,
       dehydrateState: structuredClone(dehydrate(queryClient)),
-      url: url.pathname,
+      url: url.pathname
     }
   } catch (_) {
     return defaultVal(url)

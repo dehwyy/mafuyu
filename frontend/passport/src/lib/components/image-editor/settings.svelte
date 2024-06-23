@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { CropperInstance } from "svelte-cropper"
-  import FullscreenIconRaw from "$lib/assets/fullscreen.svg?raw"
-  import ArrowsVerticalRaw from "$lib/assets/arrows-vertical.svg?raw"
-  import ArrowsHorizontalRaw from "$lib/assets/arrows-horizontal.svg?raw"
+  import ArrowsHorizontalRaw from '$lib/assets/arrows-horizontal.svg?raw'
+  import ArrowsVerticalRaw from '$lib/assets/arrows-vertical.svg?raw'
+  import FullscreenIconRaw from '$lib/assets/fullscreen.svg?raw'
+  import type { CropperInstance } from 'svelte-cropper'
 
   export let is_fullscreen = false
   export let aspect_ratio: number | undefined
@@ -40,22 +40,40 @@
 
 <ul class="settings">
   <li class="settings-icon">
-    <button on:click={() => (is_fullscreen = !is_fullscreen)} class:opacity-30={!is_fullscreen}>
+    <button
+      on:click={() => (is_fullscreen = !is_fullscreen)}
+      class:opacity-30={!is_fullscreen}
+    >
       {@html FullscreenIconRaw}
     </button>
   </li>
   {#if !keep_ratio}
     <li class="flex gap-x-3">
-      <button on:click={() => SetAspectRatio(16 / 9)} class:opacity-30={aspect_ratio !== 16 / 9}>16:9</button>
-      <button on:click={() => SetAspectRatio(1)} class:opacity-30={aspect_ratio !== 1}>1:1</button>
-      <button on:click={() => SetAspectRatio(undefined)} class:opacity-30={aspect_ratio !== undefined}>Free</button>
+      <button
+        on:click={() => SetAspectRatio(16 / 9)}
+        class:opacity-30={aspect_ratio !== 16 / 9}>16:9</button
+      >
+      <button
+        on:click={() => SetAspectRatio(1)}
+        class:opacity-30={aspect_ratio !== 1}>1:1</button
+      >
+      <button
+        on:click={() => SetAspectRatio(undefined)}
+        class:opacity-30={aspect_ratio !== undefined}>Free</button
+      >
     </li>
   {/if}
   <li class="">
-    <button on:click={MirrorVertical} class="settings-button-icon">
+    <button
+      on:click={MirrorVertical}
+      class="settings-button-icon"
+    >
       {@html ArrowsVerticalRaw}
     </button>
-    <button on:click={MirrorHorizontal} class="settings-button-icon">
+    <button
+      on:click={MirrorHorizontal}
+      class="settings-button-icon"
+    >
       {@html ArrowsHorizontalRaw}
     </button>
   </li>

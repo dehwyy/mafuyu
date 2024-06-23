@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { SlideToggle } from "@skeletonlabs/skeleton"
-  import { Icon, Card } from "$lib/components/header/nav-items"
-  import { settingsStore, updateSettingsStore, type IToggleableSettings } from "$lib/stores/settings"
+  import { SlideToggle } from '@skeletonlabs/skeleton'
+  import { Card, Icon } from '$lib/components/header/nav-items'
+  import { settingsStore, updateSettingsStore } from '$lib/stores/settings'
+  import type { IToggleableSettings } from '$lib/stores/settings'
 
   export let rawIcon: string
   export let title: string
@@ -15,5 +16,10 @@
     <Icon {rawIcon} />
     <p>{title}</p>
   </div>
-  <SlideToggle size="sm" name={title} checked={$settingsStore[value]} on:change={onChange} />
+  <SlideToggle
+    size="sm"
+    name={title}
+    checked={$settingsStore[value]}
+    on:change={onChange}
+  />
 </Card>

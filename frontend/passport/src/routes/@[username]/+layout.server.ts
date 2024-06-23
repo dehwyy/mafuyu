@@ -1,37 +1,50 @@
-import type { LayoutServerLoad } from "./$types"
-import GrpcServerClient from "$lib/query/grpc/server"
-import { queryClient } from "$lib/query-client"
-import { getUserInfoQuery } from "$lib/query/user"
-import { getUserProfileScopesQuery } from "$lib/query/profile"
-import { getBlockedUsersQuery } from "$lib/query/user"
-import { dehydrate } from "@tanstack/svelte-query"
-import { Time } from "$lib/const"
+import { dehydrate } from '@tanstack/svelte-query'
+import { Time } from '$lib/const'
+import { queryClient } from '$lib/query-client'
+import GrpcServerClient from '$lib/query/grpc/server'
+import { getUserProfileScopesQuery } from '$lib/query/profile'
+import { getBlockedUsersQuery, getUserInfoQuery } from '$lib/query/user'
+
+import type { LayoutServerLoad } from './$types'
 
 export const load: LayoutServerLoad = async ({ cookies, params, parent }) => {
   const { userId: authedUserId } = await parent()
 
-  const withUserPromise = new Promise(async r => {
+  const withUserPromise = new Promise(async (r) => {
     const username = params.username
     const response = await queryClient.fetchQuery({
-      ...getUserInfoQuery({ oneofKind: "username", username }, GrpcServerClient(0, cookies)),
+      ...getUserInfoQuery(
+        { oneofKind: 'username', username },
+        GrpcServerClient(0, cookies)
+      )
     })
 
-    const getAuthedUserScopesForRequestedUserPromise = queryClient.prefetchQuery({
-      ...getUserProfileScopesQuery(response?.userId, GrpcServerClient(0, cookies)),
-    })
+    const getAuthedUserScopesForRequestedUserPromise =
+      queryClient.prefetchQuery({
+        ...getUserProfileScopesQuery(
+          response?.userId,
+          GrpcServerClient(0, cookies)
+        )
+      })
 
     const getBlockedUsersPromise = queryClient.prefetchQuery({
-      ...getBlockedUsersQuery(response?.userId, GrpcServerClient(0, cookies)),
+      ...getBlockedUsersQuery(response?.userId, GrpcServerClient(0, cookies))
     })
 
-    await Promise.all([getAuthedUserScopesForRequestedUserPromise, getBlockedUsersPromise])
+    await Promise.all([
+      getAuthedUserScopesForRequestedUserPromise,
+      getBlockedUsersPromise
+    ])
 
     r({})
   })
 
-  const withAuthedUserPromise = new Promise(async r => {
+  const withAuthedUserPromise = new Promise(async (r) => {
     await queryClient.prefetchQuery({
-      ...getBlockedUsersQuery(authedUserId, GrpcServerClient(Time.MINUTE * 0, cookies)),
+      ...getBlockedUsersQuery(
+        authedUserId,
+        GrpcServerClient(Time.MINUTE * 0, cookies)
+      )
     })
 
     r({})
@@ -44,6 +57,6 @@ export const load: LayoutServerLoad = async ({ cookies, params, parent }) => {
   }
 
   return structuredClone({
-    dehydrateState: dehydrate(queryClient),
+    dehydrateState: dehydrate(queryClient)
   })
 }

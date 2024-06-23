@@ -1,37 +1,48 @@
 <script lang="ts">
-  import { browser } from "$app/environment"
-  import { fade, slide } from "svelte/transition"
-  import { getBaseUserInfoQuery } from "$lib/query/user"
-  import { UserExplore, UserPanel, UserPanelFallback } from "$lib/components/user"
-  import { CreateNavigation } from "$lib/const"
-  import { createQueries } from "@tanstack/svelte-query"
-  import { derived, type Readable } from "svelte/store"
+  import { createQueries } from '@tanstack/svelte-query'
+  import { browser } from '$app/environment'
+  import {
+    UserExplore,
+    UserPanel,
+    UserPanelFallback
+  } from '$lib/components/user'
+  import { CreateNavigation } from '$lib/const'
+  import { getBaseUserInfoQuery } from '$lib/query/user'
+  import { derived } from 'svelte/store'
+  import { fade, slide } from 'svelte/transition'
+  import type { Readable } from 'svelte/store'
 
   export let isCurrentUser = false
   export let isFetching = false
   export let friendsIDs: Readable<string[]>
 
   const friends = createQueries({
-    queries: derived(friendsIDs, friendsIDs => {
-      return friendsIDs.map(friendID => getBaseUserInfoQuery({ oneofKind: "userId", userId: friendID })) || []
-    }),
+    queries: derived(friendsIDs, (friendsIDs) => {
+      return (
+        friendsIDs.map((friendID) =>
+          getBaseUserInfoQuery({ oneofKind: 'userId', userId: friendID })
+        ) || []
+      )
+    })
   })
 
   console.log(isFetching, isCurrentUser)
 
-  $: atLeastOne = $friends.reduce((acc, v) => acc + (v.data || v.isFetching ? 1 : 0), 0) > 0
+  $: atLeastOne =
+    $friends.reduce((acc, v) => acc + (v.data || v.isFetching ? 1 : 0), 0) > 0
 </script>
 
 {#if atLeastOne}
   <div class="panel-container">
     {#each $friends as friend}
-      <a href={CreateNavigation.ToUser(friend.data?.username || "")}>
+      <a href={CreateNavigation.ToUser(friend.data?.username || '')}>
         <UserPanel
           isLoading={friend.isFetching}
           username={friend.data?.username}
           pseudonym={friend.data?.pseudonym}
           picture={friend.data?.picture}
-          withIntegrations={true} />
+          withIntegrations={true}
+        />
       </a>
     {/each}
   </div>
@@ -44,7 +55,12 @@
 {:else if isCurrentUser}
   <UserExplore />
 {:else}
-  <p in:fade={{ duration: 100 }} class="text-center text-xl mt-10">No Friends</p>
+  <p
+    in:fade={{ duration: 100 }}
+    class="text-center text-xl mt-10"
+  >
+    No Friends
+  </p>
 {/if}
 
 <style lang="scss">

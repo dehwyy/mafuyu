@@ -1,33 +1,40 @@
 <script lang="ts">
-  import { browser } from "$app/environment"
-  import { fade } from "svelte/transition"
-  import { getBaseUserInfoQuery } from "$lib/query/user"
-  import UserPanel from "$lib/components/user/user-panel.svelte"
-  import { CreateNavigation } from "$lib/const"
-  import { createQueries } from "@tanstack/svelte-query"
-  import { derived, type Readable } from "svelte/store"
+  import { createQueries } from '@tanstack/svelte-query'
+  import { browser } from '$app/environment'
+  import UserPanel from '$lib/components/user/user-panel.svelte'
+  import { CreateNavigation } from '$lib/const'
+  import { getBaseUserInfoQuery } from '$lib/query/user'
+  import { derived } from 'svelte/store'
+  import { fade } from 'svelte/transition'
+  import type { Readable } from 'svelte/store'
 
   export let followersIDs: Readable<string[]>
   export let isFetching = false
 
   const followers = createQueries({
-    queries: derived(followersIDs, followersIDs => {
-      return followersIDs.map(followerId => getBaseUserInfoQuery({ oneofKind: "userId", userId: followerId })) || []
-    }),
+    queries: derived(followersIDs, (followersIDs) => {
+      return (
+        followersIDs.map((followerId) =>
+          getBaseUserInfoQuery({ oneofKind: 'userId', userId: followerId })
+        ) || []
+      )
+    })
   })
 
-  $: atLeastOne = $followers.reduce((acc, v) => acc + (v.data || v.isFetching ? 1 : 0), 0) > 0
+  $: atLeastOne =
+    $followers.reduce((acc, v) => acc + (v.data || v.isFetching ? 1 : 0), 0) > 0
 </script>
 
 {#if atLeastOne}
   <div class="panel-container">
     {#each $followers as follower}
-      <a href={CreateNavigation.ToUser(follower.data?.username || "")}>
+      <a href={CreateNavigation.ToUser(follower.data?.username || '')}>
         <UserPanel
           isLoading={follower.isFetching}
           username={follower.data?.username}
           pseudonym={follower.data?.pseudonym}
-          picture={follower.data?.picture} />
+          picture={follower.data?.picture}
+        />
       </a>
     {/each}
   </div>
@@ -38,7 +45,12 @@
     {/each}
   </div>
 {:else}
-  <p in:fade={{ duration: 100 }} class="text-center text-xl mt-10">No Followers</p>
+  <p
+    in:fade={{ duration: 100 }}
+    class="text-center text-xl mt-10"
+  >
+    No Followers
+  </p>
 {/if}
 
 <style lang="scss">

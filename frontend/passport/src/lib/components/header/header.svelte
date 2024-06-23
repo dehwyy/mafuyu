@@ -1,31 +1,39 @@
 <script lang="ts">
-  import { fade } from "svelte/transition"
-  import MafuyuIcon from "$lib/assets/mafuyu.svg?raw"
-  import { AppBar } from "@skeletonlabs/skeleton"
-
-  import SearchBarTrigger from "$lib/components/search-bar/trigger.svelte"
-  import Navigation from "$lib/components/header/nav-card.svelte"
-
-  import { settingsStore } from "$lib/stores/settings"
-  import { onMount } from "svelte"
+  import { AppBar } from '@skeletonlabs/skeleton'
+  import MafuyuIcon from '$lib/assets/mafuyu.svg?raw'
+  import Navigation from '$lib/components/header/nav-card.svelte'
+  import SearchBarTrigger from '$lib/components/search-bar/trigger.svelte'
+  import { settingsStore } from '$lib/stores/settings'
+  import { onMount } from 'svelte'
+  import { fade } from 'svelte/transition'
 
   let isMinimalistic = true
 
   onMount(() => {
     isMinimalistic = $settingsStore?.minimalisticHeader
-    settingsStore.subscribe(v => {
+    settingsStore.subscribe((v) => {
       isMinimalistic = v.minimalisticHeader
     })
   })
 
-  $: border = isMinimalistic ? "border-transparent" : "border-b-2 border-surface-600"
-  $: background = isMinimalistic ? "bg-transparent" : "bg-surface-800"
+  $: border = isMinimalistic
+    ? 'border-transparent'
+    : 'border-b-2 border-surface-600'
+  $: background = isMinimalistic ? 'bg-transparent' : 'bg-surface-800'
 </script>
 
-<AppBar {border} {background} transition="transition-all" padding="p-2">
+<AppBar
+  {border}
+  {background}
+  transition="transition-all"
+  padding="p-2"
+>
   <svelte:fragment slot="lead">
     {#if !isMinimalistic}
-      <a transition:fade={{ duration: 300 }} href="/">
+      <a
+        transition:fade={{ duration: 300 }}
+        href="/"
+      >
         <h3 class="h3 ml-3 h-[28px]">
           {@html MafuyuIcon}
         </h3>

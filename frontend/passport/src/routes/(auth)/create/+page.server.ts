@@ -1,7 +1,9 @@
-import { GrpcClient, Interceptors } from "@makoto/grpc"
-import { type Actions, redirect } from "@sveltejs/kit"
-import { Routes } from "$lib/const"
-import type { PageServerLoad } from "./$types"
+import { GrpcClient, Interceptors } from '@makoto/grpc'
+import { redirect } from '@sveltejs/kit'
+import { Routes } from '$lib/const'
+import type { Actions } from '@sveltejs/kit'
+
+import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async ({ parent }) => {
   const data = await parent()
@@ -14,9 +16,9 @@ export const actions = {
   create: async ({ request, cookies }) => {
     const data = await request.formData()
 
-    const username = data.get("username") as string
-    const email = data.get("email") as string
-    const password = data.get("password") as string
+    const username = data.get('username') as string
+    const email = data.get('email') as string
+    const password = data.get('password') as string
 
     let r: unknown
 
@@ -25,11 +27,15 @@ export const actions = {
         {
           email,
           password,
-          username,
+          username
         },
         {
-          interceptors: [Interceptors.WithTokens(Interceptors.WithTokensPayload.CreateForSvelteKit(cookies))],
-        },
+          interceptors: [
+            Interceptors.WithTokens(
+              Interceptors.WithTokensPayload.CreateForSvelteKit(cookies)
+            )
+          ]
+        }
       )
 
       r = response
@@ -37,6 +43,6 @@ export const actions = {
       console.log(e)
     }
 
-    r && redirect(302, "/")
-  },
+    r && redirect(302, '/')
+  }
 } satisfies Actions

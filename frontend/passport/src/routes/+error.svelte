@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { page } from "$app/stores"
-  import Error404 from "$lib/assets/404.svg?raw"
+  import { page } from '$app/stores'
+  import Error404 from '$lib/assets/404.svg?raw'
 </script>
 
 {#if $page.status === 404}
@@ -11,7 +11,12 @@
       </div>
       <div class="p-5 text-center flex flex-col gap-y-5 sm:mt-5">
         <h3 class="h3">The stuff you were looking for doesn't exist</h3>
-        <button on:click={() => history.back()} class="btn variant-filled-surface max-w-full min-w-[175px] w-1/3 mx-auto"> Go back </button>
+        <button
+          on:click={() => history.back()}
+          class="btn variant-filled-surface max-w-full min-w-[175px] w-1/3 mx-auto"
+        >
+          Go back
+        </button>
       </div>
     </article>
   </section>

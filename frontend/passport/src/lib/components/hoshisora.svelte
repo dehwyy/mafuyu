@@ -1,19 +1,22 @@
 <script lang="ts">
-  import { fade } from "svelte/transition"
-  import { settingsStore } from "$lib/stores/settings"
-  import { onMount } from "svelte"
+  import { settingsStore } from '$lib/stores/settings'
+  import { onMount } from 'svelte'
+  import { fade } from 'svelte/transition'
 
   let animatedBackground = false
   onMount(() => {
     animatedBackground = $settingsStore.animatedBackground
-    settingsStore.subscribe(v => {
+    settingsStore.subscribe((v) => {
       animatedBackground = v.animatedBackground
     })
   })
 </script>
 
 {#if animatedBackground}
-  <div transition:fade class="stars__wrapper">
+  <div
+    transition:fade
+    class="stars__wrapper"
+  >
     <div class="stars" />
     <div class="stars2" />
     <div class="stars3" />
@@ -25,9 +28,9 @@
 
 <style lang="scss">
   @function multiple-box-shadow($n) {
-    $value: "#{random(100)}vw #{random(100)}vh #FFF";
+    $value: '#{random(100)}vw #{random(100)}vh #FFF';
     @for $i from 2 through $n {
-      $value: "#{$value} , #{random(100)}vw #{random(100)}vh #FFF";
+      $value: '#{$value} , #{random(100)}vw #{random(100)}vh #FFF';
     }
 
     @return unquote($value);
@@ -47,7 +50,7 @@
   }
 
   .stars:after {
-    content: " ";
+    content: ' ';
     position: absolute;
     top: $h;
     width: 1px;
@@ -63,7 +66,7 @@
     animation: animStar 100s linear infinite;
   }
   .stars2:after {
-    content: " ";
+    content: ' ';
     position: absolute;
     top: $h;
     width: 2px;
@@ -79,7 +82,7 @@
     animation: animStar 150s linear infinite;
   }
   .stars3:after {
-    content: " ";
+    content: ' ';
     position: absolute;
     top: $h;
     width: 3px;

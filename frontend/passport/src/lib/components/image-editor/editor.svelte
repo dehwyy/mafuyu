@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { Cropper, type CropperInstance } from "svelte-cropper"
-  import EditorSettings from "$lib/components/image-editor/settings.svelte"
+  import EditorSettings from '$lib/components/image-editor/settings.svelte'
+  import { Cropper } from 'svelte-cropper'
+  import type { CropperInstance } from 'svelte-cropper'
 
   let cropper: CropperInstance | null = null
 
@@ -13,8 +14,8 @@
   export let isGif = false
 
   const SaveImage = () => {
-    OnSaveImage(type => {
-      if (!cropper || type === "image/gif") return image
+    OnSaveImage((type) => {
+      if (!cropper || type === 'image/gif') return image
 
       return cropper.getCroppedCanvas().toDataURL(type)
     })
@@ -34,23 +35,39 @@
   }
 </script>
 
-<section class="transition-all overflow-hidden flex flex-col gap-y-5 items-center pb-5 border-b-2 border-b-surface-500">
+<section
+  class="transition-all overflow-hidden flex flex-col gap-y-5 items-center pb-5 border-b-2 border-b-surface-500"
+>
   {#if isGif}
     <img
-      style={`width: ${!is_fullscreen ? "min(600px, 90vw)" : "min(600px, 90vw)"} ;height: ${!is_fullscreen ? "calc(100vh - 350px)" : ""}`}
+      style={`width: ${
+        !is_fullscreen ? 'min(600px, 90vw)' : 'min(600px, 90vw)'
+      } ;height: ${!is_fullscreen ? 'calc(100vh - 350px)' : ''}`}
       class="object-contain"
       src={image}
-      alt="editor-gif" />
+      alt="editor-gif"
+    />
   {:else}
-    <EditorSettings bind:is_fullscreen {aspect_ratio} {keep_ratio} {cropper} />
+    <EditorSettings
+      bind:is_fullscreen
+      {aspect_ratio}
+      {keep_ratio}
+      {cropper}
+    />
     <Cropper
       bind:cropper
       src={image}
-      style={`width: ${!is_fullscreen ? "min(600px, 90vw)" : "min(600px, 90vw)"} ;height: ${!is_fullscreen ? "calc(100vh - 350px)" : ""}`}
+      style={`width: ${
+        !is_fullscreen ? 'min(600px, 90vw)' : 'min(600px, 90vw)'
+      } ;height: ${!is_fullscreen ? 'calc(100vh - 350px)' : ''}`}
       cropper_props={{
         viewMode: 2,
-        dragMode: "crop",
-      }} />
+        dragMode: 'crop'
+      }}
+    />
   {/if}
-  <button class="btn variant-filled-surface w-full lg:w-1/2" on:click={SaveImage}>Save image</button>
+  <button
+    class="btn variant-filled-surface w-full lg:w-1/2"
+    on:click={SaveImage}>Save image</button
+  >
 </section>

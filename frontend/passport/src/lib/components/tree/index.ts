@@ -1,1 +1,1 @@
-export { default as Tree } from "./component.svelte"
+export { default as Tree } from './component.svelte'

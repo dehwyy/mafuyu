@@ -1,10 +1,10 @@
-import { Toasts } from "$lib/utils/toast"
-import { GrpcWebClient } from "@makoto/grpc/web"
-import { createMutation } from "@tanstack/svelte-query"
+import { GrpcWebClient } from '@makoto/grpc/web'
+import { createMutation } from '@tanstack/svelte-query'
+import { Toasts } from '$lib/utils/toast'
 
 const EmailKeys = {
-  sendEmail: "email.mutate.sendEmail",
-  confirmEmail: "email.mutate.confirmEmail",
+  sendEmail: 'email.mutate.sendEmail',
+  confirmEmail: 'email.mutate.confirmEmail'
 } as const
 
 const useSendConfirmationEmail = () => {
@@ -19,7 +19,7 @@ const useSendConfirmationEmail = () => {
     },
     onError: (_, { email }) => {
       Toasts.error(`Failed to send confirmation email to ${email}.`)
-    },
+    }
   })
 }
 
@@ -30,23 +30,23 @@ const useConfirmEmailByCode = () => {
     mutationFn: async ({ email, code }: { email: string; code: string }) => {
       const { response } = await GrpcWebClient.verifyEmailCode({
         email,
-        code,
+        code
       })
 
       return response.isOk
     },
-    onSuccess: isOk => {
+    onSuccess: (isOk) => {
       if (!isOk) {
-        Toasts.error("Failed to confirm email. Wrong code.")
+        Toasts.error('Failed to confirm email. Wrong code.')
         return
       }
 
-      Toasts.success("Email was confirmed.")
+      Toasts.success('Email was confirmed.')
       // for smoother transition
       setTimeout(() => {
-        window.location.href = "/"
+        window.location.href = '/'
       }, 1000)
-    },
+    }
   })
 }
 

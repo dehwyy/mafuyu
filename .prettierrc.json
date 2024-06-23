@@ -1,12 +1,44 @@
 {
-  "arrowParens": "avoid",
-  "semi": false,
-  "singleQuote": false,
-  "bracketSameLine": true,
-  "printWidth": 150,
   "tabWidth": 2,
-  "singleAttributePerLine": false,
-  "endOfLine": "auto",
-  "plugins": ["prettier-plugin-svelte"],
-  "overrides": [{ "files": "*.svelte", "options": { "parser": "svelte" } }]
+  "printWidth": 80,
+  "semi": false,
+  "useTabs": false,
+  "singleQuote": true,
+  "bracketSpacing": true,
+  "bracketSameLine": false,
+  "singleAttributePerLine": true,
+  "arrowParens": "always",
+  "trailingComma": "none",
+  "quoteProps": "as-needed",
+  "endOfLine": "lf",
+  "plugins": [
+    "prettier-plugin-svelte",
+    "@ianvs/prettier-plugin-sort-imports"
+  ],
+  "importOrder": [
+    "<BUILTIN_MODULES>",
+    "^(react|next(.*))$",
+    "<THIRD_PARTY_MODULES>",
+    "<TYPES>",
+    "",
+    "^@/(.*)$",
+    "^~/(.*)$",
+    "^[./]",
+    "<TYPES>^[.]",
+    "^(.*)(sass|css|scss)$"
+  ],
+  "importOrderParserPlugins": [
+    "classProperties",
+    "decorators-legacy",
+    "jsx",
+    "typescript"
+  ],
+  "overrides": [
+    {
+      "files": "*.svelte",
+      "options": {
+        "parser": "svelte"
+      }
+    }
+  ]
 }

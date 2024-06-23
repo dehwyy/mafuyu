@@ -1,5 +1,7 @@
-import { GrpcWebClient as GrpcClientWeb } from "@makoto/grpc/web"
-import { type GrpcClient } from "./index"
+import { GrpcWebClient as GrpcClientWeb } from '@makoto/grpc/web'
+
+import { type GrpcClient } from './index'
+
 class GrpcWebClient implements GrpcClient {
   constructor(public staleTime: number) {}
   get client() {

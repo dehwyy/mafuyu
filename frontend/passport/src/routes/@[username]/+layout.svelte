@@ -1,49 +1,58 @@
 <script lang="ts">
-  import { authedUserStore } from "$lib/stores/user"
-  import { page } from "$app/stores"
-  import { ListBox, ListBoxItem } from "@skeletonlabs/skeleton"
-  import UserPreview from "$lib/components/user/user-preview.svelte"
-  import UserActions from "$lib/components/user/user-actions.svelte"
-  import { CreateNavigation } from "$lib/const"
-  import useSyncedNavigation from "$lib/hooks/use-synced-navigation"
-  import { useBlockedUsers, useUserInfo } from "$lib/query/user"
-  import { useHydrate } from "@tanstack/svelte-query"
-  import { useUserProfileScopes } from "$lib/query/profile"
+  import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton'
+  import { useHydrate } from '@tanstack/svelte-query'
+  import { page } from '$app/stores'
+  import UserActions from '$lib/components/user/user-actions.svelte'
+  import UserPreview from '$lib/components/user/user-preview.svelte'
+  import { CreateNavigation } from '$lib/const'
+  import useSyncedNavigation from '$lib/hooks/use-synced-navigation'
+  import { useUserProfileScopes } from '$lib/query/profile'
+  import { useBlockedUsers, useUserInfo } from '$lib/query/user'
+  import { authedUserStore } from '$lib/stores/user'
 
-  export let data: import("./$types").LayoutData
+  export let data: import('./$types').LayoutData
   $: useHydrate(data.dehydrateState)
 
-  const [user, userStore] = useUserInfo({ oneofKind: "username", username: $page.params.username })
-  $: userStore.set({ getBy: { oneofKind: "username", username: $page.params.username } })
+  const [user, userStore] = useUserInfo({
+    oneofKind: 'username',
+    username: $page.params.username
+  })
+  $: userStore.set({
+    getBy: { oneofKind: 'username', username: $page.params.username }
+  })
 
   const [userScopes, userScopesStore] = useUserProfileScopes($user.data?.userId)
   $: userScopesStore.set({ userId: $user.data?.userId })
 
-  const [userBlockedUsers, userBlockedUsersStore] = useBlockedUsers($user.data?.userId)
+  const [userBlockedUsers, userBlockedUsersStore] = useBlockedUsers(
+    $user.data?.userId
+  )
   $: userBlockedUsersStore.set({ userId: $user.data?.userId })
 
   $: navigation = useSyncedNavigation({
     base_route: `/@${$page.params.username}`,
     current_route: $page.url.pathname,
     navigations: {
-      "/": {
-        placeholder: "Overview",
-        isActive: $userScopes.data?.viewInfo ?? false,
+      '/': {
+        placeholder: 'Overview',
+        isActive: $userScopes.data?.viewInfo ?? false
       },
-      "/edit": {
-        placeholder: "Settings",
-        isActive: $userScopes.data?.edit ?? false,
+      '/edit': {
+        placeholder: 'Settings',
+        isActive: $userScopes.data?.edit ?? false
       },
-      "/community": {
-        placeholder: "Community",
-        isActive: true, // TODO
-      },
-    },
+      '/community': {
+        placeholder: 'Community',
+        isActive: true // TODO
+      }
+    }
   })
 
   $: is_current_user = $page.params.username === $authedUserStore?.username
   $: username = $user.data?.username as string
-  $: isAuthedUserBlocked = $userBlockedUsers.data?.blockedUsers.includes($authedUserStore?.id!) ?? false
+  $: isAuthedUserBlocked =
+    $userBlockedUsers.data?.blockedUsers.includes($authedUserStore?.id!) ??
+    false
 </script>
 
 {#if isAuthedUserBlocked}
@@ -55,25 +64,43 @@
     </p>
     <hr class="my-5 border-b-2 !border-b-primary-700" />
     <p class="text-center">
-      <button on:click={() => window.history.back()} class="variant-glass-secondary btn-xl rounded-token">Go back</button>
+      <button
+        on:click={() => window.history.back()}
+        class="variant-glass-secondary btn-xl rounded-token">Go back</button
+      >
     </p>
   </div>
 {/if}
 
-<div class={`${isAuthedUserBlocked && "blur-md select-none pointer-events-none pb-5 relative"} page-layout-wrapper`}>
+<div
+  class={`${
+    isAuthedUserBlocked &&
+    'blur-md select-none pointer-events-none pb-5 relative'
+  } page-layout-wrapper`}
+>
   <div class="page-layout">
     <nav>
       {#if $user.data}
         <UserPreview {username} />
       {/if}
       {#if !is_current_user && $user.data}
-        <UserActions userId={$user.data.userId} {username} />
+        <UserActions
+          userId={$user.data.userId}
+          {username}
+        />
         <hr class="mb-5" />
       {/if}
       <ListBox>
         {#each navigation.iter() as n}
-          <a href={CreateNavigation.ToUser(username, n.value)} class="navigation_links">
-            <ListBoxItem bind:group={navigation.current_value} name="user_navigation" value={n.value}>{n.placeholder}</ListBoxItem>
+          <a
+            href={CreateNavigation.ToUser(username, n.value)}
+            class="navigation_links"
+          >
+            <ListBoxItem
+              bind:group={navigation.current_value}
+              name="user_navigation"
+              value={n.value}>{n.placeholder}</ListBoxItem
+            >
           </a>
         {/each}
       </ListBox>

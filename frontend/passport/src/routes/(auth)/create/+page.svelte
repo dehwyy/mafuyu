@@ -1,11 +1,11 @@
 <script lang="ts">
-  import RegistrationForm from "$lib/components/form/registration.svelte"
-  import ConfirmationMail from "$lib/components/form/confirmation-mail.svelte"
-  import { useSignUp } from "$lib/query/auth"
+  import ConfirmationMail from '$lib/components/form/confirmation-mail.svelte'
+  import RegistrationForm from '$lib/components/form/registration.svelte'
+  import { useSignUp } from '$lib/query/auth'
 
   const signUp = useSignUp()
 
-  let user_email = ""
+  let user_email = ''
   let step = 1
 
   let setNextStep = (email: string, username: string, password: string) => {
@@ -14,7 +14,7 @@
     $signUp.mutate({
       email,
       username,
-      password,
+      password
     })
   }
 </script>

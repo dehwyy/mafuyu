@@ -1,7 +1,9 @@
-import { type Actions, redirect } from "@sveltejs/kit"
-import { Routes } from "$lib/const"
-import { GrpcClient, Interceptors } from "@makoto/grpc"
-import type { PageServerLoad } from "./$types"
+import { GrpcClient, Interceptors } from '@makoto/grpc'
+import { redirect } from '@sveltejs/kit'
+import { Routes } from '$lib/const'
+import type { Actions } from '@sveltejs/kit'
+
+import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async ({ parent }) => {
   const data = await parent()
@@ -13,8 +15,8 @@ export const load: PageServerLoad = async ({ parent }) => {
 export const actions: Actions = {
   login: async ({ request, cookies }) => {
     const data = await request.formData()
-    const email = data.get("email") as string
-    const password = data.get("password") as string
+    const email = data.get('email') as string
+    const password = data.get('password') as string
 
     try {
       const { response } = await GrpcClient.signIn(
@@ -22,18 +24,22 @@ export const actions: Actions = {
           password,
           login: {
             email,
-            oneofKind: "email",
-          },
+            oneofKind: 'email'
+          }
         },
         {
-          interceptors: [Interceptors.WithTokens(Interceptors.WithTokensPayload.CreateForSvelteKit(cookies))],
-        },
+          interceptors: [
+            Interceptors.WithTokens(
+              Interceptors.WithTokensPayload.CreateForSvelteKit(cookies)
+            )
+          ]
+        }
       )
     } catch (e) {
       console.log(e)
       return
     }
 
-    redirect(302, "/")
-  },
+    redirect(302, '/')
+  }
 }

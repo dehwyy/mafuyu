@@ -1,15 +1,16 @@
 <script lang="ts">
-  import { type PopupSettings, popup } from "@skeletonlabs/skeleton"
+  import { popup } from '@skeletonlabs/skeleton'
+  import type { PopupSettings } from '@skeletonlabs/skeleton'
 
-  export let event: "click" | "hover" = "click"
+  export let event: 'click' | 'hover' = 'click'
   export let unique_target_name: string
-  export let placement: "bottom" | "top" | "left" | "right" = "top"
+  export let placement: 'bottom' | 'top' | 'left' | 'right' = 'top'
   export let options: { icon: string; text: string; action?: () => void }[]
 
   $: options_popup_settings = {
     target: unique_target_name,
     event,
-    placement,
+    placement
   }
 </script>
 
@@ -17,13 +18,17 @@
   <slot />
 </section>
 
-<div data-popup={unique_target_name} class="card border border-surface-600">
+<div
+  data-popup={unique_target_name}
+  class="card border border-surface-600"
+>
   <ul class="list options-popup py-2 px-1 select-none">
     {#each options as opt}
       <li
         aria-hidden="true"
         on:click={() => (opt.action ? opt.action() : {})}
-        class="px-5 py-2 cursor-pointer dark:hover:bg-surface-700 hover:surface-200 transition-all">
+        class="px-5 py-2 cursor-pointer dark:hover:bg-surface-700 hover:surface-200 transition-all"
+      >
         <div class="icon-sm">
           {@html opt.icon}
         </div>

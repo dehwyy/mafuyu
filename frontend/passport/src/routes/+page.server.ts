@@ -1,6 +1,7 @@
-import { redirect } from "@sveltejs/kit"
-import { Routes } from "$lib/const"
-import type { PageServerLoad } from "./$types"
+import { redirect } from '@sveltejs/kit'
+import { Routes } from '$lib/const'
+
+import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async ({ parent }) => {
   const data = await parent()

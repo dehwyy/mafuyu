@@ -1,5 +1,5 @@
 <script lang="ts">
-  import LocationIconRaw from "$lib/assets/location.svg?raw"
+  import LocationIconRaw from '$lib/assets/location.svg?raw'
 
   export let location: string | undefined
 </script>
@@ -9,6 +9,8 @@
     <p class="icon-sm">
       {@html LocationIconRaw}
     </p>
-    <p>Location: &nbsp;<span class="text-primary-500 underline">{location}</span></p>
+    <p>
+      Location: &nbsp;<span class="text-primary-500 underline">{location}</span>
+    </p>
   </div>
 {/if}

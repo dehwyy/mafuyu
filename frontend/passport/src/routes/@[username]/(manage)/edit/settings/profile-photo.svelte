@@ -1,6 +1,6 @@
 <script lang="ts">
-  import CameraIconRaw from "$lib/assets/camera.svg?raw"
-  import ImageUploader from "$lib/components/image-uploader/trigger.svelte"
+  import CameraIconRaw from '$lib/assets/camera.svg?raw'
+  import ImageUploader from '$lib/components/image-uploader/trigger.svelte'
 
   let images: string[] = []
 
@@ -16,12 +16,21 @@
 
 <article class="w-full grid place-items-center select-none">
   <div class="wrapper">
-    <ImageUploader bind:images max_images={1} keep_ratio aspect_ratio={1}>
+    <ImageUploader
+      bind:images
+      max_images={1}
+      keep_ratio
+      aspect_ratio={1}
+    >
       <div class="z-10 p-10 text-white absolute cursor-pointer">
         {@html CameraIconRaw}
       </div>
     </ImageUploader>
-    <img src={photo} alt="profile" class="profile-image" />
+    <img
+      src={photo}
+      alt="profile"
+      class="profile-image"
+    />
   </div>
 </article>
 

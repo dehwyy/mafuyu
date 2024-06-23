@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { Routes } from "$lib/const"
-  import ThemeSelector from "./custom-settings/theme-selector.svelte"
-  import { Button, Icon } from "$lib/components/header/nav-items"
+  import ThemeSelectIconRaw from '$lib/assets/theme-select.svg?raw'
+  import LoginIconRaw from '$lib/assets/user.svg?raw'
+  import { Button, Icon } from '$lib/components/header/nav-items'
+  import { Routes } from '$lib/const'
 
-  import LoginIconRaw from "$lib/assets/user.svg?raw"
-  import ThemeSelectIconRaw from "$lib/assets/theme-select.svg?raw"
+  import ThemeSelector from './custom-settings/theme-selector.svelte'
 </script>
 
 <ul class="mt-5">
