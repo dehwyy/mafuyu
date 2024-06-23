@@ -29,7 +29,7 @@
       </section>
     {:else}
       <Card
-        class="p-6 w-full flex flex-col gap-y-4 justify-betwee min-w-[250px]"
+        class="p-6 w-full flex flex-col gap-y-4 justify-between min-w-[250px]"
       >
         <Birthday />
         <Location location={$user.location} />

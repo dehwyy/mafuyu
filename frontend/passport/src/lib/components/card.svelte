@@ -8,11 +8,14 @@
   export { cssClass as class }
 
   let isRgbEnabled = false
+  export let disabledRgb = false
   onMount(() => {
-    isRgbEnabled = $settingsStore.rgbCard
-    settingsStore.subscribe((v) => {
-      isRgbEnabled = v.rgbCard
-    })
+    if (!disabledRgb) {
+      isRgbEnabled = $settingsStore.rgbCard
+      settingsStore.subscribe((v) => {
+        isRgbEnabled = v.rgbCard
+      })
+    }
   })
 </script>
 
@@ -27,7 +30,7 @@
 </div>
 
 <style lang="scss">
-  $border-width: 3px;
+  $border-width: calc(var(--theme-border-base) * 1.6);
 
   .gradient-border {
     max-width: 90vw;
@@ -38,11 +41,11 @@
   .gradient-border::after {
     position: absolute;
     content: '';
-    top: calc(-1 * $border-width);
-    left: calc(-1 * $border-width);
+    top: calc(-0.5 * $border-width);
+    left: calc(-0.5 * $border-width);
     z-index: -1;
-    width: calc(100% + $border-width * 2);
-    height: calc(100% + $border-width * 2);
+    width: calc(100% + $border-width * 1);
+    height: calc(100% + $border-width * 1);
     background: linear-gradient(
       60deg,
       hsla(224, 85%, 66%, 1),
@@ -56,8 +59,8 @@
     );
     background-size: 300% 300%;
     background-position: 0 50%;
-    border-radius: calc(2 * $border-width);
     animation: moveGradient 4s alternate infinite;
+    border-radius: var(--theme-rounded-container);
   }
 
   .off::after {
