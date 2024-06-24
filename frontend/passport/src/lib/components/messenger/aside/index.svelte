@@ -50,6 +50,6 @@
 
   .main {
     @apply flex-1 px-3 py-2;
-    @apply flex flex-col gap-y-5;
+    @apply flex flex-col gap-y-2;
   }
 </style>
