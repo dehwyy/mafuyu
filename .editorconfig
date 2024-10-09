@@ -6,7 +6,7 @@ charset = utf-8
 trim_trailing_whitespace = true
 indent_style = tab
 indent_size = 2
-max_line_length = 100
+max_line_length = 140
 
 [*.{yaml,yml,json, toml}]
 indent_style = space
