@@ -4,14 +4,9 @@ mod init;
 mod internal;
 
 use logger::{Logger, LoggerConfig};
-use yomi::prelude::{Parser, Subcommand};
 
-#[derive(Parser)]
-#[command(version, about, propagate_version = true)]
-struct Cli {
-    #[command(subcommand)]
-    command: Command,
-}
+use yomi::prelude::{Parser, Subcommand};
+use yomi::Cli;
 
 #[derive(Subcommand)]
 enum Command {
@@ -39,7 +34,7 @@ async fn main() {
     });
 
     let cli = Cli::parse();
-    match &cli.command {
+    match cli.get() {
         Command::Dev => dev::dev().await,
         Command::Grpc => grpc::grpc().await,
         Command::Init => init::init().await,

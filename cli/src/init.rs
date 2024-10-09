@@ -55,18 +55,18 @@ pub async fn init() {
     Animation::builder()
         .add(
             AnimatedProcess::new(Init::pnpm_install())
-                .set_text_during_execution("Installing pnpm...")
-                .set_text_after_execution("Depenencies were installed!"),
+                .text_on_execution("Installing pnpm...")
+                .text_after_execution("Depenencies were installed!"),
         )
         .add(
             AnimatedProcess::new(Init::create_necessary_dirs())
-                .set_text_during_execution("Creating necessary dirs...")
-                .set_text_after_execution("Dirs were created!"),
+                .text_on_execution("Creating necessary dirs...")
+                .text_after_execution("Dirs were created!"),
         )
         .add(
             AnimatedProcess::new(Init::create_necessary_files())
-                .set_text_during_execution("Creating necessary files...")
-                .set_text_after_execution("Files were created!"),
+                .text_on_execution("Creating necessary files...")
+                .text_after_execution("Files were created!"),
         )
         .invoke_parallel()
         .await;

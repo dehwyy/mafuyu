@@ -89,8 +89,8 @@ impl Apps {
                 AnimatedProcess::new(async move {
                     CommandExecutor::execute(build_command).await.unwrap();
                 })
-                .set_text_during_execution(format!("Building app: {app_name}"))
-                .set_text_after_execution(format!("Built app: {app_name}")),
+                .text_on_execution(format!("Building app: {app_name}"))
+                .text_after_execution(format!("Built app: {app_name}")),
             );
         }
 
@@ -104,7 +104,7 @@ impl Apps {
             // ???
             sleep(Duration::from_secs(2)).await;
 
-            runtimes.push(tokio::spawn(CommandExecutor::execute_non_blocking(
+            runtimes.push(tokio::spawn(CommandExecutor::execute_non_blocking_output(
                 run_command.clone(),
             )));
         }
@@ -145,13 +145,13 @@ pub async fn dev() {
     Animation::builder()
         .add(
             AnimatedProcess::new(async { start_docker().await })
-                .set_text_during_execution("Starting Docker...")
-                .set_text_after_execution("Docker started!"),
+                .text_on_execution("Starting Docker...")
+                .text_after_execution("Docker started!"),
         )
         .add(
             AnimatedProcess::new(async { migrate_database().await })
-                .set_text_during_execution("Migrating db...")
-                .set_text_after_execution("Db successfully migrated!"),
+                .text_on_execution("Migrating db...")
+                .text_after_execution("Db successfully migrated!"),
         )
         .invoke_sequentially("Docker was started!".to_string())
         .await;

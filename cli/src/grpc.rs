@@ -53,18 +53,18 @@ pub async fn grpc() {
     Animation::builder()
         .add(
             AnimatedProcess::new(Grpc::rust())
-                .set_text_during_execution("Generating .rs files from .proto...")
-                .set_text_after_execution("Generated .rs!"),
+                .text_on_execution("Generating .rs files from .proto...")
+                .text_after_execution("Generated .rs!"),
         )
         .add(
             AnimatedProcess::new(Grpc::ts())
-                .set_text_during_execution("Generating .ts files from .proto...")
-                .set_text_after_execution("Generated .ts!"),
+                .text_on_execution("Generating .ts files from .proto...")
+                .text_after_execution("Generated .ts!"),
         )
         .add(
             AnimatedProcess::new(Grpc::go())
-                .set_text_during_execution("Generating .go files from .proto...")
-                .set_text_after_execution("Generated .go!"),
+                .text_on_execution("Generating .go files from .proto...")
+                .text_after_execution("Generated .go!"),
         )
         .invoke_parallel()
         .await;
