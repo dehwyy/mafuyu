@@ -1,6 +1,6 @@
 # <p style="text-align: center;">MaFuYu ❄️</p>
 
-## Technologies
+## Technologies:
 
 - Rust
 - Typescript
@@ -19,10 +19,12 @@
 - Tracing(Rust) + Zerolog(Go)
 - Clap + Indicatif (CLI)
 
-## Development
- 
+## Development:
+
 There are features that work only with appropriate `env secrets`. They should be set, if you want to have these features enabled.
-### Features: 
+
+### Features:
+
 - OAuth2 (`Github`, `Google`)
 - Email confirmation via `Gmail`
 - Telemetry (`Sentry`)
@@ -32,10 +34,10 @@ There are features that work only with appropriate `env secrets`. They should be
 ```sh
     # Init project: generate necessities
     pnpm initp
-    
+
     # Run dev mode
     pnpm cli dev
-    
+
     # Generate grpc files
     pnpm cli grpc
     # or more specific prompt
@@ -44,9 +46,8 @@ There are features that work only with appropriate `env secrets`. They should be
     pnpm grpc:ts # for Typescript
 
     # Migrate db
-    task migrate:db
+    task db:migrate
 ```
-
 
 ### Requirements:
 
@@ -55,8 +56,9 @@ There are features that work only with appropriate `env secrets`. They should be
 - [Pnpm](https://pnpm.io/)
 - [Go (1.21.2+)](https://go.dev/)
 - [Docker](https://docs.docker.com/engine/)
-- [Taskfile (3+)](https://taskfile.dev) (***for `db` migrations***)
+- [Taskfile (3+)](https://taskfile.dev) (**_for `db` migrations_**)
 - **Protobuf plugins for [Go](https://go.dev/) & [Typescript](https://www.typescriptlang.org/)** (maybe)
+
 ```sh
     go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
     go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
