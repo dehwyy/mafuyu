@@ -1,10 +1,23 @@
-use tokio::fs::{create_dir_all, File};
-use tokio::io::{AsyncReadExt, AsyncWriteExt};
+use tokio::fs::{self, create_dir_all, File};
 
 use yomi::anim::{AnimatedProcess, Animation};
 use yomi::CommandExecutor;
 
 use crate::internal::executable::Executable;
+
+const DB_FILENAME: &str = "db.cdn_filenames.redb";
+
+const ENVFILE: &str = ".env";
+const ENVFILE_EXAMPLE: &str = ".env.example";
+
+const ENVHOSTSFILE: &str = ".env.hosts";
+const ENVHOSTSFILE_EXAMPLE: &str = ".env.hosts.example";
+
+async fn copy_if_not_exists<S: AsRef<std::path::Path> + Copy>(from: S, to: S) {
+    if !fs::try_exists(to).await.unwrap() {
+        fs::copy(from, to).await.unwrap();
+    };
+}
 
 struct Init;
 
@@ -16,67 +29,25 @@ impl Init {
     }
 
     async fn create_necessary_dirs() {
-        // TODO? maybe async?
-        create_dir_all(".cdn/static").await.unwrap();
-        create_dir_all("libs/grpc/dist").await.unwrap();
-        create_dir_all("libs/grpc/gen").await.unwrap();
+        let _ = tokio::join!(
+            create_dir_all(".cdn/static"),
+            create_dir_all("libs/grpc/dist"),
+            create_dir_all("libs/grpc/gen"),
+        );
     }
 
     async fn create_necessary_files() {
-        const DB_FILENAME: &str = "db.cdn_filenames.redb";
-        const ENVFILE: &str = ".env";
-        const ENVHOSTSFILE: &str = ".env.hosts";
-
         let redb_db_file = tokio::spawn(async {
-            // If file could not be opened (doesn't exist) -> create it.
-            if let Err(_) = File::open(DB_FILENAME).await {
-                File::create("db.cdn_filenames.redb").await.unwrap();
+            if !fs::try_exists(DB_FILENAME).await.unwrap() {
+                File::create(DB_FILENAME).await.unwrap();
             };
         });
 
-        // TODO: maybe refactor?
-        let env_file = tokio::spawn(async {
-            if let Err(_) = File::open(ENVFILE).await {
-                let mut env_f = File::options()
-                    .read(true)
-                    .open(".env.example")
-                    .await
-                    .unwrap();
-                let mut buf: Vec<u8> = vec![];
-                env_f.read_to_end(&mut buf).await.unwrap();
+        let env_file = tokio::spawn(copy_if_not_exists(ENVFILE_EXAMPLE, ENVFILE));
 
-                let mut f = Self::create_rw_file(ENVFILE).await;
-                f.write(&buf).await.unwrap();
-            };
-        });
-
-        let env_hosts_file = tokio::spawn(async {
-            if let Err(_) = File::open(ENVHOSTSFILE).await {
-                let mut env_hosts_f = File::options()
-                    .read(true)
-                    .open(".env.hosts.example")
-                    .await
-                    .unwrap();
-                let mut buf: Vec<u8> = vec![];
-                env_hosts_f.read_to_end(&mut buf).await.unwrap();
-
-                let mut f = Self::create_rw_file(ENVHOSTSFILE).await;
-                f.write(&buf).await.unwrap();
-            };
-            ()
-        });
+        let env_hosts_file = tokio::spawn(copy_if_not_exists(ENVHOSTSFILE_EXAMPLE, ENVHOSTSFILE));
 
         let _ = tokio::join!(redb_db_file, env_file, env_hosts_file);
-    }
-
-    async fn create_rw_file(path: impl AsRef<std::path::Path>) -> File {
-        File::options()
-            .create_new(true)
-            .write(true)
-            .read(true)
-            .open(path)
-            .await
-            .expect("cannot open file")
     }
 }
 

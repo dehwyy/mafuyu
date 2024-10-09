@@ -1,33 +1,32 @@
 mod dev;
 mod grpc;
-mod internal;
 mod init;
+mod internal;
 
-use clap::{Parser, Subcommand};
 use logger::{Logger, LoggerConfig};
+use yomi::prelude::{Parser, Subcommand};
 
 #[derive(Parser)]
-#[command(version,about, propagate_version = true)]
+#[command(version, about, propagate_version = true)]
 struct Cli {
     #[command(subcommand)]
-    command: Command
+    command: Command,
 }
 
 #[derive(Subcommand)]
 enum Command {
     /// Run Mafuyu's apps in dev mode.
-    #[command(name="dev")]
+    #[command(name = "dev")]
     Dev,
 
     /// Gen GRPC files
-    #[command(name="grpc")]
+    #[command(name = "grpc")]
     Grpc,
 
     /// Init MaFuYu
     #[command(name = "init")]
-    Init
+    Init,
 }
-
 
 #[tokio::main]
 async fn main() {
@@ -41,8 +40,8 @@ async fn main() {
 
     let cli = Cli::parse();
     match &cli.command {
-            Command::Dev => dev::dev().await,
-            Command::Grpc => grpc::grpc().await,
-            Command::Init => init::init().await
+        Command::Dev => dev::dev().await,
+        Command::Grpc => grpc::grpc().await,
+        Command::Init => init::init().await,
     };
 }
