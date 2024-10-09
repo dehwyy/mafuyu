@@ -1,11 +1,12 @@
 [package]
+edition = "2021"
 name = "cli"
 version = "0.1.0"
-edition = "2021"
 
 [dependencies]
-clap = { version = "4.5.0", features = ["derive"] }
-tokio = { version = "1.35.0", features = ["time", "macros", "rt-multi-thread", "process", "io-util", "fs"] }
-logger = { path = "../libs/logger" }
-indicatif = { version = "0.17.8" }
-makoto_config = { path = "../libs/config" }
+clap = {version = "4.5.0", features = ["derive"]}
+indicatif = {version = "0.17.8"}
+logger = {path = "../libs/logger"}
+makoto_config = {path = "../libs/config"}
+tokio = {version = "1.35.0", features = ["time", "macros", "rt-multi-thread", "process", "io-util", "fs"]}
+yomi = {version = "0.1.1"}

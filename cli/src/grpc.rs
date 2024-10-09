@@ -1,30 +1,43 @@
-use crate::internal::animated::{Animated, Process};
-use crate::internal::cmd::Cmd;
-use crate::internal::os_vars::Executable;
+use std::env::{current_dir, set_current_dir};
+
+use yomi::anim::{AnimatedProcess, Animation};
+use yomi::CommandExecutor;
+
+use crate::internal::executable::Executable;
 
 struct Grpc;
 
 impl Grpc {
     async fn rust() {
-        Cmd::tokio_cmd("cargo run".to_owned()).await.unwrap();
+        CommandExecutor::execute("cargo run").await.unwrap();
     }
 
     async fn ts() {
-        let pnpm = Executable::get_pnpm();
-        let cmd = |files: &str| {
-            Cmd::tokio_cmd(format!("{} exec protoc -I=protos --ts_out=dist --ts_opt=generate_dependencies,eslint_disable,ts_nocheck,output_javascript {}", &pnpm, files))
+        let cmd = |f: &str| {
+            CommandExecutor::execute(
+                format!(
+                    "{pnpm} exec protoc -I=protos --ts_out=dist --ts_opt=generate_dependencies,eslint_disable,ts_nocheck,output_javascript {f}",
+                    pnpm = Executable::Pnpm
+                )
+            )
         };
 
         cmd("protos/*.proto").await.unwrap();
         cmd("protos/api.proto").await.unwrap();
 
-        Cmd::tokio_cmd(format!("{pnpm} ts")).await.unwrap();
+        CommandExecutor::execute(format!("{pnpm} ts", pnpm = Executable::Pnpm))
+            .await
+            .unwrap();
     }
 
     async fn go() {
-        let pnpm = Executable::get_pnpm();
-        let cmd = |file: &str| {
-            Cmd::tokio_cmd(format!("{} exec protoc -I=protos --go_out=gen --go_opt=paths=source_relative --go-grpc_out=gen --go-grpc_opt=paths=source_relative --proto_path=protos {}", &pnpm, file))
+        let cmd = |f: &str| {
+            CommandExecutor::execute(
+                format!(
+                    "{pnpm} exec protoc -I=protos --go_out=gen --go_opt=paths=source_relative --go-grpc_out=gen --go-grpc_opt=paths=source_relative --proto_path=protos {f}",
+                    pnpm = Executable::Pnpm
+                )
+            )
         };
 
         cmd("protos/api/mailer.proto").await.unwrap();
@@ -32,23 +45,27 @@ impl Grpc {
 }
 
 pub async fn grpc() {
-
-    let mut cwd = std::env::current_dir().unwrap();
+    let mut cwd = current_dir().unwrap();
     cwd.push("libs/grpc");
-    std::env::set_current_dir(cwd).expect("cannot set cwd");
 
-    Animated::builder()
-        .add(Process {
-            func: Grpc::rust(),
-            on_start: "Generating .rs files from .proto...",
-            on_end: "Generated .rs!",
-        }).add(Process {
-            func: Grpc::ts(),
-            on_start: "Generating .ts files from .proto...",
-            on_end: "Generated .ts!",
-        }).add(Process {
-            func: Grpc::go(),
-            on_start: "Generating .go files from .proto...",
-            on_end: "Generated .go!",
-        }).invoke().await;
+    set_current_dir(cwd).unwrap();
+
+    Animation::builder()
+        .add(
+            AnimatedProcess::new(Grpc::rust())
+                .set_text_during_execution("Generating .rs files from .proto...")
+                .set_text_after_execution("Generated .rs!"),
+        )
+        .add(
+            AnimatedProcess::new(Grpc::ts())
+                .set_text_during_execution("Generating .ts files from .proto...")
+                .set_text_after_execution("Generated .ts!"),
+        )
+        .add(
+            AnimatedProcess::new(Grpc::go())
+                .set_text_during_execution("Generating .go files from .proto...")
+                .set_text_after_execution("Generated .go!"),
+        )
+        .invoke_parallel()
+        .await;
 }

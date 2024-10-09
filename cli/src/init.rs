@@ -1,52 +1,63 @@
 use tokio::fs::{create_dir_all, File};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
-use crate::internal::animated::{Animated, Process};
-use crate::internal::cmd::Cmd;
 
+use yomi::anim::{AnimatedProcess, Animation};
+use yomi::CommandExecutor;
+
+use crate::internal::executable::Executable;
 
 struct Init;
 
 impl Init {
-    pub async fn pnpm_install() {
-        let pnpm = crate::internal::os_vars::Executable::get_pnpm();
-
-        Cmd::tokio_cmd(format!("{pnpm} install")).await.unwrap();
+    async fn pnpm_install() {
+        CommandExecutor::execute(format!("{pnpm} install", pnpm = Executable::Pnpm))
+            .await
+            .unwrap();
     }
 
-    pub async fn create_necessary_dirs() {
+    async fn create_necessary_dirs() {
+        // TODO? maybe async?
         create_dir_all(".cdn/static").await.unwrap();
         create_dir_all("libs/grpc/dist").await.unwrap();
         create_dir_all("libs/grpc/gen").await.unwrap();
     }
 
-    pub async fn create_necessary_files() {
+    async fn create_necessary_files() {
         const DB_FILENAME: &str = "db.cdn_filenames.redb";
         const ENVFILE: &str = ".env";
         const ENVHOSTSFILE: &str = ".env.hosts";
 
-        let f1= tokio::spawn(async {
+        let redb_db_file = tokio::spawn(async {
+            // If file could not be opened (doesn't exist) -> create it.
             if let Err(_) = File::open(DB_FILENAME).await {
                 File::create("db.cdn_filenames.redb").await.unwrap();
             };
-            ()
         });
 
-        let f2 = tokio::spawn(async {
+        // TODO: maybe refactor?
+        let env_file = tokio::spawn(async {
             if let Err(_) = File::open(ENVFILE).await {
-                let mut env_f = File::options().read(true).open(".env.example").await.unwrap();
-                let mut buf: Vec<u8> = vec!();
+                let mut env_f = File::options()
+                    .read(true)
+                    .open(".env.example")
+                    .await
+                    .unwrap();
+                let mut buf: Vec<u8> = vec![];
                 env_f.read_to_end(&mut buf).await.unwrap();
 
                 let mut f = Self::create_rw_file(ENVFILE).await;
                 f.write(&buf).await.unwrap();
             };
-            ()
         });
 
-        let f3 = tokio::spawn(async {
+        let env_hosts_file = tokio::spawn(async {
             if let Err(_) = File::open(ENVHOSTSFILE).await {
-                let mut env_hosts_f = File::options().read(true).open(".env.hosts.example").await.unwrap();
-                let mut buf: Vec<u8> = vec!();
+                let mut env_hosts_f = File::options()
+                    .read(true)
+                    .open(".env.hosts.example")
+                    .await
+                    .unwrap();
+                let mut buf: Vec<u8> = vec![];
                 env_hosts_f.read_to_end(&mut buf).await.unwrap();
 
                 let mut f = Self::create_rw_file(ENVHOSTSFILE).await;
@@ -55,31 +66,37 @@ impl Init {
             ()
         });
 
-        let _ = tokio::join!(f1, f2, f3);
+        let _ = tokio::join!(redb_db_file, env_file, env_hosts_file);
     }
 
     async fn create_rw_file(path: impl AsRef<std::path::Path>) -> File {
-        File::options().create_new(true).write(true).read(true).open(path).await.expect("cannot open file")
+        File::options()
+            .create_new(true)
+            .write(true)
+            .read(true)
+            .open(path)
+            .await
+            .expect("cannot open file")
     }
 }
 
 pub async fn init() {
-
-    Animated::builder()
-        .add(Process {
-            func: Init::pnpm_install(),
-            on_start: "Installing pnpm...",
-            on_end: "Deps installed!",
-        })
-        .add(Process {
-            func: Init::create_necessary_dirs(),
-            on_start: "Creating necessary dirs...",
-            on_end: "Dirs created!",
-        })
-        .add(Process {
-            func: Init::create_necessary_files(),
-            on_start: "Creating necessary files...",
-            on_end: "Files created!",
-        })
-        .invoke().await;
+    Animation::builder()
+        .add(
+            AnimatedProcess::new(Init::pnpm_install())
+                .set_text_during_execution("Installing pnpm...")
+                .set_text_after_execution("Depenencies were installed!"),
+        )
+        .add(
+            AnimatedProcess::new(Init::create_necessary_dirs())
+                .set_text_during_execution("Creating necessary dirs...")
+                .set_text_after_execution("Dirs were created!"),
+        )
+        .add(
+            AnimatedProcess::new(Init::create_necessary_files())
+                .set_text_during_execution("Creating necessary files...")
+                .set_text_after_execution("Files were created!"),
+        )
+        .invoke_parallel()
+        .await;
 }
