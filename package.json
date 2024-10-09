@@ -1,11 +1,15 @@
 {
-  "name": "mafuyyu",
+  "name": "mafuyu",
   "author": "dehwyy <dehwyyy@gmail.com>",
   "private": true,
   "type": "module",
   "engines": {
     "node": ">= 20"
   },
+  "workspaces": [
+    "libs/*",
+    "frontend/*"
+  ],
   "scripts": {
     "initp": "cargo build -p cli && cargo run -p cli init && cargo run -p cli grpc",
     "cli": "cargo run -p cli",
