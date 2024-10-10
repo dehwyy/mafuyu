@@ -55,7 +55,7 @@ export default function Navbar() {
         </Button>
       </div>
       <NavbarBrand className={clsx(isExpanded || '-translate-y-4', 'transition-all')}>
-        <p className="font-bold text-xl">Mugen</p>
+        <p className="font-bold text-xl select-none">Mugen</p>
       </NavbarBrand>
       <NavbarContent
         justify="end"
@@ -67,6 +67,7 @@ export default function Navbar() {
               <Avatar
                 isBordered
                 as="button"
+                className="select-none"
                 src={Dev.Img}
               />
             </DropdownTrigger>
