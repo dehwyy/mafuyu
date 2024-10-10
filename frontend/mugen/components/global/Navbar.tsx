@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import {
   Avatar,
   Button,
@@ -15,37 +15,46 @@ import {
   Navbar as NextUINavbar
 } from '@nextui-org/react'
 import clsx from 'clsx'
+import { useAtom } from 'jotai'
 
-import { Dev } from '@/lib/const'
+import { Dev, TransformTranslate } from '@/lib/const'
+import { NavbarAtom } from '@/lib/store/global'
 import { IconChevronUp } from '../icons/ChevronUp'
 
 export default function Navbar() {
   // with localstorage
-  const [isOpen, setOpen] = useState(true)
+  const [{ isExpanded }, setStore] = useAtom(NavbarAtom)
+
+  const toggleNavbar = useCallback(() => {
+    setStore((v) => ({ ...v, isExpanded: !v.isExpanded }))
+  }, [])
 
   return (
     <NextUINavbar
       shouldHideOnScroll
       isBordered
       maxWidth="full"
-      className={clsx(isOpen || '!-translate-y-[50px] -mt-[50px]', 'transition-all')}
+      className={clsx(
+        isExpanded || `!-translate-y-[${TransformTranslate.NavbarHidePx}] -mt-[${TransformTranslate.NavbarHidePx}]`,
+        'transition-all'
+      )}
     >
       <div className="absolute left-1/2 -translate-x-1/2 -bottom-3.5">
         <Button
-          onClick={() => setOpen((v) => !v)}
+          onClick={toggleNavbar}
           isIconOnly
           disableAnimation
-          className="h-[48px] px-10 items-end bg-transparent"
+          className="h-[48px] px-10 items-end bg-transparent focus-visible:outline-none"
         >
-          <IconChevronUp className={clsx(isOpen || 'rotate-180', 'transition-all stroke-default-300 min-w-[16px]')} />
+          <IconChevronUp className={clsx(isExpanded || 'rotate-180', 'transition-all stroke-default-300 min-w-[16px]')} />
         </Button>
       </div>
-      <NavbarBrand className={clsx(isOpen || '-translate-y-4', 'transition-all')}>
+      <NavbarBrand className={clsx(isExpanded || '-translate-y-4', 'transition-all')}>
         <p className="font-bold text-xl">Mugen</p>
       </NavbarBrand>
       <NavbarContent
         justify="end"
-        className={clsx(isOpen || '-translate-y-4', 'transition-all')}
+        className={clsx(isExpanded || '-translate-y-4', 'transition-all')}
       >
         <NavbarItem>
           <Dropdown>

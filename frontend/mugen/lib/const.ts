@@ -1,3 +1,8 @@
+export const enum TransformTranslate {
+  NavbarHide = 50,
+  NavbarHidePx = '50px'
+}
+
 export const enum ComponentSize {
   NavbarHeight = '50px'
 }
