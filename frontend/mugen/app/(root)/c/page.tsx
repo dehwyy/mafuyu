@@ -2,7 +2,7 @@ import ChatLayout from '@/components/chat/ChatLayout'
 import Message from '@/components/chat/Message'
 
 export default function $Page() {
-  const m = new Array(10).fill({})
+  const m = new Array(20).fill({})
 
   return (
     <ChatLayout>

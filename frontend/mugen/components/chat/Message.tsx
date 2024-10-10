@@ -38,10 +38,10 @@ export default function Message({ isCurrentUser, senderUserId, nextMessageSender
           radius="lg"
         >
           <CardBody className="!pt-2 !pb-2.5 !pl-4 !pr-14 text-sm overflow-visible">
-            {!isCurrentUser && <p className="mb-1 text-[12px] font-bold">Waypo1nt</p>}
+            {!isCurrentUser && <p className="mb-1 text-[12px] font-bold text-secondary-500">Waypo1nt</p>}
             <div>
               <p>a message to user?</p>
-              <p className="absolute bottom-0.5 right-3 text-[10px] select-none text-foreground/40">20:31</p>
+              <p className="absolute bottom-0.5 right-3 text-[10px] font-semibold  select-none text-foreground/40">20:31</p>
             </div>
           </CardBody>
         </Card>

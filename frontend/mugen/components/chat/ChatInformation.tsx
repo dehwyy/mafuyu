@@ -5,15 +5,17 @@ import { Dev } from '@/lib/const'
 
 export default function ChatInformation() {
   return (
-    <Card
-      isBlurred
-      shadow="sm"
-      className="border-none dark:bg-default-300/40"
-    >
-      <CardBody className="flex flex-row items-center gap-x-3">
-        <Avatar src={Dev.Img} />
-        <p>dehwwyy</p>
-      </CardBody>
-    </Card>
+    <div className="pr-5">
+      <Card
+        isBlurred
+        shadow="lg"
+        className="border-none dark:bg-default-100/50 relative z-10"
+      >
+        <CardBody className="px-5 flex flex-row items-center gap-x-5">
+          <Avatar src={Dev.Img} />
+          <p className="font-semibold">dehwwyy</p>
+        </CardBody>
+      </Card>
+    </div>
   )
 }
