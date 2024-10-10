@@ -8,7 +8,7 @@ export default function ChatInformation() {
     <Card
       isBlurred
       shadow="sm"
-      className="border-none dark:bg-secondary-300/40"
+      className="border-none dark:bg-default-300/40"
     >
       <CardBody className="flex flex-row items-center gap-x-3">
         <Avatar src={Dev.Img} />

@@ -6,10 +6,12 @@ export default function $Page() {
 
   return (
     <ChatLayout>
-      {m.map((_, i) => (
+      {m.map((v, i) => (
         <Message
           key={i}
-          alignRight={i % 4 == 0}
+          senderUserId={'user_' + String(i % 4 == 0)}
+          nextMessageSenderUserId={'user_' + String((i + 1) % 4 == 0 || m[i + 1] === undefined)}
+          isCurrentUser={i % 4 == 0}
         />
       ))}
     </ChatLayout>

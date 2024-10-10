@@ -3,18 +3,20 @@ import clsx from 'clsx'
 
 export default function ChatList() {
   return (
-    <div className={clsx('w-[200px] bg-content-1')}>
-      <aside className="flex flex-col gap-3 py-1 px-1">
-        <ChatListItem />
-      </aside>
-    </div>
+    <Card className={clsx('w-[200px] my-3')}>
+      <CardBody className="flex flex-col gap-y-2 !px-1 h-[693px] overflow-y-auto">
+        {new Array(20).fill(0).map((_, i) => (
+          <ChatListItem key={i} />
+        ))}
+      </CardBody>
+    </Card>
   )
 }
 
 function ChatListItem() {
   return (
     <Button
-      className="w-full focus-visible:!outline-none"
+      className="w-full focus-visible:!outline-none min-h-[50px]"
       variant="light"
       radius="sm"
     >
