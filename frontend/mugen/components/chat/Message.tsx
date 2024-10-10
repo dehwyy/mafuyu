@@ -41,9 +41,7 @@ export default function Message({ isCurrentUser, senderUserId, nextMessageSender
             {!isCurrentUser && <p className="mb-1 text-[12px] font-bold">Waypo1nt</p>}
             <div>
               <p>a message to user?</p>
-              <p className="absolute bottom-0.5 right-3 text-[10px] select-none text-foreground/40">
-                16:{(Math.random() * 50 + 10).toFixed(0)}
-              </p>
+              <p className="absolute bottom-0.5 right-3 text-[10px] select-none text-foreground/40">20:31</p>
             </div>
           </CardBody>
         </Card>
