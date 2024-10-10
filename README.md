@@ -33,17 +33,17 @@ There are features that work only with appropriate `env secrets`. They should be
 
 ```sh
     # Init project: generate necessities
-    pnpm initp
+    bun initp
 
     # Run dev mode
-    pnpm cli dev
+    bun cli dev
 
     # Generate grpc files
-    pnpm cli grpc
+    bun cli grpc
     # or more specific prompt
-    pnpm grpc:rs # for Rust
-    pnpm grpc:go # for Go
-    pnpm grpc:ts # for Typescript
+    bun grpc:rs # for Rust
+    bun grpc:go # for Go
+    bun grpc:ts # for Typescript
 
     # Migrate db
     task db:migrate
@@ -53,7 +53,7 @@ There are features that work only with appropriate `env secrets`. They should be
 
 - [Node.js (20+)](https://nodejs.org/en)
 - [Rustc (1.76+)](https://www.rust-lang.org)
-- [Pnpm](https://pnpm.io/)
+- [Bun](https://bun.sh/)
 - [Go (1.21.2+)](https://go.dev/)
 - [Docker](https://docs.docker.com/engine/)
 - [Taskfile (3+)](https://taskfile.dev) (**_for `db` migrations_**)
@@ -62,5 +62,5 @@ There are features that work only with appropriate `env secrets`. They should be
 ```sh
     go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
     go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-    pnpm i -g @protobuf-ts/plugin
+    bun i -g @protobuf-ts/plugin
 ```
