@@ -26,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <head />
       <body className={clsx('min-h-screen bg-background font-sans antialiased', fontSans.variable)}>
-        <Providers themeProps={{ attribute: 'class', forcedTheme: 'purple-dark' }}>
+        <Providers themeProps={{ attribute: 'class', forcedTheme: 'dark' }}>
           <div className="relative flex flex-col h-screen">{children}</div>
         </Providers>
       </body>
