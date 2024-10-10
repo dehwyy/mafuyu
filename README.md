@@ -31,16 +31,22 @@ There are features that work only with appropriate `env secrets`. They should be
 
 ### CLI
 
+Quick start:
+
 ```sh
     # Init project: generate necessities
     bun initp
 
     # Run dev mode
     bun cli dev
+```
 
+Development:
+
+```sh
     # Generate grpc files
     bun cli grpc
-    # or more specific prompt
+    # or more specific
     bun grpc:rs # for Rust
     bun grpc:go # for Go
     bun grpc:ts # for Typescript
