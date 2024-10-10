@@ -1,6 +1,5 @@
 export const enum TransformTranslate {
-  NavbarHide = 50,
-  NavbarHidePx = '50px'
+  NavbarHide = 50
 }
 
 export const enum ComponentSize {

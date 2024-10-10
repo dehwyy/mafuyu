@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import {
   Avatar,
   Button,
@@ -29,15 +29,20 @@ export default function Navbar() {
     setStore((v) => ({ ...v, isExpanded: !v.isExpanded }))
   }, [])
 
+  const shift = useMemo(() => {
+    return (isExpanded ? 0 : -TransformTranslate.NavbarHide) + 'px'
+  }, [isExpanded])
+
   return (
     <NextUINavbar
       shouldHideOnScroll
       isBordered
       maxWidth="full"
-      className={clsx(
-        isExpanded || `!-translate-y-[${TransformTranslate.NavbarHidePx}] -mt-[${TransformTranslate.NavbarHidePx}]`,
-        'transition-all'
-      )}
+      style={{
+        translate: `0 ${shift}`,
+        marginTop: shift
+      }}
+      className={clsx('transition-all')}
     >
       <div className="absolute left-1/2 -translate-x-1/2 -bottom-3.5">
         <Button
