@@ -22,8 +22,8 @@ async fn copy_if_not_exists<S: AsRef<std::path::Path> + Copy>(from: S, to: S) {
 struct Init;
 
 impl Init {
-    async fn pnpm_install() {
-        CommandExecutor::execute(format!("{pnpm} install", pnpm = Executable::Pnpm))
+    async fn install_deps() {
+        CommandExecutor::execute(format!("{} install", Executable::Bun))
             .await
             .unwrap();
     }
@@ -54,8 +54,8 @@ impl Init {
 pub async fn init() {
     Animation::builder()
         .add(
-            AnimatedProcess::new(Init::pnpm_install())
-                .text_on_execution("Installing pnpm...")
+            AnimatedProcess::new(Init::install_deps())
+                .text_on_execution("Installing dependencies...")
                 .text_after_execution("Depenencies were installed!"),
         )
         .add(

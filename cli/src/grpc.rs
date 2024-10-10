@@ -16,8 +16,8 @@ impl Grpc {
         let cmd = |f: &str| {
             CommandExecutor::execute(
                 format!(
-                    "{pnpm} exec protoc -I=protos --ts_out=dist --ts_opt=generate_dependencies,eslint_disable,ts_nocheck,output_javascript {f}",
-                    pnpm = Executable::Pnpm
+                    "{} exec protoc -I=protos --ts_out=dist --ts_opt=generate_dependencies,eslint_disable,ts_nocheck,output_javascript {f}",
+                    Executable::Bun
                 )
             )
         };
@@ -25,7 +25,7 @@ impl Grpc {
         cmd("protos/*.proto").await.unwrap();
         cmd("protos/api.proto").await.unwrap();
 
-        CommandExecutor::execute(format!("{pnpm} ts", pnpm = Executable::Pnpm))
+        CommandExecutor::execute(format!("{} ts", Executable::Bun))
             .await
             .unwrap();
     }
@@ -34,8 +34,8 @@ impl Grpc {
         let cmd = |f: &str| {
             CommandExecutor::execute(
                 format!(
-                    "{pnpm} exec protoc -I=protos --go_out=gen --go_opt=paths=source_relative --go-grpc_out=gen --go-grpc_opt=paths=source_relative --proto_path=protos {f}",
-                    pnpm = Executable::Pnpm
+                    "{} exec protoc -I=protos --go_out=gen --go_opt=paths=source_relative --go-grpc_out=gen --go-grpc_opt=paths=source_relative --proto_path=protos {f}",
+                    Executable::Bun
                 )
             )
         };

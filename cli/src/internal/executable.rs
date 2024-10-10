@@ -1,5 +1,7 @@
+#[allow(dead_code)]
 pub enum Executable {
     Pnpm,
+    Bun,
 }
 
 impl std::fmt::Display for Executable {
@@ -8,6 +10,7 @@ impl std::fmt::Display for Executable {
 
         let s = match self {
             Self::Pnpm => unix.then_some("pnpm").unwrap_or("pnpm.cmd"),
+            Self::Bun => "bun",
         };
 
         write!(f, "{}", s)
