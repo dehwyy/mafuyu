@@ -13,7 +13,7 @@ import ChatList from './ChatList'
 export default function ChatLayout({ children }: { children: React.ReactNode }) {
   const navbar = useAtomValue(NavbarAtom)
   const h = useMemo(() => {
-    return 589 + 52 + (navbar.isExpanded ? 0 : TransformTranslate.NavbarHide) + 'px'
+    return 589 + 56 + (navbar.isExpanded ? 0 : TransformTranslate.NavbarHide) + 'px'
   }, [navbar.isExpanded])
   return (
     <div className="w-full h-full flex pl-5">
@@ -22,7 +22,7 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
         <ChatInformation />
         <div
           style={{ height: h, maxHeight: h }}
-          className={clsx('overflow-y-auto -mt-[64px] pt-[76px] pr-3 grid place-items-center transition-all')}
+          className={clsx('overflow-y-auto -mt-[64px] pt-[72px] pb-3 pr-3 grid place-items-center transition-all')}
         >
           <section className="flex-1 flex flex-col items-start gap-y-3 max-w-full w-[600px]">{children}</section>
         </div>
