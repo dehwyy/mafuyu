@@ -1,4 +1,4 @@
-import { ExpandableButtonGroup } from '../reusable/ExpandableButtonGroup'
+import { ExpandableButtonGroup } from '@/components/reusable/ExpandableButtonGroup'
 
 const buttons = [
   { variant: 'shadow', color: 'secondary', content: 'Current layout' },

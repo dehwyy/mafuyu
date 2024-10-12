@@ -1,22 +1,33 @@
-'use client'
-
 import { useMemo } from 'react'
-import { Avatar, Card, CardBody, CardFooter, CardHeader } from '@nextui-org/react'
+import { Avatar, Card, CardBody } from '@nextui-org/react'
+import { ChatAppendix } from '$icons/ChatAppendix'
 import clsx from 'clsx'
 
 import { Dev } from '@/lib/const'
-import { ChatAppendix } from '../icons/ChatAppendix'
 
 interface MessageProps {
-  isCurrentUser: boolean
+  currentUserId: string
+
   senderUserId: string
+  senderUsername: string
+  senderUserImage?: string
+
   nextMessageSenderUserId?: string
+
+  // todo
+  messageType: any
+  messageContent: any
+  messageTimestamp: string
 }
 
-export default function Message({ isCurrentUser, senderUserId, nextMessageSenderUserId }: MessageProps) {
+export function Message(props: MessageProps) {
+  const isCurrentUser = useMemo(() => {
+    return props.currentUserId === props.senderUserId
+  }, [])
+
   const isMessageBatch = useMemo(() => {
-    return nextMessageSenderUserId && nextMessageSenderUserId === senderUserId
-  }, [senderUserId, nextMessageSenderUserId, isCurrentUser])
+    return props.nextMessageSenderUserId && props.nextMessageSenderUserId === props.senderUserId
+  }, [props.senderUserId, props.nextMessageSenderUserId, isCurrentUser])
 
   return (
     <article className={clsx(isCurrentUser && 'self-end', 'max-w-[60%] min-w-[30%] flex items-end')}>
@@ -25,7 +36,7 @@ export default function Message({ isCurrentUser, senderUserId, nextMessageSender
           <div className="w-[40px] h-[40px]" />
         ) : (
           <Avatar
-            src={Dev.Img}
+            src={props.senderUserImage || Dev.Img}
             className="mb-1"
           />
         ))}
@@ -38,10 +49,12 @@ export default function Message({ isCurrentUser, senderUserId, nextMessageSender
           radius="lg"
         >
           <CardBody className="!pt-2 !pb-2.5 !pl-4 !pr-14 text-sm overflow-visible">
-            {!isCurrentUser && <p className="mb-1 text-[12px] font-bold text-secondary-500">Waypo1nt</p>}
+            {!isCurrentUser && <p className="mb-1 text-[12px] font-bold text-secondary-500">{props.senderUsername}</p>}
             <div>
-              <p>a message to user?</p>
-              <p className="absolute bottom-0.5 right-3 text-[10px] font-semibold  select-none text-foreground/40">20:31</p>
+              <p>{props.messageContent}</p>
+              <p className="absolute bottom-0.5 right-3 text-[10px] font-semibold  select-none text-foreground/40">
+                {props.messageTimestamp}
+              </p>
             </div>
           </CardBody>
         </Card>

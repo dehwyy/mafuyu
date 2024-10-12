@@ -14,12 +14,12 @@ import {
   NavbarItem,
   Navbar as NextUINavbar
 } from '@nextui-org/react'
+import { IconChevronUp } from '$icons/ChevronUp'
 import clsx from 'clsx'
 import { useAtom } from 'jotai'
 
 import { Dev, TransformTranslate } from '@/lib/const'
 import { NavbarAtom } from '@/lib/store/global'
-import { IconChevronUp } from '../icons/ChevronUp'
 
 export default function Navbar() {
   // with localstorage
