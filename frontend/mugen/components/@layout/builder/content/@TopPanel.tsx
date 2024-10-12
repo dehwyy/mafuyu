@@ -10,7 +10,7 @@ export function TopPanel({ children }: TopPanelProps) {
       <Card
         isBlurred
         shadow="lg"
-        className="border-none dark:bg-default-100/50 relative z-10"
+        className="border-none dark:bg-gradient-to-br from-default-100/30 to-default-100/10 relative z-10"
       >
         <CardBody className="px-5 flex flex-row items-center gap-x-5">{children}</CardBody>
       </Card>
