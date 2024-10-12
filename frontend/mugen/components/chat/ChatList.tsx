@@ -5,29 +5,36 @@ import { useAtomValue } from 'jotai'
 
 import { Dev, TransformTranslate } from '@/lib/const'
 import { NavbarAtom } from '@/lib/store/global'
+import { MainLayoutManagementMenu } from '../aside/MainLayoutManagementMenu'
+import { OverlaysManagementMenu } from '../aside/OverlaysManagementMenu'
+import { UserShort } from '../aside/UserShort'
 
 export default function ChatList() {
   const [focused, setFocused] = useState(0)
 
   return (
-    <ScrollShadow
-      style={{ maxHeight: '100%' }}
-      className="w-[250px] my-3 pr-1 transition-all"
-    >
-      <Card className={clsx('bg-default-100/50')}>
-        <CardBody className="flex flex-col gap-y-2 !px-1 overflow-y-auto">
-          {new Array(20).fill(0).map((_, i) => (
-            <ChatListItem
-              key={i}
-              setFocused={() => setFocused(i)}
-              unreadMessages={i}
-              chatSection={i === 5 ? 'ChatSectionId' : undefined}
-              isFocused={i === focused}
-            />
-          ))}
-        </CardBody>
-      </Card>
-    </ScrollShadow>
+    <section className="flex flex-col gap-y-3 pt-3 w-[250px] ">
+      <UserShort />
+      <OverlaysManagementMenu />
+      <ScrollShadow
+        style={{ maxHeight: 'calc(100% - 70px)' }}
+        className="mb-3 pr-1 transition-all"
+      >
+        <Card className={clsx('bg-default-100/50')}>
+          <CardBody className="flex flex-col gap-y-2 !px-1 overflow-y-auto">
+            {new Array(20).fill(0).map((_, i) => (
+              <ChatListItem
+                key={i}
+                setFocused={() => setFocused(i)}
+                unreadMessages={i}
+                chatSection={i === 5 ? 'ChatSectionId' : undefined}
+                isFocused={i === focused}
+              />
+            ))}
+          </CardBody>
+        </Card>
+      </ScrollShadow>
+    </section>
   )
 }
 
