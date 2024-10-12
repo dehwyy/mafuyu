@@ -9,14 +9,9 @@ import { NavbarAtom } from '@/lib/store/global'
 export default function ChatList() {
   const [focused, setFocused] = useState(0)
 
-  const navbar = useAtomValue(NavbarAtom)
-  const h = useMemo(() => {
-    return 693 + +(navbar.isExpanded ? 0 : TransformTranslate.NavbarHide) + 'px'
-  }, [navbar.isExpanded])
-
   return (
     <ScrollShadow
-      style={{ maxHeight: h }}
+      style={{ maxHeight: '100%' }}
       className="w-[250px] my-3 pr-1 transition-all"
     >
       <Card className={clsx('bg-default-100/50')}>
