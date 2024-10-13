@@ -1,7 +1,6 @@
 import { ChatList } from './ChatList'
-import { ChatListItem } from './ChatListItem'
 import { CurrentChatInformation } from './CurrentChatInformation'
 import { ChatInput } from './input'
-import { Message } from './Message'
+import { MessageList } from './MessageList'
 
-export { ChatList, ChatListItem, CurrentChatInformation, Message, ChatInput }
+export { ChatList, CurrentChatInformation, MessageList, ChatInput }

@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@custom-react-hooks/all": "^1.5.1",
     "@nextui-org/button": "2.0.38",
     "@nextui-org/code": "2.0.33",
     "@nextui-org/input": "2.2.5",

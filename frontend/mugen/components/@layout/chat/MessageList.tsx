@@ -20,7 +20,31 @@ interface MessageProps {
   messageTimestamp: string
 }
 
-export function Message(props: MessageProps) {
+interface MessageListProps {
+  items: MessageProps[]
+}
+
+export function MessageList({}: MessageListProps) {
+  return (
+    <div className="w-[600px] flex flex-col gap-y-2">
+      {new Array(20).fill(0).map((_, i) => (
+        <Message
+          key={i}
+          currentUserId="user_true"
+          senderUserId={'user_' + String(i % 4 == 0)}
+          senderUsername="dehwyy"
+          senderUserImage={Dev.Img}
+          nextMessageSenderUserId={'user_' + String((i + 1) % 4 == 0 || i == 19)}
+          messageType="plain/text"
+          messageContent={"It's a message!"}
+          messageTimestamp="20:31"
+        />
+      ))}
+    </div>
+  )
+}
+
+function Message(props: MessageProps) {
   const isCurrentUser = useMemo(() => {
     return props.currentUserId === props.senderUserId
   }, [])
@@ -30,7 +54,7 @@ export function Message(props: MessageProps) {
   }, [props.senderUserId, props.nextMessageSenderUserId, isCurrentUser])
 
   return (
-    <article className={clsx(isCurrentUser && 'self-end', 'max-w-[60%] min-w-[30%] flex items-end')}>
+    <article className={clsx({ 'self-end': isCurrentUser }, 'max-w-[60%] min-w-[30%] flex items-end')}>
       {!isCurrentUser &&
         (isMessageBatch ? (
           <div className="w-[40px] h-[40px]" />
