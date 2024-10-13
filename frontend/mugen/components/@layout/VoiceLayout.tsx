@@ -1,13 +1,17 @@
-import { Button } from '@nextui-org/button'
-import { AppShell, Box, Container } from '$layout/essential'
+import { Button } from '@nextui-org/button';
+import { AppShell, Box, Container } from '$layout/essential';
 
-import { Dev } from '@/lib/const'
-import { IconPlus } from '../icons/Plus'
-import { OverlaySettings } from './builder/aside'
-import { ChatInput } from './chat'
-import { CurrentServer } from './voice/CurrentServer'
-import { NavigationPanel } from './voice/NavigationPanel'
+
+
+import { Dev } from '@/lib/const';
+import { IconPlus } from '../icons/Plus';
+import { OverlaySettings } from './builder/aside';
+import { ChatInput } from './chat';
+import { CurrentServer } from './voice/CurrentServer';
+import { NavigationPanel } from './voice/NavigationPanel';
 import { UserCard } from './voice/UserCard'
+import { ViewOverview } from './voice/ViewOverview'
+import { ViewChat } from './voice/views/Chat';
 
 export function VoiceLayout() {
   return (
@@ -62,15 +66,18 @@ export function VoiceLayout() {
         </Box>
       </Container>
       <Container grow>
-        <Box h="64px">
-          <p className="text-2xl font-bold underline">/Path/To/The/Chat</p>
+        <Box
+          h="48px"
+          className="justify-center"
+        >
+          <ViewOverview />
         </Box>
         <Box
           scrollable
           variant="unstyled"
           className="p-0"
         >
-          scrollable down
+          <ViewChat />
         </Box>
         <Box h="64px">
           <ChatInput />
