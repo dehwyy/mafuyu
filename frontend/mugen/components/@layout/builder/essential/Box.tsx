@@ -1,25 +1,37 @@
-import { useEffectOnce } from '@custom-react-hooks/all'
+import { useMemo } from 'react'
 import { Card, CardBody, ScrollShadow } from '@nextui-org/react'
 import clsx from 'clsx'
 
-interface BoxProps {
-  children: React.ReactNode
-  className?: string
+const variants = {
+  gradient: { c: 'bg-background/60 dark:bg-gradient-to-br from-default-100/30 to-default-100/10', shadow: 'sm', isBlured: true },
+  unstyled: { c: 'bg-transparent shadow-none' }
+} as {
+  [key: string]: { c: string; shadow?: 'sm'; isBlured?: boolean }
+}
 
-  // Pass to `Wrapper`.
-  grow?: boolean
+interface WrapperProps {
+  children: React.ReactNode
   h?: string
   scrollable?: boolean
+  grow?: boolean
+}
+
+interface BoxProps extends WrapperProps {
+  className?: string
+  variant?: keyof typeof variants
 }
 
 export function Box({ children, className, ...props }: BoxProps) {
+  const v = useMemo(() => {
+    return variants[props.variant || 'gradient']
+  }, [props.variant])
+
   return (
     <Wrapper {...props}>
       <Card
-        isBlurred
-        shadow="sm"
-        style={{ height: props.h, minHeight: props.h, maxHeight: props.h }}
-        className="border-none bg-background/60 dark:bg-gradient-to-br from-default-100/30 to-default-100/10 min-h-full"
+        isBlurred={v.isBlured}
+        shadow={v.shadow}
+        className={clsx('min-h-full', v.c)}
       >
         <CardBody className={clsx('flex flex-col gap-y-2 overflow-y-auto', className)}>{children}</CardBody>
       </Card>
@@ -27,23 +39,24 @@ export function Box({ children, className, ...props }: BoxProps) {
   )
 }
 
-interface WrapperProps {
-  children: React.ReactNode
-  scrollable?: boolean
-  grow?: boolean
-}
-
 function Wrapper(props: WrapperProps) {
   if (props.scrollable) {
     return (
       <ScrollShadow
-        style={{ height: '100%' }}
+        style={{ height: props.h ?? '100%' }}
         className={clsx('pr-1', props.grow && 'flex-1')}
       >
         {props.children}
       </ScrollShadow>
     )
   } else {
-    return <>{props.children}</>
+    return (
+      <div
+        style={{ height: props.h, minHeight: props.h, maxHeight: props.h }}
+        className={clsx(props.grow && 'flex-1')}
+      >
+        {props.children}
+      </div>
+    )
   }
 }

@@ -13,7 +13,6 @@ export function Voice2Layout() {
     <AppShell withHeader>
       <Container width="250px">
         <Box h="64px">hello</Box>
-
         <Container
           grow
           horizontal
@@ -27,43 +26,19 @@ export function Voice2Layout() {
         </Container>
         <Box h="64px">hello</Box>
       </Container>
+      <Container grow>
+        <Box h="64px">box top</Box>
+        <Box
+          scrollable
+          h="50%"
+          variant="unstyled"
+          className="p-0"
+        >
+          scrollable down
+        </Box>
+        <Box grow>Fixed bottom</Box>
+        <Box h="50px">Fixed bottom</Box>
+      </Container>
     </AppShell>
-    // <AppShell withHeader>
-    //   <Aside>
-    //     <AsideTopPanel>
-    //       <div className="flex gap-x-3 h-full">
-    //         <Button
-    //           className="h-full"
-    //           variant="shadow"
-    //           color="secondary"
-    //         >
-    //           Change layout
-    //         </Button>
-    //         <Button
-    //           className="h-full"
-    //           variant="shadow"
-    //           color="secondary"
-    //         >
-    //           Manage overlays
-    //         </Button>
-    //       </div>
-    //     </AsideTopPanel>
-    //     <div className="flex flex-row gap-x-[4px] max-h-full min-h-full">
-    //       <AsideScrollable>
-    //         <NavigationPanel items={new Array(66).fill({})} />
-    //       </AsideScrollable>
-    //       <div className="flex-1">
-    //         <AsideScrollable>
-    //           <CurrentServer />
-    //         </AsideScrollable>
-    //       </div>
-    //     </div>
-    //   </Aside>
-    //   <Content>
-    //     <ContentTopPanel>some</ContentTopPanel>
-    //     <ContentScrollable>some</ContentScrollable>
-    //     <ContentBottomPanel>some</ContentBottomPanel>
-    //   </Content>
-    // </AppShell>
   )
 }
