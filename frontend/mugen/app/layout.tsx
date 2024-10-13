@@ -1,9 +1,14 @@
-import '@/styles/globals.css'
 
-import { Metadata } from 'next'
+
+
+import '@/styles/globals.css';
+
+
+
+import { Metadata } from 'next';
 import clsx from 'clsx'
 
-import { fontSans } from '@/config/fonts'
+import { fontCommon, fontSacramento, fontSans } from '@/config/fonts'
 import { siteConfig } from '@/config/site'
 import { Providers } from './providers'
 
@@ -25,9 +30,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
     >
       <head />
-      <body className={clsx('min-h-screen bg-background font-sans antialiased', fontSans.variable)}>
+      <body
+        className={clsx(
+          'min-h-screen bg-background font-sans antialiased',
+          fontSans.variable,
+          fontSacramento.variable,
+          fontCommon.variable
+        )}
+      >
         <Providers themeProps={{ attribute: 'class', forcedTheme: 'dark' }}>
-          <div className="relative flex flex-col h-screen">{children}</div>
+          <div className="relative flex flex-col h-screen font-common">{children}</div>
         </Providers>
       </body>
     </html>

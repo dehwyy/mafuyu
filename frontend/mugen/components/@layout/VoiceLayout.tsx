@@ -1,13 +1,43 @@
+import { Button } from '@nextui-org/button'
 import { AppShell, Box, Container } from '$layout/essential'
 
+import { Dev } from '@/lib/const'
+import { IconPlus } from '../icons/Plus'
+import { OverlaySettings } from './builder/aside'
+import { ChatInput } from './chat'
 import { CurrentServer } from './voice/CurrentServer'
 import { NavigationPanel } from './voice/NavigationPanel'
+import { UserCard } from './voice/UserCard'
 
 export function VoiceLayout() {
   return (
     <AppShell withHeader>
-      <Container width="250px">
-        <Box h="64px">hello</Box>
+      <Container width="300px">
+        <Container
+          h="64px"
+          horizontal
+          className="items-center"
+        >
+          <Box
+            variant="unstyled"
+            className="!py-0"
+          >
+            <Button
+              isIconOnly
+              color="secondary"
+              variant="shadow"
+              className="shadow-sm outline-none focus-visible:!outline-none h-[44px] w-[44px] rounded-[25px]"
+            >
+              <IconPlus className="stroke-gray-100" />
+            </Button>
+          </Box>
+          <Box
+            variant="unstyled"
+            grow
+          >
+            <OverlaySettings />
+          </Box>
+        </Container>
         <Container
           grow
           horizontal
@@ -15,24 +45,41 @@ export function VoiceLayout() {
           <Box scrollable>
             <NavigationPanel items={new Array(66).fill({})} />
           </Box>
-          <Box scrollable>
+          <Box
+            scrollable
+            grow
+            className="!p-0"
+          >
             <CurrentServer />
           </Box>
         </Container>
-        <Box h="64px">hello</Box>
+        <Box h="64px">
+          <UserCard
+            username="Waypo1nt"
+            userImage={Dev.Img2}
+            userStatus="online"
+          />
+        </Box>
       </Container>
       <Container grow>
-        <Box h="64px">box top</Box>
+        <Box h="64px">
+          <p className="text-2xl font-bold underline">/Path/To/The/Chat</p>
+        </Box>
         <Box
           scrollable
-          h="50%"
           variant="unstyled"
           className="p-0"
         >
           scrollable down
         </Box>
-        <Box grow>Fixed bottom</Box>
-        <Box h="50px">Fixed bottom</Box>
+        <Box h="64px">
+          <ChatInput />
+        </Box>
+      </Container>
+      <Container width="200px">
+        <Box h="64px">Statistics</Box>
+        <Box h="64px">Input</Box>
+        <Box scrollable>content</Box>
       </Container>
     </AppShell>
   )

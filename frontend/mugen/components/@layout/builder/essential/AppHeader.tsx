@@ -49,7 +49,7 @@ export default function Navbar() {
           onClick={toggleNavbar}
           isIconOnly
           disableAnimation
-          className="h-[48px] px-10 items-end bg-transparent focus-visible:outline-none"
+          className="h-[48px] px-10 items-end bg-transparent focus-visible:outline-none outline-none"
         >
           <IconChevronUp className={clsx(isExpanded || 'rotate-180', 'transition-all stroke-default-300 min-w-[16px]')} />
         </Button>

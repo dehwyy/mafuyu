@@ -1,4 +1,8 @@
-import { nextui } from '@nextui-org/theme'
+import { nextui } from '@nextui-org/theme';
+
+
+
+
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -12,7 +16,9 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['var(--font-sans)'],
-        mono: ['var(--font-mono)']
+        mono: ['var(--font-mono)'],
+        curly: ['var(--font-sacramento)'],
+        common: ['var(--font-common)']
       }
     }
   },

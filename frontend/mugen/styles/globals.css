@@ -16,3 +16,11 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #c1c1c1;
 }
+
+button {
+	outline: none!important;
+}
+
+button:focus-visible {
+	outline: none!important;
+}

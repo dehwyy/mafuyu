@@ -64,7 +64,7 @@ const Bar = ({ isHover, isSelected }: { isHover: boolean; isSelected: boolean })
   return (
     <div
       style={{ opacity: isAnyEvent ? 1 : 0, height: h }}
-      className="transition-all rounded-sm bg-white w-[6px] absolute -left-2 top-1/2 -translate-y-1/2"
+      className="transition-all rounded-sm bg-white w-[6px] absolute -left-3.5 top-1/2 -translate-y-1/2"
     />
   )
 }

@@ -2,6 +2,7 @@ import clsx from 'clsx'
 
 interface AsideProps {
   width?: string
+  h?: string
   horizontal?: boolean
   grow?: boolean
   children?: React.ReactNode[] | React.ReactNode
@@ -12,6 +13,8 @@ export function Container(props: AsideProps) {
   return (
     <section
       style={{
+        height: props.h,
+        minHeight: props.h,
         width: props.width ?? '100%'
       }}
       className={clsx(

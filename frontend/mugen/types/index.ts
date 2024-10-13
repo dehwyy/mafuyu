@@ -1,4 +1,8 @@
-import { SVGProps } from 'react'
+import { SVGProps } from 'react';
+
+
+
+
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
   size?: number
@@ -6,4 +10,8 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 
 export interface LayoutProps<T = any> {
   children: React.ReactNode
+}
+
+export interface IconProps {
+  className?: string
 }

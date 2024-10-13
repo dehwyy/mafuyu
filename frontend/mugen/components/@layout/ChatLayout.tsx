@@ -1,4 +1,4 @@
-import { UserBriefInformation } from '$layout/aside'
+import { OverlaySettings, UserBriefInformation } from '$layout/aside'
 import { AppShell, Box, Container } from '$layout/essential'
 
 import { ChatInput, ChatList, CurrentChatInformation, MessageList } from '@/components/@layout/chat'
@@ -8,12 +8,8 @@ export function ChatLayout() {
   return (
     <AppShell withHeader>
       <Container width="250px">
-        <Box h="64px">
-          <UserBriefInformation
-            name="dehwyy"
-            description="awesome user"
-            avatarSrc={Dev.Img}
-          />
+        <Box variant="unstyled">
+          <OverlaySettings />
         </Box>
         <Box scrollable>
           <ChatList items={[]} />
