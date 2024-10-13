@@ -11,7 +11,7 @@ export function VoiceLayout() {
     <AppShell withHeader>
       <Aside>
         <AsideTopPanel>
-          <div className="flex gap-x-3 h-full ">
+          <div className="flex gap-x-3 h-full">
             <Button
               className="h-full"
               variant="shadow"

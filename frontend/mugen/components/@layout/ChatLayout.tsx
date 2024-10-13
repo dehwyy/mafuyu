@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Divider } from '@nextui-org/react'
 import { Aside, AsideScrollable, AsideTopPanel, UserBriefInformation } from '$layout/aside'
 import { Content, ContentBottomPanel, ContentScrollable, ContentTopPanel } from '$layout/content'
 import { AppShell } from '$layout/essential'
@@ -40,13 +41,13 @@ export function ChatLayout() {
         </AsideScrollable>
       </Aside>
       <Content>
-        <ContentTopPanel>
+        <ContentTopPanel size="sm">
           <CurrentChatInformation
             name="dehwyy"
             avatarSrc={Dev.Img}
           />
         </ContentTopPanel>
-        <ContentScrollable>
+        <ContentScrollable contentWidth="600px">
           {new Array(20).fill(0).map((_, i) => (
             <Message
               key={i}
@@ -61,7 +62,10 @@ export function ChatLayout() {
             />
           ))}
         </ContentScrollable>
-        <ContentBottomPanel>
+        <ContentBottomPanel
+          contentWidth="600px"
+          beforeContent={<Divider className="mb-2 bg-default-foreground/40 w-[640px] max-w-full" />}
+        >
           <ChatInput />
         </ContentBottomPanel>
       </Content>

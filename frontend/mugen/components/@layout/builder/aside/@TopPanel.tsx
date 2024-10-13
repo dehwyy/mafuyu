@@ -4,5 +4,12 @@ interface TopPanelProps {
 
 const height = 48
 export function TopPanel({ children }: TopPanelProps) {
-  return <section style={{ height, minHeight: height, maxHeight: height }}>{children}</section>
+  return (
+    <section
+      style={{ height, minHeight: height, maxHeight: height }}
+      className="overflow-hidden"
+    >
+      {children}
+    </section>
+  )
 }
