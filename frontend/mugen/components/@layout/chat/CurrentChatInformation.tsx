@@ -7,9 +7,9 @@ interface CurrentChatInformationProps {
 
 export function CurrentChatInformation({ avatarSrc, name }: CurrentChatInformationProps) {
   return (
-    <>
+    <div className="flex gap-x-3 items-center">
       <Avatar src={avatarSrc} />
       <p className="font-semibold">{name}</p>
-    </>
+    </div>
   )
 }

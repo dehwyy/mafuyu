@@ -12,8 +12,10 @@ const variants = {
 interface WrapperProps {
   children: React.ReactNode
   h?: string
+  w?: string
   scrollable?: boolean
   grow?: boolean
+  alignSelf?: string
 }
 
 interface BoxProps extends WrapperProps {
@@ -52,7 +54,7 @@ function Wrapper(props: WrapperProps) {
   } else {
     return (
       <div
-        style={{ height: props.h, minHeight: props.h, maxHeight: props.h }}
+        style={{ height: props.h, minHeight: props.h, maxHeight: props.h, width: props.w, alignSelf: props.alignSelf }}
         className={clsx(props.grow && 'flex-1')}
       >
         {props.children}

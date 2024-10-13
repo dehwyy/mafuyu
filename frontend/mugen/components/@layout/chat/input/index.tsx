@@ -11,7 +11,7 @@ export function ChatInput() {
   const ref = useRef<HTMLInputElement>(null)
 
   return (
-    <>
+    <div className="flex gap-x-3">
       <MenuSymbol />
       <Input
         baseRef={ref}
@@ -32,6 +32,6 @@ export function ChatInput() {
       >
         <IconSend />
       </Button>
-    </>
+    </div>
   )
 }
