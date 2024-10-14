@@ -1,17 +1,17 @@
 import { Button } from '@nextui-org/button';
-import { AppShell, Box, Container } from '$layout/essential';
+import { Input } from '@nextui-org/input'
+import { AppShell, Box, Container } from '$layout/essential'
 
-
-
-import { Dev } from '@/lib/const';
-import { IconPlus } from '../icons/Plus';
-import { OverlaySettings } from './builder/aside';
-import { ChatInput } from './chat';
-import { CurrentServer } from './voice/CurrentServer';
-import { NavigationPanel } from './voice/NavigationPanel';
+import { Dev } from '@/lib/const'
+import { IconPlus } from '../icons/Plus'
+import { OverlaySettings } from './builder/aside'
+import { ChatInput } from './chat'
+import { CurrentServer } from './voice/CurrentServer'
+import { NavigationPanel } from './voice/NavigationPanel'
+import OnlineStats from './voice/stats/OnlineStats'
 import { UserCard } from './voice/UserCard'
 import { ViewOverview } from './voice/ViewOverview'
-import { ViewChat } from './voice/views/Chat';
+import { ViewChat } from './voice/views/Chat'
 
 export function VoiceLayout() {
   return (
@@ -84,8 +84,32 @@ export function VoiceLayout() {
         </Box>
       </Container>
       <Container width="200px">
-        <Box h="64px">Statistics</Box>
-        <Box h="64px">Input</Box>
+        <Box
+          variant="unstyled"
+          className="!py-1 -mb-2"
+        >
+          <span className="text-lg">Online</span>
+        </Box>
+        <Box
+          h="64px"
+          className="!p-0"
+        >
+          <OnlineStats
+            width={200}
+            height={64}
+            my={24}
+          />
+        </Box>
+        <Box
+          h="64px"
+          variant="unstyled"
+        >
+          <Input
+            variant="underlined"
+            size="sm"
+            label="Search"
+          />
+        </Box>
         <Box scrollable>content</Box>
       </Container>
     </AppShell>

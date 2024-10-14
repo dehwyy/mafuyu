@@ -2,34 +2,39 @@ import { BreadcrumbItem, Breadcrumbs, Button, ButtonGroup, Input } from '@nextui
 
 import { IconFile } from '@/components/icons/File'
 import { IconMicrophone } from '@/components/icons/Microphone'
+import { IconPencil } from '@/components/icons/Pencil'
+import { IconPin } from '@/components/icons/Pin'
+import { IconSearch } from '@/components/icons/Search'
+import { IconTerminal } from '@/components/icons/Terminal'
 
 interface ViewOverviewProps {}
+
+const pathSegments = ['TextChat', 'Memories', '@Thread']
+const buttons = [<IconPin />, <IconPencil />, <IconSearch />, <IconTerminal />]
 
 export function ViewOverview(props: ViewOverviewProps) {
   return (
     <section className="w-full h-full flex items-center justify-between">
       <div>
         <Breadcrumbs>
-          <BreadcrumbItem>Home</BreadcrumbItem>
-          <BreadcrumbItem>Music</BreadcrumbItem>
-          <BreadcrumbItem>Artist</BreadcrumbItem>
-          <BreadcrumbItem>Album</BreadcrumbItem>
-          <BreadcrumbItem>Song</BreadcrumbItem>
+          {pathSegments.map((segment, i) => (
+            <BreadcrumbItem key={i}>{segment}</BreadcrumbItem>
+          ))}
         </Breadcrumbs>
       </div>
       <div>
-        <ButtonGroup>
-          {new Array(3).fill(0).map((_, i) => (
+        <div className="flex gap-x-2">
+          {buttons.map((button, i) => (
             <Button
               key={i}
-              variant="light"
               size="sm"
-              startContent={<IconFile />}
+              className="bg-transparent"
+              isIconOnly
             >
-              Action {i}
+              {button}
             </Button>
           ))}
-        </ButtonGroup>
+        </div>
       </div>
     </section>
   )
