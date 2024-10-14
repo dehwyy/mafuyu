@@ -1,5 +1,6 @@
 import { Button } from '@nextui-org/button';
-import { Input } from '@nextui-org/input'
+import { Input } from '@nextui-org/input';
+import { Avatar, User } from '@nextui-org/react'
 import { AppShell, Box, Container } from '$layout/essential'
 
 import { Dev } from '@/lib/const'
@@ -110,7 +111,27 @@ export function VoiceLayout() {
             label="Search"
           />
         </Box>
-        <Box scrollable>content</Box>
+        <Box
+          scrollable
+          className="flex flex-col gap-y-4"
+        >
+          {new Array(4).fill({}).map((_, index) => (
+            <div className="flex gap-x-3 items-center h-[44px] py-[1px]">
+              <div>
+                <Avatar
+                  className="h-8 w-8"
+                  src={Dev.Img}
+                />
+              </div>
+              <div className="w-2/3">
+                <p className="text-[16px] leading-5 text-violet-400">Waypo1nt</p>
+                <p className="ellipsis text-[12px] leading-3 text-default-400 font-medium">
+                  Playing Counter-Strike 21231adsasadsdsadsa1211313
+                </p>
+              </div>
+            </div>
+          ))}
+        </Box>
       </Container>
     </AppShell>
   )

@@ -24,3 +24,7 @@ button {
 button:focus-visible {
 	outline: none!important;
 }
+
+.ellipsis {
+	@apply overflow-hidden text-ellipsis whitespace-nowrap;
+}
