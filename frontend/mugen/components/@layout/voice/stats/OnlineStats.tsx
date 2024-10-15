@@ -9,12 +9,19 @@ interface LetterFrequency {
 }
 
 const data: LetterFrequency[] = [
-  { letter: 's', frequency: 0.14 },
-  { letter: 'a', frequency: 0.04 },
-  { letter: 't', frequency: 0.02 },
-  { letter: 'e', frequency: 0.02 },
-  { letter: 'r', frequency: 0.02 },
-  { letter: 'o', frequency: 0.02 }
+  { letter: 's', frequency: 2 },
+  { letter: 'a', frequency: 2 },
+  { letter: 't', frequency: 4 },
+  { letter: 'e', frequency: 5 },
+  { letter: 'r', frequency: 4 },
+  { letter: 'o', frequency: 7 },
+  { letter: 'z', frequency: 1 },
+  { letter: 'x', frequency: 0.6 },
+  { letter: 'c', frequency: 1.2 },
+  { letter: 'v', frequency: 1.5 },
+  { letter: 'b', frequency: 1 },
+  { letter: 'n', frequency: 3 },
+  { letter: 'm', frequency: 2 }
 ]
 
 const getLetter = (d: LetterFrequency) => d.letter
@@ -76,7 +83,7 @@ export default function OnlineStats({ width, height, my = 0 }: OnlineStatsProps)
               y={barY}
               width={barWidth}
               height={barHeight}
-              fill="#7FFF00"
+              fill={d.frequency <= 1 ? 'red' : '#7FFF00'}
               rx={3}
             />
           )

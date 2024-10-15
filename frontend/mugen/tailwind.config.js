@@ -1,8 +1,4 @@
-import { nextui } from '@nextui-org/theme';
-
-
-
-
+import { colors, nextui } from '@nextui-org/theme'
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -14,6 +10,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        'purple-light': 'hsl(235, 86.1%,77.5%)'
+      },
       fontFamily: {
         sans: ['var(--font-sans)'],
         mono: ['var(--font-mono)'],
