@@ -6,13 +6,24 @@
   "singleQuote": true,
   "bracketSpacing": true,
   "bracketSameLine": false,
-  "singleAttributePerLine": true,
+  "singleAttributePerLine": false,
   "arrowParens": "always",
   "trailingComma": "none",
   "quoteProps": "as-needed",
   "endOfLine": "lf",
   "plugins": ["prettier-plugin-svelte", "@ianvs/prettier-plugin-sort-imports"],
-  "importOrder": ["<BUILTIN_MODULES>", "^(react|next(.*))$", "<THIRD_PARTY_MODULES>", "<TYPES>", "", "^@/(.*)$", "^~/(.*)$", "^[./]", "<TYPES>^[.]", "^(.*)(sass|css|scss)$"],
+  "importOrder": [
+    "<BUILTIN_MODULES>",
+    "^(react|next(.*))$",
+    "<THIRD_PARTY_MODULES>",
+    "<TYPES>",
+    "",
+    "^@/(.*)$",
+    "^~/(.*)$",
+    "^[./]",
+    "<TYPES>^[.]",
+    "^(.*)(sass|css|scss)$"
+  ],
   "importOrderParserPlugins": ["classProperties", "decorators-legacy", "jsx", "typescript"],
   "overrides": [
     {
