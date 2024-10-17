@@ -1,4 +1,4 @@
-import { BreadcrumbItem, Breadcrumbs, Button, ButtonGroup, Input } from '@nextui-org/react'
+import { BreadcrumbItem, Breadcrumbs, Button, ButtonGroup, Input, Tooltip } from '@nextui-org/react'
 
 import { IconFile } from '@/components/icons/File'
 import { IconMicrophone } from '@/components/icons/Microphone'
@@ -10,12 +10,18 @@ import { IconTerminal } from '@/components/icons/Terminal'
 interface ViewOverviewProps {}
 
 const pathSegments = ['TextChat', 'Memories', '@Thread']
-const buttons = [<IconPin />, <IconPencil />, <IconSearch />, <IconTerminal />]
+
+const buttons = [
+  { icon: IconPin, text: 'Pinned messages' },
+  { icon: IconPencil, text: 'Edit channel' },
+  { icon: IconSearch, text: 'Search' },
+  { icon: IconTerminal, text: 'View logs' }
+]
 
 export function ViewOverview(props: ViewOverviewProps) {
   return (
     <section className="w-full h-full flex items-center justify-between">
-      <div>
+      <div className="select-none">
         <Breadcrumbs>
           {pathSegments.map((segment, i) => (
             <BreadcrumbItem key={i}>{segment}</BreadcrumbItem>
@@ -23,16 +29,18 @@ export function ViewOverview(props: ViewOverviewProps) {
         </Breadcrumbs>
       </div>
       <div>
-        <div className="flex gap-x-2">
-          {buttons.map((button, i) => (
-            <Button
-              key={i}
-              size="sm"
-              className="bg-transparent"
-              isIconOnly
-            >
-              {button}
-            </Button>
+        <div className="flex gap-x-4">
+          {buttons.map((btn, i) => (
+            <Tooltip content={btn.text} placement="bottom" showArrow closeDelay={0} delay={0}>
+              <Button
+                className="bg-transparent stroke-default-500 stroke-2 hover:stroke-default-800"
+                disableAnimation
+                disableRipple
+                isIconOnly
+              >
+                <btn.icon className="stroke-inherit transition-all" />
+              </Button>
+            </Tooltip>
           ))}
         </div>
       </div>

@@ -44,7 +44,7 @@ export function VoiceLayout() {
 
       {/* Main  */}
       <Container grow>
-        <Box h="48px" variant="gradientPurple" className="justify-center" w="98%">
+        <Box h="56px" variant="gradient" className="justify-center" w="98%">
           <ViewOverview />
         </Box>
         <Box scrollable className="p-0">
