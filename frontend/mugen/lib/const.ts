@@ -12,5 +12,9 @@ export const enum Dev {
   Img2 = 'https://steamuserimages-a.akamaihd.net/ugc/2545179974080860814/144A2049E86A9E29FA35C7F7535F47BFFB950F17/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false',
   Sticker = '/sticker.png',
 
-  UserRole = 'admin'
+  UserRole = 'admin',
+
+  MessageId1 = 'messageId1',
+  MessageId2 = 'messageId2',
+  MessageId3 = 'messageId3'
 }

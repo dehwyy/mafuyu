@@ -1,20 +1,23 @@
 import { Button } from '@nextui-org/button';
 import { Input } from '@nextui-org/input';
-import { Avatar, user, User } from '@nextui-org/react'
-import { AppShell, Box, Container } from '$layout/essential'
+import { Avatar, user, User } from '@nextui-org/react';
+import { AppShell, Box, Container } from '$layout/essential';
 
-import { Dev } from '@/lib/const'
-import { IconPlus } from '../icons/Plus'
-import { OverlaySettings } from './builder/aside'
-import { ChatInput } from './chat'
-import { CreateServerButton } from './voice/CreateServerButton'
-import { CurrentServer } from './voice/CurrentServer'
-import { NavigationPanel } from './voice/NavigationPanel'
-import { Category } from './voice/raside/Category'
-import OnlineStats from './voice/stats/OnlineStats'
-import { UserCard } from './voice/UserCard'
+
+
+import { Dev } from '@/lib/const';
+import { IconPlus } from '../icons/Plus';
+import { OverlaySettings } from './builder/aside';
+import { ChatInput } from './chat';
+import { CreateServerButton } from './voice/CreateServerButton';
+import { CurrentServer } from './voice/CurrentServer';
+import { NavigationPanel } from './voice/NavigationPanel';
+import { Category } from './voice/raside/Category';
+import OnlineStats from './voice/stats/OnlineStats';
+import { UserCard } from './voice/UserCard';
 import { ViewOverview } from './voice/ViewOverview'
-import { ViewChat } from './voice/views/Chat'
+import { ViewChat } from './voice/views/chat/Chat'
+
 
 export function VoiceLayout() {
   return (

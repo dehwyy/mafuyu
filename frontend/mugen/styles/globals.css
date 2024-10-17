@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+	scroll-behavior: smooth!important;
+}
+
 ::-webkit-scrollbar {
   width: 0.3vw;
 }
@@ -17,11 +21,11 @@
   background: #c1c1c1;
 }
 
-button {
+button, a {
 	outline: none!important;
 }
 
-button:focus-visible {
+button:focus-visible, a:focus-visible {
 	outline: none!important;
 }
 
