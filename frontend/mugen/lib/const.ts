@@ -16,5 +16,7 @@ export const enum Dev {
 
   MessageId1 = 'messageId1',
   MessageId2 = 'messageId2',
-  MessageId3 = 'messageId3'
+  MessageId3 = 'messageId3',
+  MessageId4 = 'messageId4',
+  MessageId5 = 'messageId5'
 }

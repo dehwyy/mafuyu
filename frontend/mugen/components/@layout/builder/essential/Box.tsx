@@ -4,7 +4,8 @@ import clsx from 'clsx';
 
 
 
-import { CardPreseted, Variant } from '@/components/reusable/CardPreseted'
+import { CardPreseted, Variant } from '@/components/reusable/CardPreseted';
+
 
 interface WrapperProps {
   children: React.ReactNode
@@ -17,7 +18,7 @@ interface WrapperProps {
 
 interface BoxProps extends WrapperProps {
   className?: string
-  variant: Variant
+  variant?: Variant
 }
 
 export function Box({ children, className, ...props }: BoxProps) {

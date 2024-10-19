@@ -11,7 +11,7 @@ export function ChatMessage(props: MessageProps) {
       </div>
       <div>
         <p className="font-medium mb-1">
-          <span className="text-[16px] mr-3">{props.senderUsername}</span>
+          <span className="text-[16px] mr-3 text-default-700">{props.senderUsername}</span>
           <span className="text-[12px] text-default-400">{props.time}</span>
         </p>
         {props.component.build()}

@@ -32,6 +32,20 @@ export function ViewChat(props: ViewChatProps) {
         time="10/14/2024 8:31 PM"
         component={new MessageImage('https://media1.tenor.com/m/uSA4mIkGS6wAAAAd/wind-breaker-sakura.gif', 'wind-breaker')}
       />
+<ChatMessage
+        messageId={Dev.MessageId4}
+        senderUsername="dehwyy"
+        senderImage={Dev.Img}
+        time="10/14/2024 8:31 PM"
+        component={new MessageImage('https://media1.tenor.com/m/zw3QqwNB3yQAAAAC/%E9%84%B0%E5%BA%A7%E8%89%BE%E8%8E%89%E5%90%8C%E5%AD%B8-alya-sometimes-hides-her-feelings-in-russian.gif', 'wind-breaker')}
+	/>
+ <ChatMessage
+        messageId={Dev.MessageId5}
+        senderUsername="dehwyy"
+        senderImage={Dev.Img}
+        time="10/14/2024 8:31 PM"
+        component={new MessageImage('https://media1.tenor.com/m/tucKAMTRacsAAAAC/akane-oshi-no-ko.gif', 'wind-breaker')}
+      />
     </section>
   )
 }

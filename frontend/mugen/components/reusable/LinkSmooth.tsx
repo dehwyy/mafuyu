@@ -1,7 +1,12 @@
-import { Link, LinkProps } from '@nextui-org/link'
+import { Link, LinkProps } from '@nextui-org/link';
+
+
+
+
 
 interface LinkSmoothProps extends LinkProps {
   anchorId: string
+  children: React.ReactNode
 }
 
 export function LinkSmooth(props: LinkSmoothProps) {
@@ -15,7 +20,7 @@ export function LinkSmooth(props: LinkSmoothProps) {
       href={'#' + props.anchorId}
       {...props}
     >
-      Link
+      {props.children}
     </Link>
   )
 }

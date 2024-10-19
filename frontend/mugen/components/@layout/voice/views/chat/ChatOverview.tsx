@@ -8,6 +8,7 @@ import { IconSearch } from '@/components/icons/Search'
 import { IconTerminal } from '@/components/icons/Terminal'
 import { Dev } from '@/lib/const'
 import { MessageImage, MessageText } from '@/lib/dto/voice/message'
+import { ChatMessage } from './ChatMessage'
 import { ChatOverviewActionTrigger } from './ChatOverviewActionTrigger'
 import { ChatOverviewActionViewAuditLogs } from './ChatOverviewActionViewAuditLogs'
 import { ChatOverviewActionViewPinnedMessages } from './ChatOverviewActionViewPinnedMessages'
@@ -19,7 +20,7 @@ interface ViewOverviewProps {}
 const pathSegments = ['TextChat', 'Memories', '@Thread']
 const pinnedMessage = [
   {
-    messageId: Dev.MessageId1,
+    messageId: Dev.MessageId5,
     senderUsername: 'Mugen',
     senderImage: Dev.Img2,
     time: '10/14/2024 8:31 PM',
@@ -28,17 +29,63 @@ const pinnedMessage = [
     })
   },
   {
-    messageId: Dev.MessageId2,
+    messageId: Dev.MessageId1,
     senderUsername: 'dehwyy',
     senderImage: Dev.Img,
     time: '10/14/2024 8:31 PM',
     component: new MessageText("It's a message!")
   }
 ]
-
-const buttons = [
-  { triggerIcon: IconSearch, viewComponent: ChatOverviewActionViewSearch, text: 'Search' },
-  { triggerIcon: IconTerminal, viewComponent: ChatOverviewActionViewAuditLogs, text: 'View audit logs' }
+const eventLogs = [
+  { actor: 'dehwyy', actorImage: Dev.Img, action: 'joined server', time: '10/14/2024 8:31 PM' },
+  {
+    actor: 'dehwyy',
+    actorImage: Dev.Img,
+    action: 'left server',
+    time: '10/14/2024 8:31 PM'
+  },
+  {
+    actor: 'Waypo1nt',
+    actorImage: Dev.Img,
+    action: 'kicked waypo1nt',
+    time: '10/14/2024 8:31 PM'
+  },
+  {
+    actor: 'dehwyy',
+    actorImage: Dev.Img,
+    action: 'create invite',
+    time: '10/14/2024 8:31 PM'
+  },
+  {
+    actor: 'dehwyy',
+    actorImage: Dev.Img,
+    action: 'renamed channel',
+    time: '10/14/2024 8:31 PM'
+  },
+  {
+    actor: 'dehwyy',
+    actorImage: Dev.Img,
+    action: 'просто даун',
+    time: '10/14/2024 8:31 PM'
+  },
+  {
+    actor: 'dehwyy',
+    actorImage: Dev.Img,
+    action: 'просто даун',
+    time: '10/14/2024 8:31 PM'
+  },
+  {
+    actor: 'dehwyy',
+    actorImage: Dev.Img,
+    action: 'просто даун',
+    time: '10/14/2024 8:31 PM'
+  },
+  {
+    actor: 'dehwyy',
+    actorImage: Dev.Img,
+    action: 'просто даун',
+    time: '10/14/2024 8:31 PM'
+  }
 ]
 
 export function ChatOverview(props: ViewOverviewProps) {
@@ -56,15 +103,18 @@ export function ChatOverview(props: ViewOverviewProps) {
           <ChatOverviewActionTrigger triggerIcon={IconPin} text="Show pinned messages">
             <ChatOverviewActionViewPinnedMessages pinnedMessage={pinnedMessage} />
           </ChatOverviewActionTrigger>
+
           <ChatOverviewActionTrigger triggerIcon={IconPencil} text="Edit channel segment">
             <ChatOverviewActionViewSegmentEdit channelName="TextChannelName" />
           </ChatOverviewActionTrigger>
 
-          {buttons.map((item, i) => (
-            <ChatOverviewActionTrigger key={i} triggerIcon={item.triggerIcon} text={item.text}>
-              <item.viewComponent />
-            </ChatOverviewActionTrigger>
-          ))}
+          <ChatOverviewActionTrigger triggerIcon={IconSearch} text="Search">
+            <ChatOverviewActionViewSearch />
+          </ChatOverviewActionTrigger>
+
+          <ChatOverviewActionTrigger triggerIcon={IconTerminal} text="View audit logs">
+            <ChatOverviewActionViewAuditLogs events={eventLogs} />
+          </ChatOverviewActionTrigger>
         </div>
       </div>
     </section>

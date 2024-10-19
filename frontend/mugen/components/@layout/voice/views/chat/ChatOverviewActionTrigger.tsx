@@ -49,7 +49,7 @@ export function ChatOverviewActionTrigger(props: ChatOverviewActionActionProps) 
           </PopoverTrigger>
         </div>
       </Tooltip>
-      <PopoverContent className={clsx(isPopoverMounted ? 'bg-transparent' : 'bg-background', ' shadow-none !p-0 transition-all delay-300')}>
+      <PopoverContent className={clsx(isPopoverMounted ? 'bg-transparent' : 'bg-background', ' shadow-none !p-0 transition-all delay-300 max-h-[500px]')}>
         {props.children}
       </PopoverContent>
     </Popover>

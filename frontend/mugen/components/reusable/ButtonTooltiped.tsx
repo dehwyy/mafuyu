@@ -18,10 +18,12 @@ export function ButtonTooltiped({ children, className, ...props }: ButtonTooltip
     <Tooltip
       isDisabled={isTooltipOpen}
       placement={props.tooltip.placement || 'bottom'}
-      delay={0}
+      delay={200}
       closeDelay={0}
       showArrow={props.tooltip.showArrow}
       content={props.tooltip.content}
+			offset={props.tooltip.offset}
+			className={props.tooltip.className}
     >
       <Button
         ref={ref}
@@ -29,10 +31,11 @@ export function ButtonTooltiped({ children, className, ...props }: ButtonTooltip
         disableAnimation={props.isIconOnly}
         disableRipple={props.isIconOnly}
         className={clsx(
+
+          className,
           props.isIconOnly
-            ? 'bg-transparent hover:!opacity-100' + (isHovered || isTooltipOpen ? ' !stroke-default-800' : ' !stroke-default-500')
+            ? 'bg-transparent hover:!opacity-100' + (isHovered || isTooltipOpen ? ' stroke-default-800' : ' stroke-default-500')
             : '',
-          className
         )}
         {...props}
       >
