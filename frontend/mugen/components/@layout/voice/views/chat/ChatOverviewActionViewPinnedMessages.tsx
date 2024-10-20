@@ -55,7 +55,7 @@ function PinnedMessage(props: MessageProps) {
       <LinkSmooth anchorId={props.messageId}>
         <article ref={ref} className="flex justify-between hover:bg-default-100 rounded-md transition-all duration-50 w-full">
           <ChatMessage {...props} />
-          <div className={clsx(isHovered ? 'opacity-100 visible' : 'opacity-0 invisible', 'pt-5 transition-all')}>
+          <div className={clsx(isHovered ? 'opacity-100 visible' : 'opacity-0 invisible', 'transition-all')}>
             <Button
               onClick={(e) => {
                 e.preventDefault()

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import {
   Button,
   CardBody,
@@ -13,6 +13,7 @@ import {
   ModalHeader,
   useDisclosure
 } from '@nextui-org/react'
+import clsx from 'clsx'
 
 import { IconCheck } from '@/components/icons/Check'
 import { IconPencil } from '@/components/icons/Pencil'
@@ -50,7 +51,7 @@ export function ChatOverviewActionViewSegmentEdit(props: ChatOverviewActionViewS
       </CardHeader>
       <CardBody className="w-[400px]">
         <div className="flex flex-col gap-y-3">
-          <Input variant="underlined" size="sm" defaultValue={props.channelName} spellCheck={false} />
+          <ChannelNameInput defaultValue={props.channelName} />
           <div>
             <p className="text-center font-semibold mb-3">Breakpoints</p>
             <section className="flex flex-col gap-y-4 pb-3 max-h-[200px] overflow-y-auto">
@@ -65,6 +66,34 @@ export function ChatOverviewActionViewSegmentEdit(props: ChatOverviewActionViewS
         </div>
       </CardBody>
     </CardPreseted>
+  )
+}
+function ChannelNameInput({ defaultValue }: { defaultValue: string }) {
+  const [savedChannelName, setSavedChannelName] = useState(defaultValue)
+  const [channelName, setChannelName] = useState(defaultValue)
+
+  const buttonClasses = useMemo(() => {
+    return clsx('bg-transparent transition-all', channelName === savedChannelName ? 'opacity-0 invisible' : 'opacity-100 visible')
+  }, [channelName, savedChannelName])
+
+  return (
+    <Input
+      variant="underlined"
+      size="sm"
+      value={channelName}
+      onValueChange={setChannelName}
+      spellCheck={false}
+      endContent={
+        <div className="flex">
+          <button className={buttonClasses} onClick={() => setChannelName(savedChannelName)}>
+            <IconX className="stroke-danger" />
+          </button>
+          <button className={buttonClasses} onClick={() => setSavedChannelName(channelName)}>
+            <IconCheck className="stroke-success" />
+          </button>
+        </div>
+      }
+    />
   )
 }
 
