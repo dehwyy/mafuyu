@@ -38,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           fontCommon.variable
         )}
       >
-        <Providers themeProps={{ attribute: 'class', forcedTheme: 'dark' }}>
+        <Providers themeProps={{ attribute: 'class', defaultTheme: "dark", enableSystem: true }}>
           <div className="relative flex flex-col h-screen font-common">{children}</div>
         </Providers>
       </body>

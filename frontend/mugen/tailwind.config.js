@@ -1,4 +1,8 @@
-import { colors, nextui } from '@nextui-org/theme'
+import { colors, nextui } from '@nextui-org/theme';
+
+
+
+
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -18,10 +22,15 @@ module.exports = {
         mono: ['var(--font-mono)'],
         curly: ['var(--font-sacramento)'],
         common: ['var(--font-common)']
+      },
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)'
       }
     }
   },
-  darkMode: 'class',
+  darkMode: ['class'],
   plugins: [
     nextui({
       themes: {
@@ -61,6 +70,7 @@ module.exports = {
           }
         }
       }
-    })
+    }),
+    require('tailwindcss-animate')
   ]
 }
