@@ -14,10 +14,9 @@ import { CurrentServer } from './voice/CurrentServer';
 import { NavigationPanel } from './voice/NavigationPanel';
 import { Category } from './voice/raside/Category';
 import OnlineStats from './voice/stats/OnlineStats';
-import { UserCard } from './voice/UserCard';
+import { UserPanel } from './voice/UserPanel'
 import { ViewOverview } from './voice/ViewOverview'
 import { ViewChat } from './voice/views/chat/Chat'
-
 
 export function VoiceLayout() {
   return (
@@ -41,7 +40,7 @@ export function VoiceLayout() {
           </Box>
         </Container>
         <Box h="64px" variant="gradient">
-          <UserCard username="Waypo1nt" userImage={Dev.Img2} userStatus="online" />
+          <UserPanel username="Waypo1nt" userImage={Dev.Img2} userStatus="online" />
         </Box>
       </Container>
 
