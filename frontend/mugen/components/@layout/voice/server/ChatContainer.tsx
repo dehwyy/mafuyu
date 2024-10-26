@@ -37,7 +37,7 @@ export function ChatContainer(props: ChatContainerProps) {
       </div>
       {props.type === 'voice' && (
         <div className="ml-6 mr-1 cursor-pointer">
-          <div className="items-start mt-0.5 flex flex-col gap-y-1">{props.items?.map((item, i) => <ChatMember key={i} {...item} />)}</div>
+          <div className="mt-0.5 flex flex-col gap-y-1">{props.items?.map((item, i) => <ChatMember key={i} {...item} />)}</div>
         </div>
       )}
     </>
