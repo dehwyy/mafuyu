@@ -1,12 +1,11 @@
-import { User } from '@nextui-org/react'
 import clsx from 'clsx'
 
 import { IconMessages } from '@/components/icons/Messages'
 import { IconSettings } from '@/components/icons/Settings'
 import { IconVolume } from '@/components/icons/Volume'
 import { Dev } from '@/lib/const'
-import { ChatContainer } from './server/ChatContainer'
-import { ServerOptions } from './server/ServerOptions'
+import { ChatContainer } from './laside/ChatContainer'
+import { ServerOptions } from './laside/ServerOptions'
 
 interface CurrentServerProps {
   className?: string
